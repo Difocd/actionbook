@@ -32,6 +32,10 @@ Actionbook places up-to-date action manuals with the relevant DOM selectors dire
 - **Resilient Automation:** Action manuals are maintained and versioned. If a site changes, the manual is updated, not your agent.
 - **Universal Compatibility:** Works with any LLM (OpenAI, Anthropic, Gemini) and any AI operator framework.
 
+See how Actionbook enables an agent to complete an Airbnb search task 10x faster.
+
+https://github.com/user-attachments/assets/c621373e-98e7-451a-bf5c-6adbea23e3b8
+
 ## Installation
 
 Actionbook provides two ways to integrate with your AI agents:
