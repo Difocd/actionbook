@@ -1,6 +1,8 @@
+![Actionbook Cover](https://github.com/user-attachments/assets/85767111-a3ae-451f-a3e4-d625cf2b5710)
+
 <div align="center">
 
-# Actionbook
+### Actionbook
 
 **The Playbook for AI Agents**
 <br />
@@ -579,7 +581,7 @@ Retrieves a specific action manual by its ID, including DOM selectors and step-b
 
 Star Actionbook on Github to support and get lastest information.
 
-![star-actionbook](https://github.com/user-attachments/assets/940c1825-99a8-46e2-8d0f-cc96c43e922f)
+![star-actionbook](https://github.com/user-attachments/assets/2d6571cb-4e12-438b-b7bf-9a4b68ef2be3)
 
 ## Development
 
