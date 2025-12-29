@@ -3,6 +3,7 @@ packages:
   - apps/*
   - playground/*
   - services/*
+  - services/*/*
 
 onlyBuiltDependencies:
   - bufferutil
