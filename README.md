@@ -10,7 +10,7 @@ Make your agents act 10× faster with 100× token savings.
 <br />
 Powered by up-to-date action manuals and DOM cache.
 
-[Website](https://actionbook.dev) · [GitHub](https://github.com/actionbook/actionbook)
+[Website](https://actionbook.dev) · [GitHub](https://github.com/actionbook/actionbook) · [X](https://x.com/ActionbookHQ) · [Discord](https://discord.gg/7sKKp7XQ2d)
 
 </div>
 
@@ -579,9 +579,14 @@ Retrieves a specific action manual by its ID, including DOM selectors and step-b
 
 ## Stay tuned
 
-Star Actionbook on Github to support and get lastest information.
+Star Actionbook on Github to support and get latest information.
 
-![star-actionbook](https://github.com/user-attachments/assets/2d6571cb-4e12-438b-b7bf-9a4b68ef2be3)
+![Star Actionbook](https://github.com/user-attachments/assets/2d6571cb-4e12-438b-b7bf-9a4b68ef2be3)
+
+Join the community:
+
+- [Chat with us on Discord](https://discord.gg/7sKKp7XQ2d) - Get help, share your agents, and discuss ideas
+- [Follow @ActionbookHQ on X](https://x.com/ActionbookHQ) - Product updates and announcements
 
 ## Development
 
