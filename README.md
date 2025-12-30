@@ -4,7 +4,7 @@
 
 ### Actionbook
 
-**The Playbook for AI Agents**
+**The Action Playbook for Agents**
 <br />
 Make your agents act 10× faster with 100× token savings.
 <br />
