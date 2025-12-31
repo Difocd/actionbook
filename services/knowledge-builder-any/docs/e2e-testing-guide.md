@@ -53,7 +53,7 @@ services/
 | Environment    | URL                                                                                                                                        |
 | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Local**      | `postgresql://postgres:passwd@localhost:5432/actionbook_knowledge`                                                                         |
-| **Production** | `postgres://postgres:Rc5c45TBhtW0Q7lYaAWN@actionbookdev-lib.cu9kwc0o8f8y.us-east-1.rds.amazonaws.com:5432/actionbook_prod?sslmode=require` |
+| **Production** | `<PRODUCTION_DATABASE_URL>` (see .env.production) |
 
 ---
 
@@ -200,8 +200,8 @@ cp .env.production .env
 ### Step 2: Verify Production Connection
 
 ```bash
-# Define production psql alias
-alias prod_psql='psql "postgres://postgres:Rc5c45TBhtW0Q7lYaAWN@actionbookdev-lib.cu9kwc0o8f8y.us-east-1.rds.amazonaws.com:5432/actionbook_prod?sslmode=require"'
+# Define production psql alias (use your actual production DATABASE_URL)
+alias prod_psql='psql "$PRODUCTION_DATABASE_URL"'
 
 # Test connection
 prod_psql -c "SELECT NOW();"
@@ -237,8 +237,7 @@ pnpm worker:build-task
 ```bash
 # Start API Service with production DB
 cd /Users/zhangalex/Work/Projects/Grasp.ai/actionbook/apps/api-service
-DATABASE_URL="postgres://postgres:Rc5c45TBhtW0Q7lYaAWN@actionbookdev-lib.cu9kwc0o8f8y.us-east-1.rds.amazonaws.com:5432/actionbook_prod?sslmode=require" \
-PORT=3100 pnpm dev
+DATABASE_URL="$PRODUCTION_DATABASE_URL" PORT=3100 pnpm dev
 
 # Submit task
 curl -X POST http://localhost:3100/api/build-tasks \
@@ -250,7 +249,7 @@ curl -X POST http://localhost:3100/api/build-tasks \
 
 ```bash
 # Watch task progress
-watch -n 10 'psql "postgres://postgres:Rc5c45TBhtW0Q7lYaAWN@actionbookdev-lib.cu9kwc0o8f8y.us-east-1.rds.amazonaws.com:5432/actionbook_prod?sslmode=require" -c "
+watch -n 10 'psql "$PRODUCTION_DATABASE_URL" -c "
 SELECT id, left(source_url, 35) as url, stage, stage_status, source_id
 FROM build_tasks ORDER BY created_at DESC LIMIT 5;"'
 
@@ -396,7 +395,7 @@ cd services/knowledge-builder-any && cp .env.production .env
 cd services/action-builder && cp .env.production .env
 
 # Query production
-psql "postgres://postgres:Rc5c45TBhtW0Q7lYaAWN@actionbookdev-lib.cu9kwc0o8f8y.us-east-1.rds.amazonaws.com:5432/actionbook_prod?sslmode=require" \
+psql "$PRODUCTION_DATABASE_URL" \
   -c "SELECT * FROM build_tasks ORDER BY created_at DESC LIMIT 5;"
 
 # Restore local
