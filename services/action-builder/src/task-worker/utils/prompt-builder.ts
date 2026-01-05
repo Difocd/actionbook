@@ -26,6 +26,10 @@ export function buildTaskDrivenPrompt(
 **EXECUTE the navigation steps** in the Task Description AND record UI elements along the way.
 You must follow the steps described in the task to reach the target page/form.
 
+## Element Naming Convention
+
+Use descriptive **snake_case** names for \`element_id\` (e.g., \`search_location_input\`, \`me_menu_button\`).
+
 ## Available Tools
 
 - **navigate**: Go to a URL
@@ -233,9 +237,9 @@ For example, you can call register_element multiple times in ONE response to rec
 1. **Navigate** to the target URL.
 2. **Set Page Context** immediately.
 3. **Observe specific areas**: Focus on functional areas (e.g., "search bar", "filters", "main content").
-3. **Observe ONLY specific areas**:                                                 
-- Focus on functional areas (e.g., "search bar", "filters", "main content") instead of "all interactive elements" (too noisy), observe "search bar and filters" or "product list container".                                               
-- Get the CSS/XPath structure for the *Pattern*.                                 
+3. **Observe ONLY specific areas**:
+- Focus on functional areas (e.g., "search bar", "filters", "main content") instead of "all interactive elements" (too noisy), observe "search bar and filters" or "product list container".
+- Get the CSS/XPath structure for the *Pattern*.
 4. **Batch Register**: Register ALL identified elements in a **SINGLE TURN** using parallel tool calls.
 5. **Verify**: Interact only if necessary to reveal hidden fields.`;
 

@@ -54,7 +54,8 @@ describe('Prompt Builder', () => {
     expect(result.systemPrompt).toContain('interact');
     expect(result.systemPrompt).toContain('observe_page');
     expect(result.systemPrompt).toContain('snake_case');
-    expect(result.userPrompt).toContain('Record UI Element Patterns');
+    expect(result.userPrompt).toContain('Execute Navigation Steps and Record Elements');
+    expect(result.userPrompt).toContain('Pattern Recording:');
     expect(result.userPrompt).toContain('Task: Search for hotels');
     expect(result.userPrompt).toContain(mockChunkTaskDriven.document_url);
     expect(result.userPrompt).toContain(mockChunkTaskDriven.document_title);

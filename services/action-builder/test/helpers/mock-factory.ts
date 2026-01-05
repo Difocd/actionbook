@@ -65,6 +65,7 @@ export function createMockTaskScheduler() {
     getNextTask: vi.fn(),
     getNextTaskWithRecovery: vi.fn(),
     claimNextTask: vi.fn(),
+    resetRecordingTasksForBuildTask: vi.fn(),
     markRunning: vi.fn(),
     markCompleted: vi.fn(),
     markFailed: vi.fn(),

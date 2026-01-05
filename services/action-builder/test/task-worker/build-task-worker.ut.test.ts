@@ -11,6 +11,7 @@ import {
   createMockDatabase,
   createMockBuildTaskScheduler,
   createMockTaskGenerator,
+  createMockTaskScheduler,
   createMockWorkerPool,
   createSampleBuildTaskInfo,
 } from '../helpers/mock-factory';
@@ -33,6 +34,7 @@ describe('BuildTaskWorker', () => {
   let mockDb: ReturnType<typeof createMockDatabase>;
   let mockBuildTaskScheduler: ReturnType<typeof createMockBuildTaskScheduler>;
   let mockTaskGenerator: ReturnType<typeof createMockTaskGenerator>;
+  let mockTaskScheduler: ReturnType<typeof createMockTaskScheduler>;
   let mockWorkerPool: ReturnType<typeof createMockWorkerPool>;
 
   const mockConfig = {
@@ -52,6 +54,7 @@ describe('BuildTaskWorker', () => {
     mockDb = createMockDatabase();
     mockBuildTaskScheduler = createMockBuildTaskScheduler();
     mockTaskGenerator = createMockTaskGenerator();
+    mockTaskScheduler = createMockTaskScheduler();
     mockWorkerPool = createMockWorkerPool();
 
     // Create worker with injected mocks
@@ -59,8 +62,12 @@ describe('BuildTaskWorker', () => {
 
     // Replace internal dependencies with mocks
     (worker as any).buildTaskScheduler = mockBuildTaskScheduler;
+    ;(worker as any).taskScheduler = mockTaskScheduler;
     (worker as any).taskGenerator = mockTaskGenerator;
     (worker as any).workerPool = mockWorkerPool;
+
+    // Default: no tasks reset
+    mockTaskScheduler.resetRecordingTasksForBuildTask.mockResolvedValue(0);
   });
 
   describe('runOnce', () => {
@@ -109,8 +116,16 @@ describe('BuildTaskWorker', () => {
 
       // Verify workflow order (atomic claim already transitions state)
       expect(mockBuildTaskScheduler.claimNextActionTask).toHaveBeenCalled();
-      expect(mockTaskGenerator.generate).toHaveBeenCalledWith(sampleTask.sourceId, expect.any(Number));
+      expect(mockTaskScheduler.resetRecordingTasksForBuildTask).toHaveBeenCalledWith(
+        sampleTask.id
+      );
+      expect(mockTaskGenerator.generate).toHaveBeenCalledWith(
+        sampleTask.id,
+        sampleTask.sourceId,
+        expect.any(Number)
+      );
       expect(mockWorkerPool.executeAll).toHaveBeenCalledWith(
+        sampleTask.id,
         sampleTask.sourceId,
         expect.objectContaining({
           staleTimeoutMinutes: expect.any(Number),
@@ -222,7 +237,7 @@ describe('BuildTaskWorker', () => {
 
       await worker.runOnce();
 
-      expect(mockTaskGenerator.generate).toHaveBeenCalledWith(100, 100);
+      expect(mockTaskGenerator.generate).toHaveBeenCalledWith(1, 100, 100);
     });
 
     // UT-BTW-09: Calls workerPool.shutdown after execution

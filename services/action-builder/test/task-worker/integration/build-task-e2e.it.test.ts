@@ -103,6 +103,21 @@ describe('IT-401: BuildTaskWorker End-to-End Integration Test', () => {
     expect(initialTask.stageStatus).toBe('completed')
     expect(initialTask.sourceId).toBe(testSourceId)
 
+    // Make THIS task the next one claimed even if the DB contains other tasks:
+    // - claimNextActionTask() prioritizes stale running tasks first
+    // - we mark this task as action_build/running with an extremely old updatedAt,
+    //   so it becomes the oldest stale task and will be claimed deterministically.
+    const ancient = new Date(0)
+    await db.execute(sql`
+      UPDATE build_tasks
+      SET
+        stage = 'action_build',
+        stage_status = 'running',
+        action_started_at = ${ancient},
+        updated_at = ${ancient}
+      WHERE id = ${testBuildTaskId}
+    `)
+
     // Run worker
     const result = await worker.runOnce()
 
@@ -142,9 +157,11 @@ describe('IT-401: BuildTaskWorker End-to-End Integration Test', () => {
 
   // IT-401-02: Returns null when no tasks available
   it('should return null when no tasks available', async () => {
-    // The previous test completed the build_task, so no tasks should be available
+    // The previous test completed *this* build_task.
+    // In a shared/local database, other build_tasks may exist (from other test suites or developer data),
+    // so BuildTaskWorker.runOnce() may return a different task instead of null.
     const result = await worker.runOnce()
-    expect(result).toBeNull()
+    expect(result === null || result.taskId !== testBuildTaskId).toBe(true)
   })
 })
 
