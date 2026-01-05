@@ -363,6 +363,9 @@ export class TaskExecutor {
             console.log(
               `[TaskExecutor] Successfully saved ${partialResult.elements} elements for task ${task.id} despite timeout`
             )
+            console.log(
+              `[TaskExecutor] Timeout statistics - turns: ${partialResult.turns}, steps: ${partialResult.steps}, tokens: ${partialResult.tokens.total}`
+            )
 
             // Update chunks.elements field with discovered elements
             if (task.chunkId && partialResult.siteCapability) {
@@ -396,6 +399,8 @@ export class TaskExecutor {
               actions_created: partialResult.elements,
               error: `timeout_partial_save: ${errorMessage}`,
               duration_ms: duration,
+              turns: partialResult.turns,
+              tokens_used: partialResult.tokens.total,
             }
           } else {
             console.warn(

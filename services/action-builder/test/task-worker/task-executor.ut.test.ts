@@ -741,6 +741,15 @@ describe('TaskExecutor', () => {
       savePartialResult: vi.fn().mockResolvedValue({
         elements: 50,
         siteCapability: mockSiteCapability,
+        turns: 15,
+        steps: 25,
+        tokens: {
+          input: 5000,
+          output: 2500,
+          total: 7500,
+          planning: { input: 3000, output: 1500 },
+          browser: { input: 2000, output: 1000 },
+        },
       }),
       close: closeMock,
     }));
@@ -771,6 +780,8 @@ describe('TaskExecutor', () => {
     expect(result.success).toBe(true);
     expect(result.actions_created).toBe(50);
     expect(result.error).toContain('timeout_partial_save');
+    expect(result.turns).toBe(15); // Statistics preserved from partial result
+    expect(result.tokens_used).toBe(7500); // Total tokens preserved
 
     // Verify chunk.elements was updated
     expect(mockUpdateChunkElements).toHaveBeenCalledWith(1001, mockSiteCapability);

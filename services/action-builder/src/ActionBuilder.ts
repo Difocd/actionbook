@@ -322,9 +322,21 @@ export class ActionBuilder {
    * Save partial result when timeout occurs
    * Delegates to recorder to save discovered elements
    *
-   * @returns Object with element count and siteCapability, or null if nothing to save
+   * @returns Object with element count, siteCapability, and statistics, or null if nothing to save
    */
-  async savePartialResult(): Promise<{ elements: number; siteCapability: any } | null> {
+  async savePartialResult(): Promise<{
+    elements: number;
+    siteCapability: any;
+    turns: number;
+    steps: number;
+    tokens: {
+      input: number;
+      output: number;
+      total: number;
+      planning: { input: number; output: number };
+      browser: { input: number; output: number };
+    };
+  } | null> {
     if (!this.recorder) {
       this.log('warn', '[ActionBuilder] No recorder available for partial save')
       return null
@@ -337,7 +349,7 @@ export class ActionBuilder {
       if (result && result.elements > 0) {
         this.log(
           'info',
-          `[ActionBuilder] Successfully saved ${result.elements} elements as partial result`
+          `[ActionBuilder] Successfully saved ${result.elements} elements as partial result (turns: ${result.turns}, tokens: ${result.tokens.total})`
         )
       } else {
         this.log('warn', '[ActionBuilder] No elements to save in partial result')

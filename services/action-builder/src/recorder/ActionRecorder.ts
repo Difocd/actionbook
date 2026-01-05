@@ -763,7 +763,19 @@ export class ActionRecorder {
    *
    * @returns Object with element count and siteCapability, or null if nothing to save
    */
-  async savePartialResult(): Promise<{ elements: number; siteCapability: any } | null> {
+  async savePartialResult(): Promise<{
+    elements: number;
+    siteCapability: any;
+    turns: number;
+    steps: number;
+    tokens: {
+      input: number;
+      output: number;
+      total: number;
+      planning: { input: number; output: number };
+      browser: { input: number; output: number };
+    };
+  } | null> {
     const hasElements = this.discoveredElements.size > 0;
 
     if (!hasElements || !this.siteCapability) {
@@ -827,12 +839,35 @@ export class ActionRecorder {
         }
       }
 
+      // Get browser (Stagehand) token stats if available
+      let browserInputTokens = 0;
+      let browserOutputTokens = 0;
+      if (this.browser.getTokenStats) {
+        const stats = this.browser.getTokenStats();
+        browserInputTokens = stats.input;
+        browserOutputTokens = stats.output;
+      }
+
+      // Calculate combined totals
+      const totalInputTokens = this.inputTokens + browserInputTokens;
+      const totalOutputTokens = this.outputTokens + browserOutputTokens;
+      const combinedTotalTokens = totalInputTokens + totalOutputTokens;
+
       // Mark task status as updated to prevent race condition with finalizeResult()
       this.taskStatusUpdated = true;
 
       return {
         elements: this.discoveredElements.size,
         siteCapability: this.siteCapability,
+        turns: this.currentTurn,
+        steps: this.stepOrder,
+        tokens: {
+          input: totalInputTokens,
+          output: totalOutputTokens,
+          total: combinedTotalTokens,
+          planning: { input: this.inputTokens, output: this.outputTokens },
+          browser: { input: browserInputTokens, output: browserOutputTokens },
+        },
       };
     } catch (error) {
       const errMsg = error instanceof Error ? error.message : String(error);
