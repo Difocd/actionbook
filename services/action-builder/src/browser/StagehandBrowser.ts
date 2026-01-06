@@ -966,6 +966,73 @@ export class StagehandBrowser implements BrowserAdapter {
   }
 
   /**
+   * Scroll to the bottom of the page to load lazy-loaded content (V3 API)
+   * Performs incremental scrolling to trigger lazy load events
+   *
+   * @param waitAfterMs - Time to wait after scrolling completes (default: 1000ms)
+   */
+  async scrollToBottom(waitAfterMs: number = 1000): Promise<void> {
+    const page = await this.getPage();
+
+    try {
+      // Get initial scroll height
+      let lastScrollHeight = await (page as any).evaluate(() => document.body.scrollHeight);
+      let scrollAttempts = 0;
+      const maxAttempts = 10; // Prevent infinite scroll on infinite scroll pages
+
+      while (scrollAttempts < maxAttempts) {
+        // Scroll to current bottom
+        await (page as any).evaluate(() => {
+          window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        });
+
+        // Wait for content to load
+        await this.wait(500);
+
+        // Check if new content was loaded
+        const newScrollHeight = await (page as any).evaluate(() => document.body.scrollHeight);
+
+        if (newScrollHeight === lastScrollHeight) {
+          // No new content, we've reached the bottom
+          break;
+        }
+
+        lastScrollHeight = newScrollHeight;
+        scrollAttempts++;
+      }
+
+      // Final wait for any remaining lazy-loaded content
+      await this.wait(waitAfterMs);
+      log("info", `[StagehandBrowser] Scrolled to bottom (${scrollAttempts} scroll iterations)`);
+    } catch (error) {
+      log("warn", `[StagehandBrowser] scrollToBottom failed: ${error}`);
+      // Fallback: simple keyboard scroll
+      for (let i = 0; i < 5; i++) {
+        await (page as any).keyboard?.press("End");
+        await this.wait(200);
+      }
+      await this.wait(waitAfterMs);
+    }
+  }
+
+  /**
+   * Navigate back to the previous page in browser history (V3 API)
+   */
+  async goBack(): Promise<void> {
+    const page = await this.getPage();
+
+    try {
+      await (page as any).goBack({ waitUntil: 'domcontentloaded', timeout: 30000 });
+      // Wait for page to stabilize
+      await this.wait(1000);
+      log("info", `[StagehandBrowser] Navigated back to: ${(page as any).url?.()}`);
+    } catch (error) {
+      log("warn", `[StagehandBrowser] goBack failed: ${error}`);
+      throw error;
+    }
+  }
+
+  /**
    * Get element attributes for better selector generation (V3 API)
    * Uses Stagehand observe to find the element, then extracts attributes via page.evaluate
    */

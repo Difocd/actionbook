@@ -487,6 +487,27 @@ export class RecorderToolExecutor {
         break;
       }
 
+      case "scroll_to_bottom": {
+        const waitAfterScroll = (toolArgs.wait_after_scroll as number) || 1000;
+        log("info", `[ActionRecorder] Scrolling to bottom (wait: ${waitAfterScroll}ms)`);
+        await this.browser.scrollToBottom(waitAfterScroll);
+        output = { success: true, wait_after_scroll: waitAfterScroll };
+        break;
+      }
+
+      case "go_back": {
+        log("info", `[ActionRecorder] Navigating back to previous page`);
+        const previousUrl = this.handlers.getPreviousUrl?.();
+        await this.browser.goBack();
+        const currentUrl = this.handlers.getCurrentUrl?.();
+        output = {
+          success: true,
+          previous_url: previousUrl,
+          current_url: currentUrl,
+        };
+        break;
+      }
+
       default:
         output = { error: `Unknown tool: ${toolName}` };
     }
