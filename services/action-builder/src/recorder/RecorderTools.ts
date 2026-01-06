@@ -154,6 +154,35 @@ export function getRecorderTools(): OpenAI.Chat.Completions.ChatCompletionTool[]
         },
       },
     },
+    {
+      type: "function",
+      function: {
+        name: "scroll_to_bottom",
+        description: "Scroll the page to the bottom to ensure lazy-loaded elements are loaded",
+        parameters: {
+          type: "object",
+          properties: {
+            wait_after_scroll: {
+              type: "number",
+              description: "Time to wait after scrolling in milliseconds (default 1000)",
+            },
+          },
+          required: [],
+        },
+      },
+    },
+    {
+      type: "function",
+      function: {
+        name: "go_back",
+        description: "Navigate back to the previous page in browser history",
+        parameters: {
+          type: "object",
+          properties: {},
+          required: [],
+        },
+      },
+    },
   ];
 }
 
