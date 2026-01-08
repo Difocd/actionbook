@@ -144,7 +144,7 @@ export class Coordinator {
           }
 
           // 启动 BuildTaskRunner（非阻塞）
-          await this.startBuildTaskRunner(buildTask.id);
+          this.startBuildTaskRunner(buildTask.id);
         }
 
         // 3. 等待后继续
@@ -206,9 +206,9 @@ export class Coordinator {
   }
 
   /**
-   * 启动 BuildTaskRunner
+   * 启动 BuildTaskRunner（非阻塞）
    */
-  private async startBuildTaskRunner(buildTaskId: number): Promise<void> {
+  private startBuildTaskRunner(buildTaskId: number): void {
     console.log(`[Coordinator] Starting BuildTaskRunner #${buildTaskId}`);
 
     const runner = new BuildTaskRunner(
