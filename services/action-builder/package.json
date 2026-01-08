@@ -10,8 +10,9 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "concurrently \"tsc --watch\" \"tsx scripts/coordinator.ts\"",
+    "dev": "ACTION_BUILDER_QUIET=true concurrently \"tsc --watch\" \"tsx scripts/coordinator.ts\"",
     "dev:build": "tsc --watch",
+    "dev:verbose": "concurrently \"tsc --watch\" \"tsx scripts/coordinator.ts\"",
     "clean": "rm -rf dist",
     "lint": "eslint src cli --ext .ts",
     "test": "vitest run",
@@ -30,7 +31,8 @@
     "task:run": "npx tsx scripts/task-cli.ts run",
     "task:clear": "npx tsx scripts/task-cli.ts clear",
     "task": "npx tsx scripts/task-cli.ts",
-    "coordinator": "npx tsx scripts/coordinator.ts",
+    "coordinator": "ACTION_BUILDER_QUIET=true npx tsx scripts/coordinator.ts",
+    "coordinator:verbose": "npx tsx scripts/coordinator.ts",
     "login": "npx tsx scripts/login.ts"
   },
   "dependencies": {

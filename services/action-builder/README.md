@@ -227,8 +227,32 @@ Environment variables (all optional with sensible defaults):
 | `ACTION_BUILDER_TASK_TIMEOUT_MINUTES` | `10` | Single task execution timeout |
 | `ACTION_BUILDER_HEADLESS` | `true` | Run browser in headless mode |
 | `ACTION_BUILDER_MAX_TURNS` | `30` | Maximum LLM turns per recording task |
+| `ACTION_BUILDER_QUIET` | `true` (dev/coordinator) | Quiet mode: only task-level logs to console, detailed logs to file |
 
-### Output Example
+### Quiet Mode
+
+By default, `pnpm dev` and `pnpm coordinator` run in quiet mode (`ACTION_BUILDER_QUIET=true`):
+
+**Console output (quiet mode):**
+- ✅ Task-level logs: `[Coordinator]`, `[BuildTaskRunner]`, `[QueueWorker]`, `[Metrics]`
+- ✅ Warnings and errors: Always shown
+- ❌ ActionRecorder details: Browser operations, LLM calls, element registration
+
+**File output:**
+- ✅ All logs (including ActionRecorder details) written to `logs/action-builder_*.log`
+
+**Commands:**
+```bash
+# Quiet mode (recommended for production)
+pnpm coordinator              # Only task-level logs to console
+pnpm dev                      # Same as above
+
+# Verbose mode (for debugging)
+pnpm coordinator:verbose      # All logs to console
+pnpm dev:verbose              # Same as above
+```
+
+### Output Example (Quiet Mode)
 
 ```
 ==========================================================
@@ -261,10 +285,20 @@ Configuration:
 ...
 
 [BuildTaskRunner #123] All recording tasks finished
+[BuildTaskRunner #123] Published version 2 (Blue-Green deployment)
 [BuildTaskRunner #123] Completed successfully
 [Coordinator] BuildTaskRunner #123 completed
 
 [Metrics] build_tasks=0/5, recording_tasks=0/3, elapsed=60.0s
+```
+
+**Detailed logs in file** (`logs/action-builder_20260108153000.log`):
+```
+[2026-01-08T15:30:00.000Z] [INFO] [ActionRecorder] Starting capability recording
+[2026-01-08T15:30:01.234Z] [INFO] [ActionRecorder] --- Turn 1/30 --- URL: https://example.com
+[2026-01-08T15:30:01.567Z] [INFO] [ActionRecorder] Executing: navigate(url=https://example.com)
+[2026-01-08T15:30:02.890Z] [INFO] [ActionRecorder] Result: {"success":true,"url":"https://example.com"}
+...
 ```
 
 ### Heartbeat Mechanism
@@ -507,8 +541,11 @@ services/action-builder/
 # Build
 pnpm build
 
-# Development mode (auto-reload + coordinator)
-pnpm dev  # Runs: concurrently "tsc --watch" "tsx scripts/coordinator.ts"
+# Development mode (auto-reload + coordinator, quiet mode)
+pnpm dev  # Runs with ACTION_BUILDER_QUIET=true
+
+# Development mode (verbose - all logs to console)
+pnpm dev:verbose
 
 # Build watch only (no coordinator)
 pnpm dev:build
@@ -522,6 +559,15 @@ pnpm test test/coordinator.integration.it.test.ts
 # Run E2E pipeline
 pnpm firstround:pipeline
 ```
+
+**Quiet Mode (default):**
+- Console: Only task-level logs (Coordinator, BuildTaskRunner, QueueWorker, Metrics)
+- File: All logs including ActionRecorder details (browser ops, LLM calls)
+- Log files: `logs/action-builder_*.log`
+
+**Verbose Mode:**
+- All logs output to both console and file
+- Useful for debugging specific issues
 
 ## License
 
