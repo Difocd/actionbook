@@ -17,9 +17,9 @@
 
 import type { Database } from '@actionbookdev/db';
 import { recordingTasks } from '@actionbookdev/db';
-import { eq, and, sql } from 'drizzle-orm';
-import { TaskExecutor } from './task-executor';
-import type { TaskExecutorConfig, RecordingTask } from './types';
+import { eq, sql } from 'drizzle-orm';
+import { TaskExecutor } from './task-executor.js';
+import type { TaskExecutorConfig, RecordingTask } from './types/index.js';
 
 export interface RecordingTaskQueueWorkerConfig extends TaskExecutorConfig {
   /** 最大并发执行数 */
@@ -43,12 +43,28 @@ interface RunningTask {
 
 export class RecordingTaskQueueWorker {
   private db: Database;
-  private config: Required<RecordingTaskQueueWorkerConfig>;
+  private config: {
+    databaseUrl: string;
+    concurrency: number;
+    idleWaitMs: number;
+    heartbeatIntervalMs: number;
+    taskTimeoutMinutes: number;
+    maxAttempts: number;
+    staleTimeoutMinutes: number;
+    headless: boolean;
+    maxTurns: number;
+    outputDir: string;
+    profileEnabled: boolean;
+    profileDir: string;
+    llmApiKey?: string;
+    llmBaseURL?: string;
+    llmModel?: string;
+  };
   private running = false;
   private runningTasks = new Map<number, RunningTask>();
   private gracefulShutdownTimeout?: number;
 
-  constructor(db: Database, config: RecordingTaskQueueWorkerConfig = {}) {
+  constructor(db: Database, config: RecordingTaskQueueWorkerConfig = {} as RecordingTaskQueueWorkerConfig) {
     this.db = db;
     this.config = {
       databaseUrl: config.databaseUrl ?? process.env.DATABASE_URL!,
@@ -239,7 +255,7 @@ export class RecordingTaskQueueWorker {
 
     // 启动心跳
     const heartbeatTimer = setInterval(() => {
-      this.updateTaskHeartbeat(task.id).catch((error) => {
+      this.updateTaskHeartbeat(task.id).catch((error: unknown) => {
         console.error(`[QueueWorker] Task #${task.id} heartbeat error:`, error);
       });
     }, this.config.heartbeatIntervalMs);
@@ -250,7 +266,7 @@ export class RecordingTaskQueueWorker {
       .then(() => {
         console.log(`[QueueWorker] Task #${task.id} completed`);
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.error(`[QueueWorker] Task #${task.id} failed:`, error);
       })
       .finally(() => {

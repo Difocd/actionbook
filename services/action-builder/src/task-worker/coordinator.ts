@@ -10,12 +10,12 @@
 
 import type { Database } from '@actionbookdev/db';
 import { buildTasks } from '@actionbookdev/db';
-import { eq, and, sql } from 'drizzle-orm';
-import { BuildTaskRunner, type BuildTaskRunnerConfig } from './build-task-runner';
+import { sql } from 'drizzle-orm';
+import { BuildTaskRunner, type BuildTaskRunnerConfig } from './build-task-runner.js';
 import {
   RecordingTaskQueueWorker,
   type RecordingTaskQueueWorkerConfig,
-} from './recording-task-queue-worker';
+} from './recording-task-queue-worker.js';
 
 export interface CoordinatorConfig {
   /** 最大并发 build_task 数量 */
@@ -53,7 +53,7 @@ export class Coordinator {
       buildTaskPollIntervalSeconds: config.buildTaskPollIntervalSeconds ?? 5,
       buildTaskStaleTimeoutMinutes: config.buildTaskStaleTimeoutMinutes ?? 15,
       buildTaskRunner: config.buildTaskRunner ?? {},
-      queueWorker: config.queueWorker ?? {},
+      queueWorker: config.queueWorker ?? {} as RecordingTaskQueueWorkerConfig,
     };
 
     // 创建 QueueWorker
@@ -78,7 +78,7 @@ export class Coordinator {
     );
 
     // 1. 启动 QueueWorker（后台运行）
-    this.queueWorker.start().catch((error) => {
+    this.queueWorker.start().catch((error: unknown) => {
       console.error('[Coordinator] QueueWorker error:', error);
     });
 
@@ -222,7 +222,7 @@ export class Coordinator {
       .then(() => {
         console.log(`[Coordinator] BuildTaskRunner #${buildTaskId} completed`);
       })
-      .catch((error) => {
+      .catch((error: unknown) => {
         console.error(
           `[Coordinator] BuildTaskRunner #${buildTaskId} error:`,
           error

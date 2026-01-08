@@ -17,7 +17,7 @@
 import type { Database } from '@actionbookdev/db';
 import { eq, and, inArray, sql, desc } from 'drizzle-orm';
 import { buildTasks, recordingTasks, chunks, documents, sourceVersions } from '@actionbookdev/db';
-import type { BuildTaskInfo } from './types';
+import type { BuildTaskInfo } from './types/index.js';
 import type { SourceVersionStatus } from '@actionbookdev/db';
 
 export interface BuildTaskRunnerConfig {
@@ -177,7 +177,7 @@ export class BuildTaskRunner {
       progress: 0,
       attemptCount: 0,
       config: {
-        chunk_type: 'task_driven',
+        chunk_type: 'task_driven' as const,
       },
     }));
 
