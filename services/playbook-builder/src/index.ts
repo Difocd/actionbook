@@ -28,8 +28,9 @@ export type {
   UserScenario,
 } from './types/index.js';
 
-// Browser utilities
-export { StagehandBrowser, BrowserProfileManager } from './browser/index.js';
+// Browser utilities (re-exported from shared packages)
+export { StagehandBrowser } from '@actionbookdev/browser';
+export { BrowserProfileManager } from '@actionbookdev/browser-profile';
 
 // Brain (AI capabilities)
 export { AIClient, type AIClientConfig, type LLMProvider } from './brain/index.js';

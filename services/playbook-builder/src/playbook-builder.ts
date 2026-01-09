@@ -12,7 +12,7 @@
 
 import 'dotenv/config';
 
-import { StagehandBrowser } from './browser/index.js';
+import { StagehandBrowser } from '@actionbookdev/browser';
 import { AIClient, createEmbeddingProvider, type EmbeddingProvider } from './brain/index.js';
 import { Storage, createStorage } from './storage/index.js';
 import { log, fileLogger, normalizeUrl, isSameDomain, buildChunkContent } from './utils/index.js';
@@ -92,7 +92,7 @@ export class PlaybookBuilder {
 
     try {
       // Initialize browser
-      await this.browser.init();
+      await this.browser.initialize();
 
       // Create or get source version
       if (!sourceVersionId) {
@@ -118,7 +118,7 @@ export class PlaybookBuilder {
 
         try {
           // Navigate to the page
-          await this.browser.goto(page.url);
+          await this.browser.navigate(page.url);
           const pageScreenshot = await this.browser.screenshot();
           const pageContent = await this.browser.getContent();
 
@@ -223,7 +223,7 @@ export class PlaybookBuilder {
 
       try {
         // Navigate to the page
-        await this.browser.goto(current.url);
+        await this.browser.navigate(current.url);
         const screenshot = await this.browser.screenshot();
         const content = await this.browser.getContent();
 
