@@ -351,14 +351,15 @@ export class AIClient {
     let metrics: LLMMetrics;
 
     try {
-      // Use AI SDK's built-in retry mechanism
+      // Use AI SDK's built-in retry mechanism with exponential backoff
       // maxRetries: 3 means 4 total attempts (1 initial + 3 retries)
+      // For rate limit errors, AI SDK will automatically use exponential backoff
       const result = await generateText({
         model: this.model,
         messages: modelMessages,
         tools: aiTools,
         maxOutputTokens: 4096,
-        maxRetries: 3,
+        maxRetries: 5, // Increased from 3 to 5 for better rate limit handling
       } as Parameters<typeof generateText>[0]);
 
       const e2eLatencyMs = Date.now() - startTime;

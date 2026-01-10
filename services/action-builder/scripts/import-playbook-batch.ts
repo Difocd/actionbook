@@ -136,6 +136,28 @@ function loadCrawlBatchSummary(summaryPath: string): CrawlBatchSummary {
   return parsed
 }
 
+type ImportRunSummaryFile = {
+  metadata?: {
+    createdAt?: string
+    sourceSummaryPath?: string
+    totalCandidates?: number
+    imported?: number
+    failed?: number
+    skipped?: number
+    args?: string[]
+  }
+  results: ImportItemResult[]
+}
+
+function loadImportRunSummary(summaryPath: string): ImportRunSummaryFile {
+  const raw = fs.readFileSync(summaryPath, 'utf-8')
+  const parsed = JSON.parse(raw) as ImportRunSummaryFile
+  if (!parsed || !Array.isArray(parsed.results)) {
+    throw new Error(`invalid import summary json: results[] missing in ${summaryPath}`)
+  }
+  return parsed
+}
+
 async function runImportOne(options: {
   actionBuilderRoot: string
   tsxPath: string
@@ -202,14 +224,12 @@ async function main() {
   const argv = process.argv.slice(2)
 
   const summaryArg = parseArgValue(argv, '--summary')
+  const retryFromArg = parseArgValue(argv, '--retry-from')
   const dryRun = hasFlag(argv, '--dry-run')
   const stopOnError = hasFlag(argv, '--stop-on-error')
 
   const actionBuilderRoot = getActionBuilderRoot()
   const tsxPath = resolveTsxPath(actionBuilderRoot)
-
-  const summaryPath = resolveSummaryPath(actionBuilderRoot, summaryArg)
-  const crawlSummary = loadCrawlBatchSummary(summaryPath)
 
   const importSummaryPath = path.resolve(
     actionBuilderRoot,
@@ -218,6 +238,97 @@ async function main() {
     `import_playbook_batch_summary_${timestampForFile()}.json`
   )
   ensureDir(path.dirname(importSummaryPath))
+
+  // Mode A: retry failed imports from a previous import summary
+  if (retryFromArg) {
+    const retryFromPath = path.isAbsolute(retryFromArg)
+      ? retryFromArg
+      : path.resolve(actionBuilderRoot, retryFromArg)
+
+    const prev = loadImportRunSummary(retryFromPath)
+    const failedItems = prev.results.filter((r) => r.status === 'failed' && r.jsonPath)
+
+    console.log('='.repeat(80))
+    console.log('Import Playbook - Batch Runner (Retry Failed)')
+    console.log('='.repeat(80))
+    console.log(`Action Builder Root: ${actionBuilderRoot}`)
+    console.log(`Retry From: ${retryFromPath}`)
+    console.log(`Failed items: ${failedItems.length}/${prev.results.length}`)
+    console.log(`Dry run: ${dryRun ? 'true' : 'false'}`)
+    console.log(`Stop on error: ${stopOnError ? 'true' : 'false'}`)
+    console.log(`Output Summary: ${importSummaryPath}`)
+    console.log('='.repeat(80))
+
+    const results: ImportItemResult[] = []
+    for (const item of failedItems) {
+      const jsonPath = item.jsonPath!
+      const absJsonPath = path.isAbsolute(jsonPath)
+        ? jsonPath
+        : path.resolve(actionBuilderRoot, jsonPath)
+
+      if (!fs.existsSync(absJsonPath)) {
+        const r: ImportItemResult = {
+          url: item.url,
+          status: 'failed',
+          jsonPath: absJsonPath,
+          exitCode: 1,
+          signal: null,
+          startedAt: nowIso(),
+          finishedAt: nowIso(),
+          durationMs: 0,
+          error: `json file not found: ${absJsonPath}`,
+        }
+        results.push(r)
+        console.error(`❌ ${r.error}`)
+        if (stopOnError) break
+        continue
+      }
+
+      const r = await runImportOne({
+        actionBuilderRoot,
+        tsxPath,
+        url: item.url,
+        jsonPath: absJsonPath,
+        dryRun,
+      })
+      results.push(r)
+
+      const icon = r.status === 'imported' ? '✅' : r.status === 'skipped' ? '⏭️' : '❌'
+      console.log(`\n${icon} Retry import done: ${item.url} (${(r.durationMs / 1000).toFixed(1)}s)`)
+      if (r.error) console.log(`   Error: ${r.error}`)
+      if (stopOnError && r.status === 'failed') break
+    }
+
+    const batch: ImportBatchSummary = {
+      metadata: {
+        createdAt: nowIso(),
+        sourceSummaryPath: prev.metadata?.sourceSummaryPath ?? '(unknown)',
+        totalCandidates: failedItems.length,
+        imported: results.filter((r) => r.status === 'imported').length,
+        failed: results.filter((r) => r.status === 'failed').length,
+        skipped: results.filter((r) => r.status === 'skipped').length,
+        args: argv,
+      },
+      results,
+    }
+
+    fs.writeFileSync(importSummaryPath, JSON.stringify(batch, null, 2), 'utf-8')
+
+    console.log('\n' + '='.repeat(80))
+    console.log('✅ Retry Import Batch Summary Saved')
+    console.log(`📁 ${importSummaryPath}`)
+    console.log(
+      `Stats: imported=${batch.metadata.imported}, failed=${batch.metadata.failed}, skipped=${batch.metadata.skipped}, candidates=${batch.metadata.totalCandidates}`
+    )
+    console.log('='.repeat(80))
+
+    if (batch.metadata.failed > 0) process.exit(1)
+    return
+  }
+
+  // Mode B: import from a crawl batch summary
+  const summaryPath = resolveSummaryPath(actionBuilderRoot, summaryArg)
+  const crawlSummary = loadCrawlBatchSummary(summaryPath)
 
   const candidates = crawlSummary.results.filter(
     (r) => r.status === 'completed' && typeof r.jsonPath === 'string' && r.jsonPath.length > 0
