@@ -59,6 +59,12 @@ function createPgDb(url: string): Database {
   const pool = new Pool({
     connectionString: url,
     ssl: needsSsl ? { rejectUnauthorized: false } : false,
+    // Optimized connection pool settings
+    max: 20,                      // Maximum number of connections in pool
+    min: 5,                       // Minimum number of idle connections
+    idleTimeoutMillis: 30000,     // Close idle connections after 30s
+    connectionTimeoutMillis: 5000, // Timeout when acquiring connection
+    allowExitOnIdle: false,       // Don't allow Node to exit while pool has idle connections
   });
 
   // Add error handler to prevent unhandled error events from crashing the process
