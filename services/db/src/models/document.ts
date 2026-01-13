@@ -59,6 +59,8 @@ export const documents = pgTable(
     index('documents_version_id_idx').on(table.sourceVersionId),
     // source_id index (for querying all documents of a source)
     index('documents_source_id_idx').on(table.sourceId),
+    // URL index for direct URL lookups (used by get_action_by_id API)
+    index('documents_url_idx').on(table.url),
   ]
 );
 
