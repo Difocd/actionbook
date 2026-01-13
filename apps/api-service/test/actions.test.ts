@@ -71,8 +71,8 @@ You can start it with: pnpm dev
     });
   });
 
-  describe('GET /api/actions/:id', () => {
-    let testActionId: number;
+  describe('GET /api/actions?id=<url>', () => {
+    let testActionId: string;
 
     beforeAll(async () => {
       // First, search to get a valid action_id using GET (use fulltext for speed)
@@ -87,13 +87,14 @@ You can start it with: pnpm dev
       }
     });
 
-    it('should get action by chunk_id (action_id)', async () => {
+    it('should get action by URL-based action_id via query param', async () => {
       if (!testActionId) {
         console.warn('Skipping: no test action_id available');
         return;
       }
 
-      const res = await fetch(`${BASE_URL}/api/actions/${testActionId}`);
+      // Use query parameter format
+      const res = await fetch(`${BASE_URL}/api/actions?id=${encodeURIComponent(testActionId)}`);
 
       expect(res.status).toBe(200);
       const data = await res.json();
@@ -110,7 +111,7 @@ You can start it with: pnpm dev
       expect(data).toHaveProperty('chunkIndex');
       expect(data).toHaveProperty('tokenCount');
 
-      expect(typeof data.action_id).toBe('number');
+      expect(typeof data.action_id).toBe('string');
       expect(typeof data.content).toBe('string');
       expect(typeof data.createdAt).toBe('string');
       expect(typeof data.documentId).toBe('number');
@@ -127,23 +128,35 @@ You can start it with: pnpm dev
     });
 
     it('should return 404 for non-existent action_id', async () => {
-      const res = await fetch(`${BASE_URL}/api/actions/999999999`);
+      // Use a valid URL format that doesn't exist in the database
+      const nonExistentUrl = 'https://non-existent-domain.test/page-that-does-not-exist';
+      const res = await fetch(`${BASE_URL}/api/actions?id=${encodeURIComponent(nonExistentUrl)}`);
 
       expect(res.status).toBe(404);
       const data = await res.json();
 
       expect(data.error).toBe('NOT_FOUND');
       expect(data.code).toBe('404');
-      expect(data.message).toContain('999999999');
+      expect(data.message).toContain(nonExistentUrl);
     });
 
     it('should return 400 for invalid action_id format', async () => {
-      const res = await fetch(`${BASE_URL}/api/actions/invalid-id`);
+      const res = await fetch(`${BASE_URL}/api/actions?id=invalid-id`);
 
       expect(res.status).toBe(400);
       const data = await res.json();
 
       expect(data.error).toBe('INVALID_ID');
+      expect(data.code).toBe('400');
+    });
+
+    it('should return 400 when id param is missing', async () => {
+      const res = await fetch(`${BASE_URL}/api/actions`);
+
+      expect(res.status).toBe(400);
+      const data = await res.json();
+
+      expect(data.error).toBe('MISSING_PARAM');
       expect(data.code).toBe('400');
     });
   });
@@ -163,9 +176,9 @@ You can start it with: pnpm dev
         return;
       }
 
-      // Step 2: Get full details for the first result
+      // Step 2: Get full details for the first result using query param
       const firstActionId = searchData.results[0].action_id;
-      const getRes = await fetch(`${BASE_URL}/api/actions/${firstActionId}`);
+      const getRes = await fetch(`${BASE_URL}/api/actions?id=${encodeURIComponent(firstActionId)}`);
 
       expect(getRes.status).toBe(200);
       const actionData = await getRes.json();

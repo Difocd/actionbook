@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { search } from '@/lib/search';
 import { Profiler } from '@/lib/profiler';
+import { generateActionId } from '@/lib/action-id';
 
 /**
  * Action search result - based on chunks table
  */
 interface ActionSearchResult {
-  action_id: number;  // chunk_id as action_id
+  action_id: string;  // URL-based action_id
   content: string;
   score: number;
   createdAt: string;
@@ -84,7 +85,7 @@ export async function GET(request: NextRequest): Promise<NextResponse<ActionSear
     // Map to action search results
     profiler.start('map_results');
     const results: ActionSearchResult[] = searchResults.map((result) => ({
-      action_id: result.chunkId,
+      action_id: generateActionId(result.url, result.chunkIndex),
       content: result.content,
       score: result.score,
       createdAt: result.createdAt.toISOString(),

@@ -73,6 +73,7 @@ export async function vectorSearch(
   const results = await db
     .select({
       chunkId: chunks.id,
+      chunkIndex: chunks.chunkIndex,
       content: chunks.content,
       headingHierarchy: chunks.headingHierarchy,
       createdAt: chunks.createdAt,
@@ -93,6 +94,7 @@ export async function vectorSearch(
   profiler?.start('vector_map_results')
   const mapped = results.map((row) => ({
     chunkId: row.chunkId,
+    chunkIndex: row.chunkIndex,
     documentId: row.documentId,
     content: row.content,
     title: row.title || '',
@@ -159,6 +161,7 @@ export async function fulltextSearch(
   const results = await db
     .select({
       chunkId: chunks.id,
+      chunkIndex: chunks.chunkIndex,
       content: chunks.content,
       headingHierarchy: chunks.headingHierarchy,
       createdAt: chunks.createdAt,
@@ -181,6 +184,7 @@ export async function fulltextSearch(
   profiler?.start('fulltext_map_results')
   const mapped = results.map((row) => ({
     chunkId: row.chunkId,
+    chunkIndex: row.chunkIndex,
     documentId: row.documentId,
     content: row.content,
     title: row.title || '',
