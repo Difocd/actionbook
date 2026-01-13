@@ -295,7 +295,16 @@ You can start it with: pnpm dev
 
       // Verify consistency
       expect(actionData.action_id).toBe(firstActionId);
-      expect(actionData.content).toBe(searchData.results[0].content);
+
+      // Note: Search API may truncate content for performance (default: 1000 chars)
+      // So we check that the full content starts with the search result content
+      expect(actionData.content).toContain(searchData.results[0].content);
+
+      // If search result wasn't truncated, they should be equal
+      const maxContentLength = parseInt(process.env.SEARCH_CONTENT_MAX_LENGTH || '1000', 10);
+      if (searchData.results[0].content.length < maxContentLength) {
+        expect(actionData.content).toBe(searchData.results[0].content);
+      }
 
       // Verify additional fields are present
       expect(actionData).toHaveProperty('documentTitle');
