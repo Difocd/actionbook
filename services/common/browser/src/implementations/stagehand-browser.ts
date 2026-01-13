@@ -781,7 +781,7 @@ export class StagehandBrowser implements BrowserAdapter {
       const { createAmazonBedrock } = await import('@ai-sdk/amazon-bedrock');
       const region = process.env.AWS_REGION || 'us-east-1';
       const bedrockModel =
-        stagehandModel || 'anthropic.claude-3-5-sonnet-20241022-v2:0';
+        stagehandModel || process.env.AWS_BEDROCK_MODEL || 'anthropic.claude-3-5-sonnet-20241022-v2:0';
 
       log('info', `[StagehandBrowser] Using AWS Bedrock via AISdkClient`);
       log('info', `[StagehandBrowser] Bedrock region: ${region}`);
