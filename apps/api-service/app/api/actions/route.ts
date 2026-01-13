@@ -14,7 +14,10 @@ import {
   parseActionId,
   generateActionId,
   isValidActionId,
+  normalizeActionId,
+  urlSimilarity,
 } from '@/lib/action-id'
+import { or, inArray } from '@actionbookdev/db'
 
 interface ActionContent {
   action_id: string
@@ -63,13 +66,24 @@ export async function GET(
     )
   }
 
-  const { documentUrl, chunkIndex } = parseActionId(actionId)
+  // Parse chunk index from input (may be partial URL)
+  const { chunkIndex } = parseActionId(actionId)
+
+  // Generate candidate URLs for fuzzy matching
+  const inputUrl = actionId.replace(/#chunk-\d+$/, '')
+  const candidates = normalizeActionId(inputUrl)
+
+  // Escape SQL ILIKE wildcards (% and _) to prevent unintended matches
+  const escapedInput = inputUrl.replace(/[%_]/g, '\\$&')
+  const likePattern = `%${escapedInput}%`
 
   try {
     const db = getDb()
 
-    // Query chunk by document URL and chunk index
-    // Also ensure document is active and chunk is from current version
+    // Query chunks using fuzzy matching:
+    // 1. Exact match on candidate URLs (highest priority)
+    // 2. ILIKE pattern match for partial URLs (with escaped wildcards)
+    // Order by: exact match first, then by URL length (shorter = more relevant)
     const results = await db
       .select({
         chunkId: chunks.id,
@@ -88,13 +102,20 @@ export async function GET(
       .innerJoin(sources, eq(documents.sourceId, sources.id))
       .where(
         and(
-          eq(documents.url, documentUrl),
+          or(
+            // Exact match on candidate URLs
+            inArray(documents.url, candidates),
+            // ILIKE fuzzy match with escaped wildcards
+            sql`${documents.url} ILIKE ${likePattern} ESCAPE '\\'`
+          ),
           eq(documents.status, 'active'),
           eq(chunks.chunkIndex, chunkIndex),
           sql`${chunks.sourceVersionId} = ${sources.currentVersionId}`
         )
       )
-      .limit(1)
+      // Order in SQL by URL length (shorter = better match, exact matches tend to be shorter)
+      .orderBy(sql`LENGTH(${documents.url})`)
+      .limit(10)
 
     if (results.length === 0) {
       return NextResponse.json(
@@ -109,7 +130,30 @@ export async function GET(
       )
     }
 
-    const chunk = results[0]
+    // Rank results by similarity and filter out zero-similarity matches
+    const ranked = results
+      .map((r) => ({
+        ...r,
+        score: urlSimilarity(inputUrl, r.documentUrl),
+      }))
+      .filter((r) => r.score > 0) // Filter out false positives from ILIKE
+      .sort((a, b) => b.score - a.score)
+
+    // If no results after filtering, return 404
+    if (ranked.length === 0) {
+      return NextResponse.json(
+        {
+          error: 'NOT_FOUND',
+          code: '404',
+          message: `Action '${actionId}' not found`,
+          suggestion:
+            'The document may have been updated. Use search to find current action IDs.',
+        },
+        { status: 404 }
+      )
+    }
+
+    const chunk = ranked[0]
 
     return NextResponse.json({
       action_id: generateActionId(chunk.documentUrl, chunk.chunkIndex),
