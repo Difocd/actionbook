@@ -1,14 +1,15 @@
 /**
  * Get Action by ID Endpoint
- * GET /api/actions/:id
+ * GET /api/actions?id=<url>
  *
- * Supports URL-based action_id (e.g., "https://example.com/page" or "https://example.com/page#chunk-1")
- * Returns complete chunk information from database
+ * Supports URL-based action_id via query parameter
+ * Example: GET /api/actions?id=https://example.com/page
+ * Example: GET /api/actions?id=https://example.com/page#chunk-1
  */
 
 import { NextRequest, NextResponse } from 'next/server'
 import type { ApiError } from '@/lib/types'
-import { getDb, chunks, documents, eq, and } from '@actionbookdev/db'
+import { getDb, chunks, documents, sources, eq, and, sql } from '@actionbookdev/db'
 import {
   parseActionId,
   generateActionId,
@@ -21,19 +22,32 @@ interface ActionContent {
   elements: string | null
   createdAt: string
   documentId: number
-  documentTitle: string
+  documentTitle: string | null
   documentUrl: string
   chunkIndex: number
-  heading?: string | null
+  heading: string | null
   tokenCount: number
 }
 
 export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string[] }> }
+  request: NextRequest
 ): Promise<NextResponse<ActionContent | ApiError>> {
-  const { id } = (await params) as { id: string[] }
-  const actionId = id.join('/')
+  const { searchParams } = new URL(request.url)
+  const actionId = searchParams.get('id')
+
+  // Validate id parameter is provided
+  if (!actionId) {
+    return NextResponse.json(
+      {
+        error: 'MISSING_PARAM',
+        code: '400',
+        message: "Missing required parameter 'id'",
+        suggestion:
+          'Provide action ID via query parameter: GET /api/actions?id=https://example.com/page',
+      },
+      { status: 400 }
+    )
+  }
 
   // Validate URL-based action ID
   if (!isValidActionId(actionId)) {
@@ -55,6 +69,7 @@ export async function GET(
     const db = getDb()
 
     // Query chunk by document URL and chunk index
+    // Also ensure document is active and chunk is from current version
     const results = await db
       .select({
         chunkId: chunks.id,
@@ -70,7 +85,15 @@ export async function GET(
       })
       .from(chunks)
       .innerJoin(documents, eq(chunks.documentId, documents.id))
-      .where(and(eq(documents.url, documentUrl), eq(chunks.chunkIndex, chunkIndex)))
+      .innerJoin(sources, eq(documents.sourceId, sources.id))
+      .where(
+        and(
+          eq(documents.url, documentUrl),
+          eq(documents.status, 'active'),
+          eq(chunks.chunkIndex, chunkIndex),
+          sql`${chunks.sourceVersionId} = ${sources.currentVersionId}`
+        )
+      )
       .limit(1)
 
     if (results.length === 0) {
@@ -94,7 +117,7 @@ export async function GET(
       elements: chunk.elements,
       createdAt: chunk.createdAt.toISOString(),
       documentId: chunk.documentId,
-      documentTitle: chunk.documentTitle || '',
+      documentTitle: chunk.documentTitle,
       documentUrl: chunk.documentUrl,
       chunkIndex: chunk.chunkIndex,
       heading: chunk.heading,

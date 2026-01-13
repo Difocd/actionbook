@@ -87,7 +87,8 @@ export class ApiClient {
   }
 
   async getActionById(id: string): Promise<ChunkActionDetail> {
-    const url = new URL(`/api/actions/${encodeURIComponent(id)}`, this.baseUrl)
+    const url = new URL('/api/actions', this.baseUrl)
+    url.searchParams.set('id', id)
     return this.request<ChunkActionDetail>(url.toString())
   }
 
