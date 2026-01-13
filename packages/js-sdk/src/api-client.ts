@@ -86,8 +86,9 @@ export class ApiClient {
     return this.request<ChunkSearchResult>(url.toString())
   }
 
-  async getActionById(id: number): Promise<ChunkActionDetail> {
-    const url = new URL(`/api/actions/${id}`, this.baseUrl)
+  async getActionById(id: string): Promise<ChunkActionDetail> {
+    const url = new URL('/api/actions', this.baseUrl)
+    url.searchParams.set('id', id)
     return this.request<ChunkActionDetail>(url.toString())
   }
 

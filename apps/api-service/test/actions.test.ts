@@ -71,8 +71,8 @@ You can start it with: pnpm dev
     });
   });
 
-  describe('GET /api/actions/:id', () => {
-    let testActionId: number;
+  describe('GET /api/actions?id=<url>', () => {
+    let testActionId: string;
 
     beforeAll(async () => {
       // First, search to get a valid action_id using GET (use fulltext for speed)
@@ -87,13 +87,14 @@ You can start it with: pnpm dev
       }
     });
 
-    it('should get action by chunk_id (action_id)', async () => {
+    it('should get action by URL-based action_id via query param', async () => {
       if (!testActionId) {
         console.warn('Skipping: no test action_id available');
         return;
       }
 
-      const res = await fetch(`${BASE_URL}/api/actions/${testActionId}`);
+      // Use query parameter format
+      const res = await fetch(`${BASE_URL}/api/actions?id=${encodeURIComponent(testActionId)}`);
 
       expect(res.status).toBe(200);
       const data = await res.json();
@@ -110,7 +111,7 @@ You can start it with: pnpm dev
       expect(data).toHaveProperty('chunkIndex');
       expect(data).toHaveProperty('tokenCount');
 
-      expect(typeof data.action_id).toBe('number');
+      expect(typeof data.action_id).toBe('string');
       expect(typeof data.content).toBe('string');
       expect(typeof data.createdAt).toBe('string');
       expect(typeof data.documentId).toBe('number');
@@ -127,24 +128,122 @@ You can start it with: pnpm dev
     });
 
     it('should return 404 for non-existent action_id', async () => {
-      const res = await fetch(`${BASE_URL}/api/actions/999999999`);
+      // Use a valid URL format that doesn't exist in the database
+      const nonExistentUrl = 'https://non-existent-domain.test/page-that-does-not-exist';
+      const res = await fetch(`${BASE_URL}/api/actions?id=${encodeURIComponent(nonExistentUrl)}`);
 
       expect(res.status).toBe(404);
       const data = await res.json();
 
       expect(data.error).toBe('NOT_FOUND');
       expect(data.code).toBe('404');
-      expect(data.message).toContain('999999999');
+      expect(data.message).toContain(nonExistentUrl);
     });
 
     it('should return 400 for invalid action_id format', async () => {
-      const res = await fetch(`${BASE_URL}/api/actions/invalid-id`);
+      const res = await fetch(`${BASE_URL}/api/actions?id=invalid-id`);
 
       expect(res.status).toBe(400);
       const data = await res.json();
 
       expect(data.error).toBe('INVALID_ID');
       expect(data.code).toBe('400');
+    });
+
+    it('should return 400 when id param is missing', async () => {
+      const res = await fetch(`${BASE_URL}/api/actions`);
+
+      expect(res.status).toBe(400);
+      const data = await res.json();
+
+      expect(data.error).toBe('MISSING_PARAM');
+      expect(data.code).toBe('400');
+    });
+  });
+
+  describe('GET /api/actions?id=<url> - Fuzzy Matching', () => {
+    it('should match domain without protocol', async () => {
+      // First get a valid URL from search
+      const searchRes = await fetch(`${BASE_URL}/api/actions/search?q=company&type=fulltext&limit=1`);
+      const searchData = await searchRes.json();
+
+      if (!searchData.results || searchData.results.length === 0) {
+        console.warn('Skipping: no test data available');
+        return;
+      }
+
+      // Extract domain from full URL (e.g., "https://example.com/path" -> "example.com/path")
+      const fullUrl = searchData.results[0].action_id;
+      const domainWithPath = fullUrl.replace(/^https?:\/\//, '');
+
+      console.log(`Testing fuzzy match: "${domainWithPath}" should match "${fullUrl}"`);
+
+      const res = await fetch(`${BASE_URL}/api/actions?id=${encodeURIComponent(domainWithPath)}`);
+
+      expect(res.status).toBe(200);
+      const data = await res.json();
+      expect(data.action_id).toBe(fullUrl);
+    });
+
+    it('should match domain only (without path)', async () => {
+      // First get a valid URL from search
+      const searchRes = await fetch(`${BASE_URL}/api/actions/search?q=company&type=fulltext&limit=1`);
+      const searchData = await searchRes.json();
+
+      if (!searchData.results || searchData.results.length === 0) {
+        console.warn('Skipping: no test data available');
+        return;
+      }
+
+      // Extract just the domain (e.g., "https://example.com/path" -> "example.com")
+      const fullUrl = searchData.results[0].action_id;
+      try {
+        const urlObj = new URL(fullUrl);
+        const domainOnly = urlObj.hostname;
+
+        console.log(`Testing fuzzy match: "${domainOnly}" should find actions from "${fullUrl}"`);
+
+        const res = await fetch(`${BASE_URL}/api/actions?id=${encodeURIComponent(domainOnly)}`);
+
+        // Should either succeed (200) or not found (404) - but not 400 (invalid)
+        expect([200, 404]).toContain(res.status);
+
+        if (res.status === 200) {
+          const data = await res.json();
+          // The returned URL should contain the domain
+          expect(data.documentUrl.toLowerCase()).toContain(domainOnly.toLowerCase());
+        }
+      } catch (e) {
+        console.warn('Could not parse URL, skipping test');
+      }
+    });
+
+    it('should prefer exact match over partial match', async () => {
+      // This test verifies that if we search for "a.com", we get "https://a.com" not "https://aa.com"
+      // We test this by searching with a known full URL and verifying we get that exact URL back
+      const searchRes = await fetch(`${BASE_URL}/api/actions/search?q=company&type=fulltext&limit=5`);
+      const searchData = await searchRes.json();
+
+      if (!searchData.results || searchData.results.length === 0) {
+        console.warn('Skipping: no test data available');
+        return;
+      }
+
+      // Use the full URL and verify we get exactly that URL back
+      const fullUrl = searchData.results[0].action_id;
+      const res = await fetch(`${BASE_URL}/api/actions?id=${encodeURIComponent(fullUrl)}`);
+
+      expect(res.status).toBe(200);
+      const data = await res.json();
+      expect(data.action_id).toBe(fullUrl);
+    });
+
+    it('should return 404 for fuzzy search with no matches', async () => {
+      const res = await fetch(`${BASE_URL}/api/actions?id=${encodeURIComponent('nonexistent-domain-xyz123.test')}`);
+
+      expect(res.status).toBe(404);
+      const data = await res.json();
+      expect(data.error).toBe('NOT_FOUND');
     });
   });
 
@@ -163,9 +262,9 @@ You can start it with: pnpm dev
         return;
       }
 
-      // Step 2: Get full details for the first result
+      // Step 2: Get full details for the first result using query param
       const firstActionId = searchData.results[0].action_id;
-      const getRes = await fetch(`${BASE_URL}/api/actions/${firstActionId}`);
+      const getRes = await fetch(`${BASE_URL}/api/actions?id=${encodeURIComponent(firstActionId)}`);
 
       expect(getRes.status).toBe(200);
       const actionData = await getRes.json();

@@ -3,16 +3,15 @@
  *
  * Orchestrates the playbook building process:
  * 1. Page discovery - Find all pages on the website
- * 2. Page analysis - Analyze each page for basic info
- * 3. Capabilities discovery - Discover what each page can do
- * 4. Write to database - Save playbooks (document + chunk) with embeddings
+ * 2. Playbook generation - Generate 7-section Playbook for each page
+ * 3. Write to database - Save playbooks (document + chunk) with embeddings
  *
- * Each page produces one document with one chunk containing capability descriptions.
+ * Each page produces one document with one chunk containing the full Playbook.
  */
 
 import 'dotenv/config';
 
-import { StagehandBrowser } from './browser/index.js';
+import { createBrowserAuto, type BrowserAdapter } from '@actionbookdev/browser';
 import { AIClient, createEmbeddingProvider, type EmbeddingProvider } from './brain/index.js';
 import { Storage, createStorage } from './storage/index.js';
 import { log, fileLogger, normalizeUrl, isSameDomain, buildChunkContent } from './utils/index.js';
@@ -22,23 +21,21 @@ import type {
   DiscoveredPage,
 } from './types/index.js';
 
-// Import discoverers and analyzers
+// Import discoverers
 import { PageDiscoverer, CapabilitiesDiscoverer } from './discoverer/index.js';
-import { PageAnalyzer } from './analyzer/index.js';
 
 /**
  * PlaybookBuilder - Build playbooks for a website
  */
 export class PlaybookBuilder {
-  private config: Required<Omit<PlaybookBuilderConfig, 'llmProvider'>> & Pick<PlaybookBuilderConfig, 'llmProvider'>;
-  private browser: StagehandBrowser;
+  private config: Required<Omit<PlaybookBuilderConfig, 'llmProvider' | 'customPrompt'>> & Pick<PlaybookBuilderConfig, 'llmProvider' | 'customPrompt'>;
+  private browser: BrowserAdapter;
   private ai: AIClient;
   private embedding: EmbeddingProvider | null = null;
   private storage: Storage;
 
   // Components
   private pageDiscoverer: PageDiscoverer;
-  private pageAnalyzer: PageAnalyzer;
   private capabilitiesDiscoverer: CapabilitiesDiscoverer;
 
   constructor(config: PlaybookBuilderConfig) {
@@ -50,9 +47,11 @@ export class PlaybookBuilder {
       maxDepth: config.maxDepth ?? 1,
       sourceVersionId: config.sourceVersionId ?? 0,
       llmProvider: config.llmProvider,
+      customPrompt: config.customPrompt,
     };
 
-    this.browser = new StagehandBrowser({ headless: this.config.headless });
+    // Auto-detect browser: AgentCoreBrowser in AWS, StagehandBrowser locally
+    this.browser = createBrowserAuto({ headless: this.config.headless });
     // AIClient: Use specified provider, env var, or auto-detect
     const llmProvider = this.config.llmProvider ||
       (process.env.LLM_PROVIDER as 'openrouter' | 'openai' | 'anthropic' | 'bedrock' | undefined);
@@ -72,10 +71,9 @@ export class PlaybookBuilder {
       log('warn', '[PlaybookBuilder] No OPENAI_API_KEY found, embedding generation disabled');
     }
 
-    // Initialize components
-    this.pageDiscoverer = new PageDiscoverer(this.ai);
-    this.pageAnalyzer = new PageAnalyzer(this.ai);
-    this.capabilitiesDiscoverer = new CapabilitiesDiscoverer(this.ai);
+    // Initialize components with optional custom prompt
+    this.pageDiscoverer = new PageDiscoverer(this.ai, this.config.customPrompt);
+    this.capabilitiesDiscoverer = new CapabilitiesDiscoverer(this.ai, this.config.customPrompt);
   }
 
   /**
@@ -92,7 +90,7 @@ export class PlaybookBuilder {
 
     try {
       // Initialize browser
-      await this.browser.init();
+      await this.browser.initialize();
 
       // Create or get source version
       if (!sourceVersionId) {
@@ -118,30 +116,28 @@ export class PlaybookBuilder {
 
         try {
           // Navigate to the page
-          await this.browser.goto(page.url);
+          await this.browser.navigate(page.url);
           const pageScreenshot = await this.browser.screenshot();
           const pageContent = await this.browser.getContent();
 
-          // Analyze page for basic info
-          const analyzedPage = await this.pageAnalyzer.analyze(pageScreenshot, pageContent, page);
-          log('info', `[PlaybookBuilder] Analyzed page: ${analyzedPage.name}`);
-
-          // Discover page capabilities
+          // Generate Playbook for the page (7-section format)
+          const currentUrl = this.browser.getUrl();
           const capabilities = await this.capabilitiesDiscoverer.discover(
             pageScreenshot,
             pageContent,
-            analyzedPage.name
+            page.name,
+            currentUrl
           );
-          log('info', `[PlaybookBuilder] Discovered ${capabilities.capabilities.length} capabilities`);
+          log('info', `[PlaybookBuilder] Generated Playbook with ${capabilities.capabilities.length} capabilities`);
 
-          // Build chunk content and generate embedding
-          const chunkContent = buildChunkContent(analyzedPage.name, capabilities);
+          // Use playbook as chunk content (or fallback to buildChunkContent)
+          const chunkContent = capabilities.playbook || buildChunkContent(page.name, capabilities);
           let embedding: number[] | undefined;
           if (this.embedding) {
             try {
               const result = await this.embedding.embed(chunkContent);
               embedding = result.embedding;
-              log('info', `[PlaybookBuilder] Generated embedding for ${analyzedPage.name}`);
+              log('info', `[PlaybookBuilder] Generated embedding for ${page.name}`);
             } catch (error) {
               log('warn', `[PlaybookBuilder] Failed to generate embedding:`, error);
             }
@@ -152,8 +148,8 @@ export class PlaybookBuilder {
             sourceId: this.config.sourceId,
             sourceVersionId,
             url: this.browser.getUrl(),
-            title: analyzedPage.name,
-            description: analyzedPage.description,
+            title: page.name,
+            description: capabilities.description,
             chunkContent,
             embedding,
             embeddingModel: embedding ? this.embedding?.model : undefined,
@@ -223,7 +219,7 @@ export class PlaybookBuilder {
 
       try {
         // Navigate to the page
-        await this.browser.goto(current.url);
+        await this.browser.navigate(current.url);
         const screenshot = await this.browser.screenshot();
         const content = await this.browser.getContent();
 

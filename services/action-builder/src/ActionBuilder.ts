@@ -1,5 +1,5 @@
-import { StagehandBrowser } from './browser/StagehandBrowser.js'
-import type { BrowserAdapter } from './browser/BrowserAdapter.js'
+import { createBrowserAuto } from '@actionbookdev/browser'
+import type { BrowserAdapter } from '@actionbookdev/browser'
 import { AIClient } from './llm/AIClient.js'
 import { ActionRecorder } from './recorder/ActionRecorder.js'
 import { SelectorValidator } from './validator/SelectorValidator.js'
@@ -63,17 +63,16 @@ export class ActionBuilder {
       profileDir: config.profileDir,
       buildTimeoutMs: config.buildTimeoutMs,
       browserRetryConfig: config.browserRetryConfig,
+      maxScenarioDescriptionLength: config.maxScenarioDescriptionLength,
     }
 
     // Create instance-specific file logger for parallel execution support
     this.fileLogger = new FileLogger()
 
-    // Initialize browser (Stagehand has its own LLM config via env vars)
-    this.browser = new StagehandBrowser({
-      headless: this.config.headless!,
-      llmApiKey: this.config.llmApiKey || '',
-      llmBaseURL: config.llmBaseURL,
-      llmModel: this.config.llmModel,
+    // Initialize browser using factory function (auto-detects environment)
+    // Uses AgentCoreBrowser in AWS AgentCore Runtime, otherwise StagehandBrowser
+    this.browser = createBrowserAuto({
+      headless: this.config.headless,
       profile: config.profileEnabled
         ? { enabled: true, profileDir: config.profileDir }
         : undefined,
@@ -212,6 +211,59 @@ export class ActionBuilder {
         break
       default:
         console.log(prefix, ...args)
+    }
+  }
+
+  /**
+   * Use LLM to extract the first example URL from scenarioDescription
+   * Extracts from "Pages:" section. Falls back to original URL if extraction fails.
+   */
+  private async extractStartUrl(
+    url: string,
+    scenarioDescription?: string
+  ): Promise<string> {
+    // If no scenario description, use original URL
+    if (!scenarioDescription) {
+      return url;
+    }
+
+    try {
+      const systemMessage = 'You are a URL extractor. Extract the FIRST URL from the "Pages:" or "pages:" section. Return ONLY the URL, no explanations.';
+      const userMessage = `Given the following scenario description, extract the FIRST URL from the "Pages:" section.
+If there are no pages listed, return the original URL.
+
+Original URL: ${url}
+
+Scenario Description:
+${scenarioDescription}
+
+Return ONLY the URL, nothing else.`;
+
+      const response = await this.llmClient.chat(
+        [
+          { role: 'system', content: systemMessage },
+          { role: 'user', content: userMessage }
+        ],
+        [] // No tools needed
+      );
+
+      const extractedUrl = response.choices[0]?.message?.content?.trim() || '';
+
+      // Basic validation - check if it's a valid HTTP(S) URL
+      if (extractedUrl && (extractedUrl.startsWith('http://') || extractedUrl.startsWith('https://'))) {
+        if (extractedUrl !== url) {
+          this.log('info', `[ActionBuilder] LLM extracted start URL: ${extractedUrl} (from pattern: ${url})`);
+        }
+        return extractedUrl;
+      }
+
+      // Fallback to original URL if LLM extraction failed
+      this.log('warn', `[ActionBuilder] LLM failed to extract valid URL, using original: ${url}`);
+      return url;
+    } catch (error) {
+      const errMsg = error instanceof Error ? error.message : String(error);
+      this.log('error', `[ActionBuilder] Error extracting URL with LLM: ${errMsg}`);
+      return url;
     }
   }
 
@@ -370,13 +422,26 @@ export class ActionBuilder {
     this.log('info', `[ActionBuilder] Building capabilities for: ${url}`)
     this.log('info', `[ActionBuilder] Scenario: ${scenario}`)
 
+    // Truncate scenarioDescription to limit token usage (default: 3000 characters)
+    const maxLength = this.config.maxScenarioDescriptionLength ?? 3000;
+    const truncatedScenarioDescription = options.scenarioDescription
+      ? options.scenarioDescription.slice(0, maxLength)
+      : undefined;
+
+    if (options.scenarioDescription && options.scenarioDescription.length > maxLength) {
+      this.log('info', `[ActionBuilder] scenarioDescription truncated from ${options.scenarioDescription.length} to ${maxLength} characters`);
+    }
+
+    // Use LLM to extract the first example URL from scenarioDescription if available
+    const actualUrl = await this.extractStartUrl(url, truncatedScenarioDescription);
+
     // Support custom prompts for task-driven recording
     const systemPrompt =
       options.customSystemPrompt || CAPABILITY_RECORDER_SYSTEM_PROMPT
     const userMessage =
       options.customUserPrompt ||
-      generateUserPrompt(scenario, url, {
-        scenarioDescription: options.scenarioDescription,
+      generateUserPrompt(scenario, actualUrl, {
+        scenarioDescription: truncatedScenarioDescription,
         focusAreas: options.focusAreas,
       })
 
@@ -401,7 +466,7 @@ export class ActionBuilder {
       userMessage,
       options.siteName,
       options.siteDescription,
-      url, // Pass startUrl for recording task
+      actualUrl, // Pass resolved startUrl (pattern -> example URL)
       options.taskId // Pass existing task ID if provided (TaskWorker mode)
     )
 

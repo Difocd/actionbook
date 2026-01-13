@@ -4,6 +4,7 @@
 export interface SearchResult {
   documentId: number;
   chunkId: number;
+  chunkIndex: number;
   title: string;
   content: string;
   url: string;

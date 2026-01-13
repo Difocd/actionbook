@@ -14,37 +14,53 @@ export type Database = NodePgDatabase<typeof schema>;
 const poolMap = new WeakMap<Database, Pool | NeonPool>();
 
 /**
- * Check if running in local environment.
- * Local = not production AND not on Vercel.
+ * Check if should use node-postgres driver.
+ *
+ * Use pg driver for:
+ * - Local development (not production)
+ * - Node.js environment (e.g.: AgentCore runtime, needs TCP not WebSocket)
+ *
+ * Use Neon serverless driver only for Vercel (edge/serverless with WebSocket support).
  */
-function isLocalEnv(): boolean {
-  return process.env.NODE_ENV !== 'production' && !process.env.VERCEL;
+function shouldUsePgDriver(): boolean {
+  // Local development
+  if (process.env.NODE_ENV !== 'production') {
+    return true;
+  }
+  // AgentCore runtime (Node.js, no native WebSocket)
+  if (process.env.AWS_AGENTCORE_RUNTIME === 'true') {
+    return true;
+  }
+  // Non-Vercel production environments use pg driver
+  if (!process.env.VERCEL) {
+    return true;
+  }
+  // Vercel uses Neon serverless
+  return false;
 }
 
 /**
  * Create a database connection.
  *
  * Connection strategy:
- * - Local environment + DATABASE_URL: Use node-postgres (pg) driver
- * - Otherwise (Vercel/production): Use Neon serverless driver with POSTGRES_URL
+ * - Local/AgentCore/Non-Vercel: Use node-postgres (pg) driver
+ * - Vercel: Use Neon serverless driver (WebSocket-based)
  */
 export function createDb(databaseUrl?: string): Database {
-  const isLocal = isLocalEnv();
-  const localDbUrl = databaseUrl ?? process.env.DATABASE_URL;
+  const usePgDriver = shouldUsePgDriver();
+  const dbUrl = databaseUrl ?? process.env.POSTGRES_URL ?? process.env.DATABASE_URL;
 
-  if (isLocal && localDbUrl) {
-    // Local environment with DATABASE_URL: use node-postgres
-    return createPgDb(localDbUrl);
-  }
-
-  // Production/Vercel: use Neon serverless
-  const neonUrl = process.env.POSTGRES_URL;
-  if (!neonUrl) {
+  if (!dbUrl) {
     throw new Error(
-      'Database URL not found. Set DATABASE_URL for local or POSTGRES_URL for Neon.'
+      'Database URL not found. Set DATABASE_URL or POSTGRES_URL.'
     );
   }
-  return createNeonDb(neonUrl);
+
+  if (usePgDriver) {
+    return createPgDb(dbUrl);
+  }
+
+  return createNeonDb(dbUrl);
 }
 
 /**
@@ -56,10 +72,27 @@ function createPgDb(url: string): Database {
   const hasSslParam = url.includes('sslmode=');
   const needsSsl = hasSslParam || !isLocalhost;
 
+  // Connection pool settings - adjust based on environment
+  // For Serverless (Vercel/AWS Lambda), use smaller values and consider using Neon pooler
+  const isServerless = !!(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME);
+
   const pool = new Pool({
     connectionString: url,
     ssl: needsSsl ? { rejectUnauthorized: false } : false,
+    // Optimized connection pool settings
+    max: isServerless ? 5 : 20,        // Serverless: 5, Traditional: 20
+    min: isServerless ? 0 : 2,         // Serverless: 0 (no idle), Traditional: 2
+    idleTimeoutMillis: 30000,          // Close idle connections after 30s
+    connectionTimeoutMillis: 5000,     // Timeout when acquiring connection
+    allowExitOnIdle: isServerless,     // Allow exit on idle for Serverless
   });
+
+  // Add error handler to prevent unhandled error events from crashing the process
+  pool.on('error', (err) => {
+    console.error('[Database Pool Error]', err.message);
+    // Don't throw - let individual query errors be handled by their callers
+  });
+
   const db = drizzlePg(pool, { schema });
   poolMap.set(db, pool);
   return db;
@@ -72,6 +105,13 @@ function createPgDb(url: string): Database {
  */
 function createNeonDb(url: string): Database {
   const pool = new NeonPool({ connectionString: url });
+
+  // Add error handler to prevent unhandled error events from crashing the process
+  pool.on('error', (err) => {
+    console.error('[Database Pool Error]', err.message);
+    // Don't throw - let individual query errors be handled by their callers
+  });
+
   // drizzle-orm/neon-serverless with Pool returns compatible type
   const db = drizzleNeon(pool, { schema }) as unknown as Database;
   poolMap.set(db, pool);

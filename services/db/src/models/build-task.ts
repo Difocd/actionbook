@@ -9,6 +9,7 @@ import {
   jsonb,
 } from 'drizzle-orm/pg-core';
 import { sources } from './source';
+import { sourceVersions } from './source-version';
 
 /**
  * BuildTasks table - Build pipeline tasks
@@ -22,6 +23,10 @@ export const buildTasks = pgTable(
     // ========== Source association ==========
     /** Associated source ID (created after knowledge build starts) */
     sourceId: integer('source_id').references(() => sources.id, {
+      onDelete: 'set null',
+    }),
+    /** Associated source version ID (1:1 relationship with build_task) */
+    sourceVersionId: integer('source_version_id').references(() => sourceVersions.id, {
       onDelete: 'set null',
     }),
     /** Start URL */
@@ -140,6 +145,21 @@ export interface BuildTaskConfig {
   playbookMaxDepth?: number;
   /** Run playbook builder in headless mode */
   playbookHeadless?: boolean;
+
+  // ========== Custom Prompts for Site-specific Optimization ==========
+  /**
+   * Custom prompt for playbook builder stage
+   * Used to provide site-specific instructions during knowledge/playbook building
+   * Example: "Focus on the main navigation menu and ignore promotional banners"
+   */
+  playbookBuilderPrompt?: string;
+
+  /**
+   * Custom prompt for action builder stage
+   * Used to provide site-specific instructions during action recording
+   * Example: "Prioritize form interactions and skip cookie consent dialogs"
+   */
+  actionBuilderPrompt?: string;
 
   /** Additional configuration */
   [key: string]: unknown;
