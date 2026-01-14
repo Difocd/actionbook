@@ -7,7 +7,7 @@ import { createActionbookTools } from './tools/actionbook.js'
 import { createStagehandTools } from './tools/stagehand.js'
 
 const PROVIDER = 'openai'
-const MODEL = 'gpt-4o'
+const MODEL = 'gpt-5'
 
 const SYSTEM_PROMPT = `You are an AI agent that helps users perform tasks on the web using browser automation.
 
@@ -74,8 +74,7 @@ async function main() {
 
     // Get task from command line or use default
     const task =
-      process.argv[2] ||
-      'Go to releases.rs and find the latest stable Rust version and its release date.'
+      'Go to airbnb.com and search for a place to stay in Tokyo for 2 guests.'
 
     console.log(`\n🚀 Starting agent with task: ${task}\n`)
 
