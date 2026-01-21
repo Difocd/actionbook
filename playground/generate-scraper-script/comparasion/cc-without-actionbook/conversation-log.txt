@@ -1,0 +1,1597 @@
+                                                                                
+ ▐▛███▜▌   Claude Code v2.1.14                                                  
+▝▜█████▛▘  Opus 4.5 · Claude Max                                                
+  ▘▘ ▝▝    ~/…/generate-scraper-script/comparasion/cc-without-actionbook        
+                                                                                
+❯ Write a Node.js script using Playwright to scrape FirstRound's company        
+  page and save a JSON file containing every company's name, description,       
+  categories, founders, initial partnership, partner, and location.             
+                                                                                
+⏺ I'll help you write a Playwright script to scrape FirstRound's portfolio      
+  companies. Let me first check the current directory structure and then create 
+  the script.                                                                   
+                                                                                
+⏺ Bash(ls -la)                                                                  
+  ⎿  total 0                                                                    
+     drwxr-xr-x  3 leilei  staff   96 20 Jan 21:41 .                            
+     drwxr-xr-x  5 leilei  staff  160 21 Jan 14:59 ..                           
+     drwxr-xr-x  3 leilei  staff   96 20 Jan 21:24 .claude                      
+                                                                                
+⏺ Fetch(https://firstround.com/companies)                                       
+  ⎿  Received 420.4KB (200 OK)                                                  
+                                                                                
+⏺ Let me initialize the project and install Playwright.                         
+                                                                                
+⏺ Bash(npm init -y && npm install playwright)                                   
+  ⎿ Wrote to /Users/leilei/Projects/actionbook/actionbook/playground/genera     
+    te-scraper-script/comparasion/cc-without-actionbook/package.json:           
+    … +19 lines (ctrl+o to expand)                                              
+                                                                                
+                                                                                
+⏺ Bash(npx playwright install chromium) timeout: 3m 0s                          
+  ⎿  (No content)                                                               
+                                                                                
+⏺ Write(scrape-firstround.js)                                                   
+  ⎿  Wrote 124 lines to scrape-firstround.js                                    
+      1 const { chromium } = require("playwright");                             
+      2 const fs = require("fs");                                               
+      3 async function scrapeFirstRoundCompanies() {                            
+      4   const browser = await chromium.launch({ headless: true });            
+      5   const context = await browser.newContext();                           
+      6   const page = await context.newPage();                                 
+      7   console.log("Navigating to FirstRound companies page...");            
+      8   await page.goto("https://firstround.com/companies", {                 
+     … +114 lines (ctrl+o to expand)                                            
+                                                                                
+⏺ Bash(node scrape-firstround.js)                                               
+  ⎿  Navigating to FirstRound companies page...                                 
+     Extracting company data...                                                 
+     Falling back to DOM scraping...                                            
+     … +13 lines (ctrl+o to expand)                                             
+                                                                                
+⏺ The initial attempt only got partial data. Let me investigate the page        
+  structure more thoroughly and improve the script.                             
+                                                                                
+⏺ Bash(node -e "                                    timeout: 1m 0s              
+      const { chromium } = require('playwright');…)                             
+  ⎿  (No content)                                                               
+                                                                                
+⏺ Bash(node -e "                                    timeout: 1m 0s              
+      const { chromium } = require('playwright');…)                             
+  ⎿  Error: Exit code 1                                                         
+     [eval]:17                                                                  
+             if (\!obj || typeof obj \!== 'object') return null;                
+                 ^                                                              
+     Expected unicode escape                                                    
+                                                                                
+     SyntaxError: Invalid or unexpected token                                   
+         at makeContextifyScript (node:internal/vm:185:14)                      
+         at compileScript (node:internal/process/execution:383:10)              
+         at evalTypeScript (node:internal/process/execution:256:22)             
+     … +3 lines (ctrl+o to see all)                                             
+                                                                                
+⏺ Write(investigate.js)                                                         
+  ⎿  Wrote 39 lines to investigate.js                                           
+      1 const { chromium } = require("playwright");                             
+      2 (async () => {                                                          
+      3   const browser = await chromium.launch({ headless: true });            
+      4   const page = await browser.newPage();                                 
+      5   await page.goto("https://firstround.com/companies", { waitUntil       
+        : "networkidle" });                                                     
+      6   const result = await page.evaluate(() => {                            
+      7     const script = document.querySelector("#__NEXT_DATA__");            
+      8     if (script) {                                                       
+     … +29 lines (ctrl+o to expand)                                             
+                                                                                
+⏺ Bash(node investigate.js) timeout: 1m 0s                                      
+  ⎿  "No __NEXT_DATA__ found"                                                   
+                                                                                
+⏺ Write(investigate.js)                                                         
+  ⎿  Added 58 lines, removed 24 lines                                           
+       3  (async () => {                                                        
+       4    const browser = await chromium.launch({ headless: true });          
+       5    const page = await browser.newPage();                               
+       6 +                                                                      
+       7 +  // Intercept network requests to find API calls                     
+       8 +  const apiResponses = [];                                            
+       9 +  page.on("response", async (response) => {                           
+      10 +    const url = response.url();                                       
+      11 +    if (url.includes("api") || url.includes("sanity") || url.in       
+         +cludes("company") || url.includes("cdn")) {                           
+      12 +      try {                                                           
+      13 +        const contentType = response.headers()["content-type"]        
+         +|| "";                                                                
+      14 +        if (contentType.includes("json")) {                           
+      15 +          const json = await response.json();                         
+      16 +          apiResponses.push({ url, data: json });                     
+      17 +        }                                                             
+      18 +      } catch (e) {                                                   
+      19 +        // Ignore non-JSON responses                                  
+      20 +      }                                                               
+      21 +    }                                                                 
+      22 +  });                                                                 
+      23 +                                                                      
+      24    await page.goto("https://firstround.com/companies", { waitUnt       
+          il: "networkidle" });                                                 
+      25                                                                        
+       8 -  const result = await page.evaluate(() => {                          
+       9 -    const script = document.querySelector("#__NEXT_DATA__");          
+      10 -    if (script) {                                                     
+      11 -      const data = JSON.parse(script.textContent);                    
+      12 -      const pageProps = data.props?.pageProps;                        
+      26 +  // Check page structure                                             
+      27 +  const pageInfo = await page.evaluate(() => {                        
+      28 +    // Look for any script tags with JSON data                        
+      29 +    const scripts = Array.from(document.querySelectorAll("scrip       
+         +t"));                                                                 
+      30 +    const jsonScripts = scripts                                       
+      31 +      .filter((s) => s.textContent && s.textContent.includes('"       
+         +title"') && s.textContent.includes('"founders"'))                     
+      32 +      .map((s) => ({ type: s.type, id: s.id, contentPreview: s.       
+         +textContent.substring(0, 500) }));                                    
+      33                                                                        
+      14 -      // Recursively find arrays that look like company data          
+      15 -      const findCompanies = (obj, path = "root") => {                 
+      16 -        if (!obj || typeof obj !== "object") return null;             
+      17 -        if (Array.isArray(obj) && obj.length > 0 && obj[0]?.tit       
+         -le && obj[0]?.founders !== undefined) {                               
+      18 -          return { path, count: obj.length, sample: obj[0] };         
+      19 -        }                                                             
+      20 -        for (const key of Object.keys(obj)) {                         
+      21 -          const result = findCompanies(obj[key], path + "." + k       
+         -ey);                                                                  
+      22 -          if (result) return result;                                  
+      23 -        }                                                             
+      24 -        return null;                                                  
+      25 -      };                                                              
+      34 +    // Get a sample company card structure                            
+      35 +    const cards = document.querySelectorAll("[data-card-type],        
+         +[class*='CompanyCard'], [class*='company-card']");                    
+      36 +    const sampleCard = cards.length > 0 ? cards[0].outerHTML.su       
+         +bstring(0, 1000) : null;                                              
+      37                                                                        
+      27 -      return {                                                        
+      28 -        pagePropsKeys: Object.keys(pageProps || {}),                  
+      29 -        pageKeys: Object.keys(pageProps?.page || {}),                 
+      30 -        companySearch: findCompanies(pageProps),                      
+      31 -      };                                                              
+      38 +    // Get all unique class names containing 'company' or 'card       
+         +'                                                                     
+      39 +    const allElements = document.querySelectorAll("*");               
+      40 +    const classNames = new Set();                                     
+      41 +    allElements.forEach((el) => {                                     
+      42 +      if (el.className && typeof el.className === "string") {         
+      43 +        el.className.split(" ").forEach((cls) => {                    
+      44 +          if (cls.toLowerCase().includes("company") || cls.toLo       
+         +werCase().includes("card")) {                                         
+      45 +            classNames.add(cls);                                      
+      46 +          }                                                           
+      47 +        });                                                           
+      48 +      }                                                               
+      49 +    });                                                               
+      50 +                                                                      
+      51 +    return {                                                          
+      52 +      jsonScriptCount: jsonScripts.length,                            
+      53 +      jsonScripts,                                                    
+      54 +      sampleCard,                                                     
+      55 +      relevantClassNames: Array.from(classNames),                     
+      56 +      title: document.title,                                          
+      57 +    };                                                                
+      58 +  });                                                                 
+      59 +                                                                      
+      60 +  console.log("Page Info:");                                          
+      61 +  console.log(JSON.stringify(pageInfo, null, 2));                     
+      62 +                                                                      
+      63 +  console.log("\nAPI Responses found:", apiResponses.length);         
+      64 +  apiResponses.forEach((r, i) => {                                    
+      65 +    console.log(`\n${i + 1}. ${r.url}`);                              
+      66 +    if (typeof r.data === "object") {                                 
+      67 +      console.log("Keys:", Object.keys(r.data).slice(0, 10));         
+      68      }                                                                 
+      33 -    return "No __NEXT_DATA__ found";                                  
+      69    });                                                                 
+      70                                                                        
+      36 -  console.log(JSON.stringify(result, null, 2));                       
+      71    await browser.close();                                              
+      72  })();                                                                 
+                                                                                
+⏺ Bash(node investigate.js) timeout: 1m 0s                                      
+  ⎿  Page Info:                                                                 
+     {                                                                          
+       "jsonScriptCount": 0,                                                    
+     … +65 lines (ctrl+o to expand)                                             
+                                                                                
+⏺ Now I understand the DOM structure. Let me update the scraper to properly     
+  extract data from these elements.                                             
+                                                                                
+⏺ Write(investigate.js)                                                         
+  ⎿  Added 35 lines, removed 52 lines                                           
+       3  (async () => {                                                        
+       4    const browser = await chromium.launch({ headless: true });          
+       5    const page = await browser.newPage();                               
+       6 -                                                                      
+       7 -  // Intercept network requests to find API calls                     
+       8 -  const apiResponses = [];                                            
+       9 -  page.on("response", async (response) => {                           
+      10 -    const url = response.url();                                       
+      11 -    if (url.includes("api") || url.includes("sanity") || url.in       
+         -cludes("company") || url.includes("cdn")) {                           
+      12 -      try {                                                           
+      13 -        const contentType = response.headers()["content-type"]        
+         -|| "";                                                                
+      14 -        if (contentType.includes("json")) {                           
+      15 -          const json = await response.json();                         
+      16 -          apiResponses.push({ url, data: json });                     
+      17 -        }                                                             
+      18 -      } catch (e) {                                                   
+      19 -        // Ignore non-JSON responses                                  
+      20 -      }                                                               
+      21 -    }                                                                 
+      22 -  });                                                                 
+      23 -                                                                      
+       6    await page.goto("https://firstround.com/companies", { waitUnt       
+          il: "networkidle" });                                                 
+       7                                                                        
+      26 -  // Check page structure                                             
+      27 -  const pageInfo = await page.evaluate(() => {                        
+      28 -    // Look for any script tags with JSON data                        
+      29 -    const scripts = Array.from(document.querySelectorAll("scrip       
+         -t"));                                                                 
+      30 -    const jsonScripts = scripts                                       
+      31 -      .filter((s) => s.textContent && s.textContent.includes('"       
+         -title"') && s.textContent.includes('"founders"'))                     
+      32 -      .map((s) => ({ type: s.type, id: s.id, contentPreview: s.       
+         -textContent.substring(0, 500) }));                                    
+       8 +  // Get detailed structure of a single company card                  
+       9 +  const cardStructure = await page.evaluate(() => {                   
+      10 +    const card = document.querySelector(".company-list-card-med       
+         +ium-large");                                                          
+      11 +    if (!card) return "No card found";                                
+      12                                                                        
+      34 -    // Get a sample company card structure                            
+      35 -    const cards = document.querySelectorAll("[data-card-type],        
+         -[class*='CompanyCard'], [class*='company-card']");                    
+      36 -    const sampleCard = cards.length > 0 ? cards[0].outerHTML.su       
+         -bstring(0, 1000) : null;                                              
+      13 +    const getTextContent = (selector) => {                            
+      14 +      const el = card.querySelector(selector);                        
+      15 +      return el ? el.textContent.trim() : null;                       
+      16 +    };                                                                
+      17                                                                        
+      38 -    // Get all unique class names containing 'company' or 'card       
+         -'                                                                     
+      39 -    const allElements = document.querySelectorAll("*");               
+      40 -    const classNames = new Set();                                     
+      41 -    allElements.forEach((el) => {                                     
+      42 -      if (el.className && typeof el.className === "string") {         
+      43 -        el.className.split(" ").forEach((cls) => {                    
+      44 -          if (cls.toLowerCase().includes("company") || cls.toLo       
+         -werCase().includes("card")) {                                         
+      45 -            classNames.add(cls);                                      
+      46 -          }                                                           
+      47 -        });                                                           
+      48 -      }                                                               
+      18 +    // Get all info items                                             
+      19 +    const infoItems = card.querySelectorAll(".company-list-comp       
+         +any-info__item");                                                     
+      20 +    const infoData = {};                                              
+      21 +    infoItems.forEach((item) => {                                     
+      22 +      const label = item.querySelector(".company-list-company-i       
+         +nfo__label")?.textContent.trim();                                     
+      23 +      const value = item.querySelector(".company-list-company-i       
+         +nfo__value")?.textContent.trim();                                     
+      24 +      if (label) infoData[label] = value;                             
+      25      });                                                               
+      26                                                                        
+      27      return {                                                          
+      52 -      jsonScriptCount: jsonScripts.length,                            
+      53 -      jsonScripts,                                                    
+      54 -      sampleCard,                                                     
+      55 -      relevantClassNames: Array.from(classNames),                     
+      56 -      title: document.title,                                          
+      28 +      name: getTextContent(".company-list-card-medium-large__na       
+         +me"),                                                                 
+      29 +      statement: getTextContent(".company-list-card-medium-larg       
+         +e__statement"),                                                       
+      30 +      infoItems: infoData,                                            
+      31 +      cardHTML: card.outerHTML.substring(0, 3000),                    
+      32      };                                                                
+      33    });                                                                 
+      34                                                                        
+      60 -  console.log("Page Info:");                                          
+      61 -  console.log(JSON.stringify(pageInfo, null, 2));                     
+      35 +  console.log("Sample Card Structure:");                              
+      36 +  console.log(JSON.stringify(cardStructure, null, 2));                
+      37                                                                        
+      63 -  console.log("\nAPI Responses found:", apiResponses.length);         
+      64 -  apiResponses.forEach((r, i) => {                                    
+      65 -    console.log(`\n${i + 1}. ${r.url}`);                              
+      66 -    if (typeof r.data === "object") {                                 
+      67 -      console.log("Keys:", Object.keys(r.data).slice(0, 10));         
+      68 -    }                                                                 
+      38 +  // Also check small cards                                           
+      39 +  const smallCardStructure = await page.evaluate(() => {              
+      40 +    // Look for list items that are not featured                      
+      41 +    const listItems = document.querySelectorAll(".company-list-       
+         +cards__list-item");                                                   
+      42 +    if (listItems.length === 0) return "No list items found";         
+      43 +                                                                      
+      44 +    const item = listItems[0];                                        
+      45 +    return {                                                          
+      46 +      html: item.outerHTML.substring(0, 2000),                        
+      47 +      className: item.className,                                      
+      48 +    };                                                                
+      49    });                                                                 
+      50                                                                        
+      51 +  console.log("\nSmall Card Structure:");                             
+      52 +  console.log(JSON.stringify(smallCardStructure, null, 2));           
+      53 +                                                                      
+      54    await browser.close();                                              
+      55  })();                                                                 
+                                                                                
+⏺ Bash(node investigate.js) timeout: 1m 0s                                      
+  ⎿  Sample Card Structure:                                                     
+     {                                                                          
+       "name": "Notion",                                                        
+     … +56 lines (ctrl+o to expand)                                             
+                                                                                
+⏺ Now I can see the structure clearly. Let me also check for small cards.       
+                                                                                
+⏺ Write(investigate.js)                                                         
+  ⎿  Added 33 lines, removed 29 lines                                           
+       5    const page = await browser.newPage();                               
+       6    await page.goto("https://firstround.com/companies", { waitUnt       
+          il: "networkidle" });                                                 
+       7                                                                        
+       8 -  // Get detailed structure of a single company card                  
+       9 -  const cardStructure = await page.evaluate(() => {                   
+      10 -    const card = document.querySelector(".company-list-card-med       
+         -ium-large");                                                          
+      11 -    if (!card) return "No card found";                                
+       8 +  // Get all card types and count                                     
+       9 +  const cardTypes = await page.evaluate(() => {                       
+      10 +    const allCards = document.querySelectorAll("[class*='compan       
+         +y-list-card']");                                                      
+      11 +    const types = {};                                                 
+      12 +    allCards.forEach((card) => {                                      
+      13 +      const classNames = card.className;                              
+      14 +      types[classNames] = (types[classNames] || 0) + 1;               
+      15 +    });                                                               
+      16 +    return {                                                          
+      17 +      totalCards: allCards.length,                                    
+      18 +      types: Object.entries(types).map(([cls, count]) => ({ cla       
+         +ssName: cls.substring(0, 100), count })),                             
+      19 +    };                                                                
+      20 +  });                                                                 
+      21                                                                        
+      22 +  console.log("Card Types Found:");                                   
+      23 +  console.log(JSON.stringify(cardTypes, null, 2));                    
+      24 +                                                                      
+      25 +  // Check for small cards specifically                               
+      26 +  const smallCards = await page.evaluate(() => {                      
+      27 +    const cards = document.querySelectorAll(".company-list-card       
+         +-small");                                                             
+      28 +    if (cards.length === 0) return { count: 0, message: "No sma       
+         +ll cards found" };                                                    
+      29 +                                                                      
+      30 +    const sample = cards[0];                                          
+      31      const getTextContent = (selector) => {                            
+      14 -      const el = card.querySelector(selector);                        
+      32 +      const el = sample.querySelector(selector);                      
+      33        return el ? el.textContent.trim() : null;                       
+      34      };                                                                
+      35                                                                        
+      18 -    // Get all info items                                             
+      19 -    const infoItems = card.querySelectorAll(".company-list-comp       
+         -any-info__item");                                                     
+      36 +    const infoItems = sample.querySelectorAll(".company-list-co       
+         +mpany-info__item");                                                   
+      37      const infoData = {};                                              
+      38      infoItems.forEach((item) => {                                     
+      39        const label = item.querySelector(".company-list-company-i       
+          nfo__label")?.textContent.trim();                                     
+     ...                                                                        
+      42      });                                                               
+      43                                                                        
+      44      return {                                                          
+      28 -      name: getTextContent(".company-list-card-medium-large__na       
+         -me"),                                                                 
+      29 -      statement: getTextContent(".company-list-card-medium-larg       
+         -e__statement"),                                                       
+      30 -      infoItems: infoData,                                            
+      31 -      cardHTML: card.outerHTML.substring(0, 3000),                    
+      45 +      count: cards.length,                                            
+      46 +      sample: {                                                       
+      47 +        name: getTextContent(".company-list-card-small__name"),       
+      48 +        statement: getTextContent(".company-list-card-small__st       
+         +atement"),                                                            
+      49 +        infoItems: infoData,                                          
+      50 +        html: sample.outerHTML.substring(0, 1500),                    
+      51 +      },                                                              
+      52      };                                                                
+      53    });                                                                 
+      54                                                                        
+      35 -  console.log("Sample Card Structure:");                              
+      36 -  console.log(JSON.stringify(cardStructure, null, 2));                
+      55 +  console.log("\nSmall Cards:");                                      
+      56 +  console.log(JSON.stringify(smallCards, null, 2));                   
+      57                                                                        
+      38 -  // Also check small cards                                           
+      39 -  const smallCardStructure = await page.evaluate(() => {              
+      40 -    // Look for list items that are not featured                      
+      41 -    const listItems = document.querySelectorAll(".company-list-       
+         -cards__list-item");                                                   
+      42 -    if (listItems.length === 0) return "No list items found";         
+      43 -                                                                      
+      44 -    const item = listItems[0];                                        
+      45 -    return {                                                          
+      46 -      html: item.outerHTML.substring(0, 2000),                        
+      47 -      className: item.className,                                      
+      48 -    };                                                                
+      49 -  });                                                                 
+      50 -                                                                      
+      51 -  console.log("\nSmall Card Structure:");                             
+      52 -  console.log(JSON.stringify(smallCardStructure, null, 2));           
+      53 -                                                                      
+      58    await browser.close();                                              
+      59  })();                                                                 
+                                                                                
+⏺ Bash(node investigate.js) timeout: 1m 0s                                      
+  ⎿  Card Types Found:                                                          
+     {                                                                          
+       "totalCards": 262,                                                       
+     … +132 lines (ctrl+o to expand)                                            
+                                                                                
+⏺ I see there are 25 medium/large cards visible. Let me check if scrolling loads
+   more companies or if there's a separate list view.                           
+                                                                                
+⏺ Write(investigate.js)                                                         
+  ⎿  Added 39 lines, removed 40 lines                                           
+       5    const page = await browser.newPage();                               
+       6    await page.goto("https://firstround.com/companies", { waitUnt       
+          il: "networkidle" });                                                 
+       7                                                                        
+       8 -  // Get all card types and count                                     
+       9 -  const cardTypes = await page.evaluate(() => {                       
+      10 -    const allCards = document.querySelectorAll("[class*='compan       
+         -y-list-card']");                                                      
+      11 -    const types = {};                                                 
+      12 -    allCards.forEach((card) => {                                      
+      13 -      const classNames = card.className;                              
+      14 -      types[classNames] = (types[classNames] || 0) + 1;               
+      15 -    });                                                               
+      16 -    return {                                                          
+      17 -      totalCards: allCards.length,                                    
+      18 -      types: Object.entries(types).map(([cls, count]) => ({ cla       
+         -ssName: cls.substring(0, 100), count })),                             
+      19 -    };                                                                
+      20 -  });                                                                 
+       8 +  // Scroll to load all content                                       
+       9 +  let prevHeight = 0;                                                 
+      10 +  let scrollAttempts = 0;                                             
+      11 +  while (scrollAttempts < 20) {                                       
+      12 +    const currentHeight = await page.evaluate(() => document.bo       
+         +dy.scrollHeight);                                                     
+      13 +    if (currentHeight === prevHeight) break;                          
+      14 +    prevHeight = currentHeight;                                       
+      15 +    await page.evaluate(() => window.scrollTo(0, document.body.       
+         +scrollHeight));                                                       
+      16 +    await page.waitForTimeout(1000);                                  
+      17 +    scrollAttempts++;                                                 
+      18 +  }                                                                   
+      19                                                                        
+      22 -  console.log("Card Types Found:");                                   
+      23 -  console.log(JSON.stringify(cardTypes, null, 2));                    
+      20 +  // Count all company entries after scrolling                        
+      21 +  const counts = await page.evaluate(() => {                          
+      22 +    // Medium/large cards                                             
+      23 +    const mediumLargeCards = document.querySelectorAll(".compan       
+         +y-list-card-medium-large__name");                                     
+      24                                                                        
+      25 -  // Check for small cards specifically                               
+      26 -  const smallCards = await page.evaluate(() => {                      
+      27 -    const cards = document.querySelectorAll(".company-list-card       
+         --small");                                                             
+      28 -    if (cards.length === 0) return { count: 0, message: "No sma       
+         -ll cards found" };                                                    
+      25 +    // Check for company list items                                   
+      26 +    const listItems = document.querySelectorAll(".company-list-       
+         +cards__list a");                                                      
+      27                                                                        
+      30 -    const sample = cards[0];                                          
+      31 -    const getTextContent = (selector) => {                            
+      32 -      const el = sample.querySelector(selector);                      
+      33 -      return el ? el.textContent.trim() : null;                       
+      34 -    };                                                                
+      28 +    // Any element with company info                                  
+      29 +    const companyInfoSections = document.querySelectorAll(".com       
+         +pany-list-company-info");                                             
+      30                                                                        
+      36 -    const infoItems = sample.querySelectorAll(".company-list-co       
+         -mpany-info__item");                                                   
+      37 -    const infoData = {};                                              
+      38 -    infoItems.forEach((item) => {                                     
+      39 -      const label = item.querySelector(".company-list-company-i       
+         -nfo__label")?.textContent.trim();                                     
+      40 -      const value = item.querySelector(".company-list-company-i       
+         -nfo__value")?.textContent.trim();                                     
+      41 -      if (label) infoData[label] = value;                             
+      42 -    });                                                               
+      31 +    // All links that go to /companies/*                              
+      32 +    const companyLinks = document.querySelectorAll('a[href^="/c       
+         +ompanies/"]');                                                        
+      33                                                                        
+      34      return {                                                          
+      45 -      count: cards.length,                                            
+      46 -      sample: {                                                       
+      47 -        name: getTextContent(".company-list-card-small__name"),       
+      48 -        statement: getTextContent(".company-list-card-small__st       
+         -atement"),                                                            
+      49 -        infoItems: infoData,                                          
+      50 -        html: sample.outerHTML.substring(0, 1500),                    
+      51 -      },                                                              
+      35 +      mediumLargeNames: mediumLargeCards.length,                      
+      36 +      listItems: listItems.length,                                    
+      37 +      companyInfoSections: companyInfoSections.length,                
+      38 +      companyLinks: companyLinks.length,                              
+      39 +      uniqueCompanyLinks: [...new Set(Array.from(companyLinks).       
+         +map((a) => a.href))].length,                                          
+      40      };                                                                
+      41    });                                                                 
+      42                                                                        
+      55 -  console.log("\nSmall Cards:");                                      
+      56 -  console.log(JSON.stringify(smallCards, null, 2));                   
+      43 +  console.log("After Scrolling - Counts:");                           
+      44 +  console.log(JSON.stringify(counts, null, 2));                       
+      45                                                                        
+      46 +  // Get unique company URLs                                          
+      47 +  const companyUrls = await page.evaluate(() => {                     
+      48 +    const links = document.querySelectorAll('a[href^="/companie       
+         +s/"]');                                                               
+      49 +    return [...new Set(Array.from(links).map((a) => a.getAttrib       
+         +ute("href")))].filter(                                                
+      50 +      (href) => href !== "/companies" && href !== "/companies/"       
+      51 +    );                                                                
+      52 +  });                                                                 
+      53 +                                                                      
+      54 +  console.log(`\nUnique company URLs found: ${companyUrls.lengt       
+         +h}`);                                                                 
+      55 +  console.log("First 10:", companyUrls.slice(0, 10));                 
+      56 +                                                                      
+      57    await browser.close();                                              
+      58  })();                                                                 
+                                                                                
+⏺ Bash(node investigate.js)                                                     
+  ⎿  After Scrolling - Counts:                                                  
+     {                                                                          
+       "mediumLargeNames": 25,                                                  
+     … +19 lines (ctrl+o to expand)                                             
+                                                                                
+⏺ It seems there's only a limited set visible. Let me check if there's a "show  
+  all" or a separate list view.                                                 
+                                                                                
+⏺ Write(investigate.js)                                                         
+  ⎿  Added 27 lines, removed 41 lines                                           
+       5    const page = await browser.newPage();                               
+       6    await page.goto("https://firstround.com/companies", { waitUnt       
+          il: "networkidle" });                                                 
+       7                                                                        
+       8 -  // Scroll to load all content                                       
+       9 -  let prevHeight = 0;                                                 
+      10 -  let scrollAttempts = 0;                                             
+      11 -  while (scrollAttempts < 20) {                                       
+      12 -    const currentHeight = await page.evaluate(() => document.bo       
+         -dy.scrollHeight);                                                     
+      13 -    if (currentHeight === prevHeight) break;                          
+      14 -    prevHeight = currentHeight;                                       
+      15 -    await page.evaluate(() => window.scrollTo(0, document.body.       
+         -scrollHeight));                                                       
+      16 -    await page.waitForTimeout(1000);                                  
+      17 -    scrollAttempts++;                                                 
+      18 -  }                                                                   
+       8 +  // Look for buttons, toggles, or filters that might show more       
+         + companies                                                            
+       9 +  const pageElements = await page.evaluate(() => {                    
+      10 +    // Find all buttons                                               
+      11 +    const buttons = Array.from(document.querySelectorAll("butto       
+         +n")).map((b) => ({                                                    
+      12 +      text: b.textContent.trim().substring(0, 50),                    
+      13 +      class: b.className.substring(0, 50),                            
+      14 +    }));                                                              
+      15                                                                        
+      20 -  // Count all company entries after scrolling                        
+      21 -  const counts = await page.evaluate(() => {                          
+      22 -    // Medium/large cards                                             
+      23 -    const mediumLargeCards = document.querySelectorAll(".compan       
+         -y-list-card-medium-large__name");                                     
+      16 +    // Find select/dropdown elements                                  
+      17 +    const selects = Array.from(document.querySelectorAll("selec       
+         +t")).map((s) => ({                                                    
+      18 +      name: s.name,                                                   
+      19 +      options: Array.from(s.options).map((o) => o.text),              
+      20 +    }));                                                              
+      21                                                                        
+      25 -    // Check for company list items                                   
+      26 -    const listItems = document.querySelectorAll(".company-list-       
+         -cards__list a");                                                      
+      22 +    // Find all <a> tags with "all" or "view" text                    
+      23 +    const viewAllLinks = Array.from(document.querySelectorAll("       
+         +a"))                                                                  
+      24 +      .filter((a) => a.textContent.toLowerCase().includes("all"       
+         +) || a.textContent.toLowerCase().includes("view"))                    
+      25 +      .map((a) => ({ text: a.textContent.trim(), href: a.href }       
+         +));                                                                   
+      26                                                                        
+      28 -    // Any element with company info                                  
+      29 -    const companyInfoSections = document.querySelectorAll(".com       
+         -pany-list-company-info");                                             
+      27 +    // Get all the section classes to understand page structure       
+      28 +    const sections = Array.from(document.querySelectorAll("sect       
+         +ion")).map((s) => s.className.substring(0, 80));                      
+      29                                                                        
+      31 -    // All links that go to /companies/*                              
+      32 -    const companyLinks = document.querySelectorAll('a[href^="/c       
+         -ompanies/"]');                                                        
+      30 +    // Check for any navigation or filter sections                    
+      31 +    const filters = document.querySelector(".company-list-filte       
+         +rs");                                                                 
+      32 +    let filterContent = null;                                         
+      33 +    if (filters) {                                                    
+      34 +      filterContent = filters.outerHTML.substring(0, 2000);           
+      35 +    }                                                                 
+      36                                                                        
+      34 -    return {                                                          
+      35 -      mediumLargeNames: mediumLargeCards.length,                      
+      36 -      listItems: listItems.length,                                    
+      37 -      companyInfoSections: companyInfoSections.length,                
+      38 -      companyLinks: companyLinks.length,                              
+      39 -      uniqueCompanyLinks: [...new Set(Array.from(companyLinks).       
+         -map((a) => a.href))].length,                                          
+      40 -    };                                                                
+      37 +    return { buttons, selects, viewAllLinks, sections, filterCo       
+         +ntent };                                                              
+      38    });                                                                 
+      39                                                                        
+      43 -  console.log("After Scrolling - Counts:");                           
+      44 -  console.log(JSON.stringify(counts, null, 2));                       
+      40 +  console.log("Page Elements:");                                      
+      41 +  console.log(JSON.stringify(pageElements, null, 2));                 
+      42                                                                        
+      46 -  // Get unique company URLs                                          
+      47 -  const companyUrls = await page.evaluate(() => {                     
+      48 -    const links = document.querySelectorAll('a[href^="/companie       
+         -s/"]');                                                               
+      49 -    return [...new Set(Array.from(links).map((a) => a.getAttrib       
+         -ute("href")))].filter(                                                
+      50 -      (href) => href !== "/companies" && href !== "/companies/"       
+      51 -    );                                                                
+      52 -  });                                                                 
+      53 -                                                                      
+      54 -  console.log(`\nUnique company URLs found: ${companyUrls.lengt       
+         -h}`);                                                                 
+      55 -  console.log("First 10:", companyUrls.slice(0, 10));                 
+      56 -                                                                      
+      43    await browser.close();                                              
+      44  })();                                                                 
+                                                                                
+⏺ Bash(node investigate.js) timeout: 1m 0s                                      
+  ⎿  Page Elements:                                                             
+     {                                                                          
+       "buttons": [                                                             
+     … +104 lines (ctrl+o to expand)                                            
+                                                                                
+⏺ I see there are dropdown filters. The page shows "Featured" by default. Let me
+   update the script to select "All" categories and scrape all companies.       
+                                                                                
+⏺ Read(scrape-firstround.js)                                                    
+  ⎿  Read 124 lines                                                             
+                                                                                
+⏺ Write(scrape-firstround.js)                                                   
+  ⎿  Added 85 lines, removed 71 lines                                           
+       11      waitUntil: "networkidle",                                        
+       12    });                                                                
+       13                                                                       
+       14 -  console.log("Extracting company data...");                         
+       14 +  // Click on the category dropdown (shows "Featured" by defau       
+          +lt) and select "All"                                                 
+       15 +  console.log("Selecting 'All' categories to show all companie       
+          +s...");                                                              
+       16 +  try {                                                              
+       17 +    // Click the category dropdown trigger (second custom-sele       
+          +ct)                                                                  
+       18 +    const categoryDropdown = page.locator(".company-list-filte       
+          +rs__categories-mobile button, .company-list-filters__categorie       
+          +s-desktop .custom-select__trigger").first();                         
+       19 +    await categoryDropdown.click();                                  
+       20 +    await page.waitForTimeout(500);                                  
+       21                                                                       
+       16 -  // Try to extract data from __NEXT_DATA__ script tag (Next.j       
+          -s apps often embed data here)                                        
+       17 -  let companies = await page.evaluate(() => {                        
+       18 -    // First try to get data from Next.js __NEXT_DATA__              
+       19 -    const nextDataScript = document.querySelector("#__NEXT_DAT       
+          -A__");                                                               
+       20 -    if (nextDataScript) {                                            
+       21 -      try {                                                          
+       22 -        const nextData = JSON.parse(nextDataScript.textContent       
+          -);                                                                   
+       23 -        const pageProps = nextData?.props?.pageProps;                
+       22 +    // Click "All" option                                            
+       23 +    await page.locator('[role="option"]:has-text("All")').firs       
+          +t().click();                                                         
+       24 +    await page.waitForTimeout(1000);                                 
+       25 +  } catch (e) {                                                      
+       26 +    console.log("Could not change category filter, continuing        
+          +with default view...");                                              
+       27 +  }                                                                  
+       28                                                                       
+       25 -        // Look for company list in various possible locations       
+       26 -        const companyList =                                          
+       27 -          pageProps?.page?.companyList ||                            
+       28 -          pageProps?.companyList ||                                  
+       29 -          pageProps?.companies;                                      
+       29 +  // Wait for the page to update after filter change                 
+       30 +  await page.waitForLoadState("networkidle");                        
+       31                                                                       
+       31 -        if (companyList && Array.isArray(companyList)) {             
+       32 -          return companyList.map((company) => {                      
+       33 -            // Extract statement text from block content             
+       34 -            let description = "";                                    
+       35 -            if (company.statement && Array.isArray(company.sta       
+          -tement)) {                                                           
+       36 -              description = company.statement                        
+       37 -                .map((block) => {                                    
+       38 -                  if (block.children && Array.isArray(block.ch       
+          -ildren)) {                                                           
+       39 -                    return block.children.map((child) => child       
+          -.text || "").join("");                                               
+       40 -                  }                                                  
+       41 -                  return "";                                         
+       42 -                })                                                   
+       43 -                .join(" ")                                           
+       44 -                .trim();                                             
+       45 -            }                                                        
+       32 +  // Scroll to load all content (in case of lazy loading)            
+       33 +  console.log("Scrolling to load all content...");                   
+       34 +  let prevHeight = 0;                                                
+       35 +  for (let i = 0; i < 10; i++) {                                     
+       36 +    const currentHeight = await page.evaluate(() => document.b       
+          +ody.scrollHeight);                                                   
+       37 +    if (currentHeight === prevHeight) break;                         
+       38 +    prevHeight = currentHeight;                                      
+       39 +    await page.evaluate(() => window.scrollTo(0, document.body       
+          +.scrollHeight));                                                     
+       40 +    await page.waitForTimeout(500);                                  
+       41 +  }                                                                  
+       42                                                                       
+       47 -            return {                                                 
+       48 -              name: company.title || "",                             
+       49 -              description: description,                              
+       50 -              categories: company.companyCategories || [],           
+       51 -              founders: company.founders || [],                      
+       52 -              initialPartnership: company.initialPartnership |       
+          -| "",                                                                
+       53 -              partner: company.partners || [],                       
+       54 -              location: company.companyLocations || [],              
+       55 -              website: company.website || "",                        
+       56 -              status: company.status || "active",                    
+       57 -            };                                                       
+       58 -          });                                                        
+       59 -        }                                                            
+       60 -      } catch (e) {                                                  
+       61 -        console.error("Error parsing __NEXT_DATA__:", e);            
+       62 -      }                                                              
+       63 -    }                                                                
+       64 -    return null;                                                     
+       65 -  });                                                                
+       43 +  // Scroll back to top                                              
+       44 +  await page.evaluate(() => window.scrollTo(0, 0));                  
+       45                                                                       
+       67 -  // If we couldn't get data from __NEXT_DATA__, scrape from D       
+          -OM                                                                   
+       68 -  if (!companies) {                                                  
+       69 -    console.log("Falling back to DOM scraping...");                  
+       70 -    companies = await page.evaluate(() => {                          
+       71 -      const companyCards = document.querySelectorAll('[class*=       
+          -"company"], [class*="Card"]');                                       
+       72 -      const results = [];                                            
+       46 +  console.log("Extracting company data...");                         
+       47                                                                       
+       74 -      companyCards.forEach((card) => {                               
+       75 -        const nameEl = card.querySelector("h2, h3, [class*='ti       
+          -tle'], [class*='name']");                                            
+       76 -        const descEl = card.querySelector("p, [class*='descrip       
+          -tion'], [class*='statement']");                                      
+       48 +  // Extract company data from DOM                                   
+       49 +  const companies = await page.evaluate(() => {                      
+       50 +    const results = [];                                              
+       51 +    const seenNames = new Set();                                     
+       52                                                                       
+       78 -        if (nameEl) {                                                
+       79 -          results.push({                                             
+       80 -            name: nameEl.textContent?.trim() || "",                  
+       81 -            description: descEl?.textContent?.trim() || "",          
+       82 -            categories: [],                                          
+       83 -            founders: [],                                            
+       84 -            initialPartnership: "",                                  
+       85 -            partner: [],                                             
+       86 -            location: [],                                            
+       87 -          });                                                        
+       53 +    // Extract data from medium/large cards                          
+       54 +    const cards = document.querySelectorAll(".company-list-car       
+          +d-medium-large");                                                    
+       55 +                                                                     
+       56 +    cards.forEach((card) => {                                        
+       57 +      const nameEl = card.querySelector(".company-list-card-me       
+          +dium-large__name");                                                  
+       58 +      const statementEl = card.querySelector(".company-list-ca       
+          +rd-medium-large__statement");                                        
+       59 +                                                                     
+       60 +      if (!nameEl) return;                                           
+       61 +                                                                     
+       62 +      const name = nameEl.textContent?.trim() || "";                 
+       63 +      if (seenNames.has(name)) return;                               
+       64 +      seenNames.add(name);                                           
+       65 +                                                                     
+       66 +      // Get info items (Founders, Initial Partnership, Catego       
+          +ries, Partner, Location)                                             
+       67 +      const infoItems = card.querySelectorAll(".company-list-c       
+          +ompany-info__item");                                                 
+       68 +      const infoData = {};                                           
+       69 +      infoItems.forEach((item) => {                                  
+       70 +        const label = item.querySelector(".company-list-compan       
+          +y-info__label")?.textContent?.trim();                                
+       71 +        const value = item.querySelector(".company-list-compan       
+          +y-info__value")?.textContent?.trim();                                
+       72 +        if (label && value) {                                        
+       73 +          infoData[label.replace(":", "")] = value;                  
+       74          }                                                            
+       75        });                                                            
+       76                                                                       
+       91 -      return results;                                                
+       77 +      results.push({                                                 
+       78 +        name: name,                                                  
+       79 +        description: statementEl?.textContent?.trim() || "",         
+       80 +        categories: infoData["Categories"] || infoData["Catego       
+          +ry"] || "",                                                          
+       81 +        founders: infoData["Founders"] || infoData["Founder"]        
+          +|| "",                                                               
+       82 +        initialPartnership: infoData["Initial Partnership"] ||       
+          + "",                                                                 
+       83 +        partner: infoData["Partner"] || infoData["Partners"] |       
+          +| "",                                                                
+       84 +        location: infoData["Location"] || "",                        
+       85 +      });                                                            
+       86      });                                                              
+       93 -  }                                                                  
+       87                                                                       
+       88 +    return results;                                                  
+       89 +  });                                                                
+       90 +                                                                     
+       91    await browser.close();                                             
+       92                                                                       
+       93    if (companies && companies.length > 0) {                           
+       94      console.log(`Found ${companies.length} companies`);              
+       95                                                                       
+       96 +    // Process the data to convert string fields to arrays whe       
+          +re appropriate                                                       
+       97 +    const processedCompanies = companies.map((company) => ({         
+       98 +      name: company.name,                                            
+       99 +      description: company.description,                              
+      100 +      categories: company.categories                                 
+      101 +        ? company.categories.split("/").map((c) => c.trim())         
+      102 +        : [],                                                        
+      103 +      founders: company.founders                                     
+      104 +        ? company.founders.split(",").map((f) => f.trim())           
+      105 +        : [],                                                        
+      106 +      initialPartnership: company.initialPartnership,                
+      107 +      partner: company.partner                                       
+      108 +        ? company.partner.split(",").map((p) => p.trim())            
+      109 +        : [],                                                        
+      110 +      location: company.location,                                    
+      111 +    }));                                                             
+      112 +                                                                     
+      113      // Save to JSON file                                             
+      114      const outputPath = "./firstround-companies.json";                
+      102 -    fs.writeFileSync(outputPath, JSON.stringify(companies, nul       
+          -l, 2));                                                              
+      115 +    fs.writeFileSync(outputPath, JSON.stringify(processedCompa       
+          +nies, null, 2));                                                     
+      116      console.log(`Data saved to ${outputPath}`);                      
+      117                                                                       
+      105 -    return companies;                                                
+      118 +    return processedCompanies;                                       
+      119    } else {                                                           
+      120      console.log("No companies found");                               
+      121      return [];                                                       
+     ...                                                                        
+      129      if (companies.length > 0) {                                      
+      130        console.log(JSON.stringify(companies[0], null, 2));            
+      131      }                                                                
+      132 +    console.log(`\nTotal companies scraped: ${companies.length       
+          +}`);                                                                 
+      133    })                                                                 
+      134    .catch((error) => {                                                
+      135      console.error("Scraping failed:", error);                        
+                                                                                
+⏺ Bash(node scrape-firstround.js)                                               
+  ⎿  Navigating to FirstRound companies page...                                 
+     Selecting 'All' categories to show all companies...                        
+     Could not change category filter, continuing with default view...          
+     … +27 lines (ctrl+o to expand)                                             
+                                                                                
+⏺ The data extraction is working correctly now with all fields. However, it's   
+  only getting 25 featured companies. Let me fix the dropdown selection to show 
+  all companies.                                                                
+                                                                                
+⏺ Write(scrape-firstround.js)                                                   
+  ⎿  Added 16 lines, removed 9 lines                                            
+      11      waitUntil: "networkidle",                                         
+      12    });                                                                 
+      13                                                                        
+      14 -  // Click on the category dropdown (shows "Featured" by defaul       
+         -t) and select "All"                                                   
+      14 +  // Click on the category dropdown and select "All" to show al       
+         +l companies                                                           
+      15    console.log("Selecting 'All' categories to show all companies       
+          ...");                                                                
+      16    try {                                                               
+      17 -    // Click the category dropdown trigger (second custom-selec       
+         -t)                                                                    
+      18 -    const categoryDropdown = page.locator(".company-list-filter       
+         -s__categories-mobile button, .company-list-filters__categories-       
+         -desktop .custom-select__trigger").first();                            
+      19 -    await categoryDropdown.click();                                   
+      17 +    // Wait for the page to be fully loaded                           
+      18 +    await page.waitForSelector(".company-list-filters", { timeo       
+         +ut: 10000 });                                                         
+      19 +                                                                      
+      20 +    // Find the "Featured" dropdown button (the second custom-s       
+         +elect trigger)                                                        
+      21 +    const featuredButton = page.locator('button:has-text("Featu       
+         +red")');                                                              
+      22 +    await featuredButton.click();                                     
+      23      await page.waitForTimeout(500);                                   
+      24                                                                        
+      22 -    // Click "All" option                                             
+      23 -    await page.locator('[role="option"]:has-text("All")').first       
+         -().click();                                                           
+      24 -    await page.waitForTimeout(1000);                                  
+      25 +    // Click "All" option in the dropdown                             
+      26 +    const allOption = page.locator('[role="listbox"] [role="opt       
+         +ion"]').filter({ hasText: /^All$/ });                                 
+      27 +    await allOption.click();                                          
+      28 +    await page.waitForTimeout(1500);                                  
+      29 +                                                                      
+      30 +    console.log("Successfully selected 'All' categories");            
+      31    } catch (e) {                                                       
+      26 -    console.log("Could not change category filter, continuing w       
+         -ith default view...");                                                
+      32 +    console.log("Could not change category filter:", e.message)       
+         +;                                                                     
+      33 +    console.log("Continuing with default view...");                   
+      34    }                                                                   
+      35                                                                        
+      36    // Wait for the page to update after filter change                  
+     ...                                                                        
+      39    // Scroll to load all content (in case of lazy loading)             
+      40    console.log("Scrolling to load all content...");                    
+      41    let prevHeight = 0;                                                 
+      35 -  for (let i = 0; i < 10; i++) {                                      
+      42 +  for (let i = 0; i < 20; i++) {                                      
+      43      const currentHeight = await page.evaluate(() => document.bo       
+          dy.scrollHeight);                                                     
+      44      if (currentHeight === prevHeight) break;                          
+      45      prevHeight = currentHeight;                                       
+                                                                                
+⏺ Bash(node scrape-firstround.js)                                               
+  ⎿ Navigating to FirstRound companies page...                                  
+    Selecting 'All' categories to show all companies...                         
+    Could not change category filter: locator.click: Timeout 30000ms exceed     
+    … +49 lines (ctrl+o to expand)                                              
+                                                                                
+                                                                                
+⏺ The dropdown is not visible, likely due to viewport size. Let me set a desktop
+   viewport and try again.                                                      
+                                                                                
+⏺ Write(scrape-firstround.js)                                                   
+  ⎿  Added 100 lines, removed 71 lines                                          
+       3                                                                        
+       4  async function scrapeFirstRoundCompanies() {                          
+       5    const browser = await chromium.launch({ headless: true });          
+       6 -  const context = await browser.newContext();                         
+       6 +  const context = await browser.newContext({                          
+       7 +    viewport: { width: 1920, height: 1080 },                          
+       8 +  });                                                                 
+       9    const page = await context.newPage();                               
+      10                                                                        
+      11    console.log("Navigating to FirstRound companies page...");          
+     ...                                                                        
+       13      waitUntil: "networkidle",                                        
+       14    });                                                                
+       15                                                                       
+       14 -  // Click on the category dropdown and select "All" to show a       
+          -ll companies                                                         
+       15 -  console.log("Selecting 'All' categories to show all companie       
+          -s...");                                                              
+       16 -  try {                                                              
+       17 -    // Wait for the page to be fully loaded                          
+       18 -    await page.waitForSelector(".company-list-filters", { time       
+          -out: 10000 });                                                       
+       16 +  // Categories to iterate through (to get all companies)            
+       17 +  const categories = ["All", "AI", "Consumer", "DevTools & Inf       
+          +ra", "Enterprise", "Fintech", "Hardware", "Healthcare"];             
+       18 +  const allCompanies = new Map(); // Use Map to deduplicate by       
+          + name                                                                
+       19                                                                       
+       20 -    // Find the "Featured" dropdown button (the second custom-       
+          -select trigger)                                                      
+       21 -    const featuredButton = page.locator('button:has-text("Feat       
+          -ured")');                                                            
+       22 -    await featuredButton.click();                                    
+       23 -    await page.waitForTimeout(500);                                  
+       20 +  for (const category of categories) {                               
+       21 +    console.log(`\nScraping category: ${category}...`);              
+       22                                                                       
+       25 -    // Click "All" option in the dropdown                            
+       26 -    const allOption = page.locator('[role="listbox"] [role="op       
+          -tion"]').filter({ hasText: /^All$/ });                               
+       27 -    await allOption.click();                                         
+       28 -    await page.waitForTimeout(1500);                                 
+       23 +    try {                                                            
+       24 +      // Wait for the page to be fully loaded                        
+       25 +      await page.waitForSelector(".company-list-filters", { ti       
+          +meout: 10000 });                                                     
+       26                                                                       
+       30 -    console.log("Successfully selected 'All' categories");           
+       31 -  } catch (e) {                                                      
+       32 -    console.log("Could not change category filter:", e.message       
+          -);                                                                   
+       33 -    console.log("Continuing with default view...");                  
+       34 -  }                                                                  
+       27 +      // Click the category checkbox/filter                          
+       28 +      if (category === "All") {                                      
+       29 +        // For "All", we use the dropdown                            
+       30 +        const dropdown = page.locator(".company-list-filters__       
+          +categories-desktop .custom-select__trigger").first();                
+       31 +        await dropdown.click();                                      
+       32 +        await page.waitForTimeout(300);                              
+       33                                                                       
+       36 -  // Wait for the page to update after filter change                 
+       37 -  await page.waitForLoadState("networkidle");                        
+       34 +        // Look for the All option                                   
+       35 +        const allOption = page.locator('[role="option"]').filt       
+          +er({ hasText: /^All$/ }).first();                                    
+       36 +        await allOption.click();                                     
+       37 +        await page.waitForTimeout(1000);                             
+       38 +      } else {                                                       
+       39 +        // For specific categories, click the category checkbo       
+          +x                                                                    
+       40 +        const categoryCheckbox = page.locator(`.company-list-f       
+          +ilters__category-label:has-text("${category}")`);                    
+       41 +        if (await categoryCheckbox.isVisible()) {                    
+       42 +          await categoryCheckbox.click();                            
+       43 +          await page.waitForTimeout(1000);                           
+       44 +        }                                                            
+       45 +      }                                                              
+       46 +    } catch (e) {                                                    
+       47 +      console.log(`Could not select ${category} filter: ${e.me       
+          +ssage.substring(0, 100)}`);                                          
+       48 +    }                                                                
+       49                                                                       
+       39 -  // Scroll to load all content (in case of lazy loading)            
+       40 -  console.log("Scrolling to load all content...");                   
+       41 -  let prevHeight = 0;                                                
+       42 -  for (let i = 0; i < 20; i++) {                                     
+       43 -    const currentHeight = await page.evaluate(() => document.b       
+          -ody.scrollHeight);                                                   
+       44 -    if (currentHeight === prevHeight) break;                         
+       45 -    prevHeight = currentHeight;                                      
+       46 -    await page.evaluate(() => window.scrollTo(0, document.body       
+          -.scrollHeight));                                                     
+       47 -    await page.waitForTimeout(500);                                  
+       48 -  }                                                                  
+       50 +    // Wait for content to load                                      
+       51 +    await page.waitForLoadState("networkidle");                      
+       52                                                                       
+       50 -  // Scroll back to top                                              
+       51 -  await page.evaluate(() => window.scrollTo(0, 0));                  
+       53 +    // Scroll to load all content                                    
+       54 +    let prevHeight = 0;                                              
+       55 +    for (let i = 0; i < 10; i++) {                                   
+       56 +      const currentHeight = await page.evaluate(() => document       
+          +.body.scrollHeight);                                                 
+       57 +      if (currentHeight === prevHeight) break;                       
+       58 +      prevHeight = currentHeight;                                    
+       59 +      await page.evaluate(() => window.scrollTo(0, document.bo       
+          +dy.scrollHeight));                                                   
+       60 +      await page.waitForTimeout(300);                                
+       61 +    }                                                                
+       62                                                                       
+       53 -  console.log("Extracting company data...");                         
+       63 +    // Extract companies from current view                           
+       64 +    const companies = await page.evaluate(() => {                    
+       65 +      const results = [];                                            
+       66 +      const cards = document.querySelectorAll(".company-list-c       
+          +ard-medium-large");                                                  
+       67                                                                       
+       55 -  // Extract company data from DOM                                   
+       56 -  const companies = await page.evaluate(() => {                      
+       57 -    const results = [];                                              
+       58 -    const seenNames = new Set();                                     
+       68 +      cards.forEach((card) => {                                      
+       69 +        const nameEl = card.querySelector(".company-list-card-       
+          +medium-large__name");                                                
+       70 +        const statementEl = card.querySelector(".company-list-       
+          +card-medium-large__statement");                                      
+       71                                                                       
+       60 -    // Extract data from medium/large cards                          
+       61 -    const cards = document.querySelectorAll(".company-list-car       
+          -d-medium-large");                                                    
+       72 +        if (!nameEl) return;                                         
+       73                                                                       
+       63 -    cards.forEach((card) => {                                        
+       64 -      const nameEl = card.querySelector(".company-list-card-me       
+          -dium-large__name");                                                  
+       65 -      const statementEl = card.querySelector(".company-list-ca       
+          -rd-medium-large__statement");                                        
+       74 +        const name = nameEl.textContent?.trim() || "";               
+       75 +        if (!name) return;                                           
+       76                                                                       
+       67 -      if (!nameEl) return;                                           
+       77 +        const infoItems = card.querySelectorAll(".company-list       
+          +-company-info__item");                                               
+       78 +        const infoData = {};                                         
+       79 +        infoItems.forEach((item) => {                                
+       80 +          const label = item.querySelector(".company-list-comp       
+          +any-info__label")?.textContent?.trim();                              
+       81 +          const value = item.querySelector(".company-list-comp       
+          +any-info__value")?.textContent?.trim();                              
+       82 +          if (label && value) {                                      
+       83 +            infoData[label.replace(":", "")] = value;                
+       84 +          }                                                          
+       85 +        });                                                          
+       86                                                                       
+       69 -      const name = nameEl.textContent?.trim() || "";                 
+       70 -      if (seenNames.has(name)) return;                               
+       71 -      seenNames.add(name);                                           
+       72 -                                                                     
+       73 -      // Get info items (Founders, Initial Partnership, Catego       
+          -ries, Partner, Location)                                             
+       74 -      const infoItems = card.querySelectorAll(".company-list-c       
+          -ompany-info__item");                                                 
+       75 -      const infoData = {};                                           
+       76 -      infoItems.forEach((item) => {                                  
+       77 -        const label = item.querySelector(".company-list-compan       
+          -y-info__label")?.textContent?.trim();                                
+       78 -        const value = item.querySelector(".company-list-compan       
+          -y-info__value")?.textContent?.trim();                                
+       79 -        if (label && value) {                                        
+       80 -          infoData[label.replace(":", "")] = value;                  
+       81 -        }                                                            
+       87 +        results.push({                                               
+       88 +          name: name,                                                
+       89 +          description: statementEl?.textContent?.trim() || "",       
+       90 +          categories: infoData["Categories"] || infoData["Cate       
+          +gory"] || "",                                                        
+       91 +          founders: infoData["Founders"] || infoData["Founder"       
+          +] || "",                                                             
+       92 +          initialPartnership: infoData["Initial Partnership"]        
+          +|| "",                                                               
+       93 +          partner: infoData["Partner"] || infoData["Partners"]       
+          + || "",                                                              
+       94 +          location: infoData["Location"] || "",                      
+       95 +        });                                                          
+       96        });                                                            
+       97                                                                       
+       84 -      results.push({                                                 
+       85 -        name: name,                                                  
+       86 -        description: statementEl?.textContent?.trim() || "",         
+       87 -        categories: infoData["Categories"] || infoData["Catego       
+          -ry"] || "",                                                          
+       88 -        founders: infoData["Founders"] || infoData["Founder"]        
+          -|| "",                                                               
+       89 -        initialPartnership: infoData["Initial Partnership"] ||       
+          - "",                                                                 
+       90 -        partner: infoData["Partner"] || infoData["Partners"] |       
+          -| "",                                                                
+       91 -        location: infoData["Location"] || "",                        
+       92 -      });                                                            
+       98 +      return results;                                                
+       99      });                                                              
+      100                                                                       
+       95 -    return results;                                                  
+       96 -  });                                                                
+      101 +    // Add to our collection (deduplicating by name)                 
+      102 +    companies.forEach((company) => {                                 
+      103 +      if (!allCompanies.has(company.name)) {                         
+      104 +        allCompanies.set(company.name, company);                     
+      105 +      }                                                              
+      106 +    });                                                              
+      107                                                                       
+      108 +    console.log(`Found ${companies.length} companies in ${cate       
+          +gory} (Total unique: ${allCompanies.size})`);                        
+      109 +                                                                     
+      110 +    // Reset filters by clicking All or reloading                    
+      111 +    if (category !== "All" && category !== categories[categori       
+          +es.length - 1]) {                                                    
+      112 +      // Uncheck current category by clicking it again               
+      113 +      try {                                                          
+      114 +        const categoryCheckbox = page.locator(`.company-list-f       
+          +ilters__category-label:has-text("${category}")`);                    
+      115 +        if (await categoryCheckbox.isVisible()) {                    
+      116 +          await categoryCheckbox.click();                            
+      117 +          await page.waitForTimeout(500);                            
+      118 +        }                                                            
+      119 +      } catch (e) {                                                  
+      120 +        // Continue to next category                                 
+      121 +      }                                                              
+      122 +    }                                                                
+      123 +  }                                                                  
+      124 +                                                                     
+      125    await browser.close();                                             
+      126                                                                       
+      100 -  if (companies && companies.length > 0) {                           
+      101 -    console.log(`Found ${companies.length} companies`);              
+      127 +  const companiesArray = Array.from(allCompanies.values());          
+      128                                                                       
+      129 +  if (companiesArray.length > 0) {                                   
+      130 +    console.log(`\nTotal unique companies found: ${companiesAr       
+          +ray.length}`);                                                       
+      131 +                                                                     
+      132      // Process the data to convert string fields to arrays whe       
+           re appropriate                                                       
+      104 -    const processedCompanies = companies.map((company) => ({         
+      133 +    const processedCompanies = companiesArray.map((company) =>       
+          + ({                                                                  
+      134        name: company.name,                                            
+      135        description: company.description,                              
+      136        categories: company.categories                                 
+                                                                                
+⏺ Bash(node scrape-firstround.js) timeout: 5m 0s                                
+  ⎿  Navigating to FirstRound companies page...                                 
+                                                                                
+     Scraping category: All...                                                  
+     … +51 lines (ctrl+o to expand)                                             
+                                                                                
+⏺ The category filters are only filtering within the 25 displayed companies. Let
+   me try a different approach - reload the page for each category to see if    
+  each has its own featured companies.                                          
+                                                                                
+⏺ Write(scrape-firstround.js)                                                   
+  ⎿  Added 108 lines, removed 80 lines                                          
+        8    });                                                                
+        9    const page = await context.newPage();                              
+       10                                                                       
+       11 +  const allCompanies = new Map(); // Use Map to deduplicate by       
+          + name                                                                
+       12 +                                                                     
+       13 +  // First scrape the main page                                      
+       14    console.log("Navigating to FirstRound companies page...");         
+       15    await page.goto("https://firstround.com/companies", {              
+       16      waitUntil: "networkidle",                                        
+       17    });                                                                
+       18                                                                       
+       16 -  // Categories to iterate through (to get all companies)            
+       17 -  const categories = ["All", "AI", "Consumer", "DevTools & Inf       
+          -ra", "Enterprise", "Fintech", "Hardware", "Healthcare"];             
+       18 -  const allCompanies = new Map(); // Use Map to deduplicate by       
+          - name                                                                
+       19 +  // Scroll to load all content                                      
+       20 +  console.log("Scrolling to load all content...");                   
+       21 +  let prevHeight = 0;                                                
+       22 +  for (let i = 0; i < 15; i++) {                                     
+       23 +    const currentHeight = await page.evaluate(() => document.b       
+          +ody.scrollHeight);                                                   
+       24 +    if (currentHeight === prevHeight) break;                         
+       25 +    prevHeight = currentHeight;                                      
+       26 +    await page.evaluate(() => window.scrollTo(0, document.body       
+          +.scrollHeight));                                                     
+       27 +    await page.waitForTimeout(500);                                  
+       28 +  }                                                                  
+       29                                                                       
+       20 -  for (const category of categories) {                               
+       21 -    console.log(`\nScraping category: ${category}...`);              
+       30 +  // Extract companies from the main page                            
+       31 +  console.log("Extracting company data from main page...");          
+       32 +  let companies = await extractCompanies(page);                      
+       33 +  companies.forEach((company) => {                                   
+       34 +    if (!allCompanies.has(company.name)) {                           
+       35 +      allCompanies.set(company.name, company);                       
+       36 +    }                                                                
+       37 +  });                                                                
+       38 +  console.log(`Found ${companies.length} companies on main pag       
+          +e`);                                                                 
+       39                                                                       
+       23 -    try {                                                            
+       24 -      // Wait for the page to be fully loaded                        
+       25 -      await page.waitForSelector(".company-list-filters", { ti       
+          -meout: 10000 });                                                     
+       40 +  // Also get list of all company links to visit individual pa       
+          +ges                                                                  
+       41 +  const companyLinks = await page.evaluate(() => {                   
+       42 +    const links = document.querySelectorAll('a[href^="/compani       
+          +es/"]');                                                             
+       43 +    return [...new Set(Array.from(links).map((a) => a.getAttri       
+          +bute("href")))]                                                      
+       44 +      .filter((href) => href !== "/companies" && href !== "/co       
+          +mpanies/")                                                           
+       45 +      .map((href) => "https://firstround.com" + href);               
+       46 +  });                                                                
+       47                                                                       
+       27 -      // Click the category checkbox/filter                          
+       28 -      if (category === "All") {                                      
+       29 -        // For "All", we use the dropdown                            
+       30 -        const dropdown = page.locator(".company-list-filters__       
+          -categories-desktop .custom-select__trigger").first();                
+       31 -        await dropdown.click();                                      
+       32 -        await page.waitForTimeout(300);                              
+       48 +  console.log(`Found ${companyLinks.length} company detail pag       
+          +e links`);                                                           
+       49                                                                       
+       34 -        // Look for the All option                                   
+       35 -        const allOption = page.locator('[role="option"]').filt       
+          -er({ hasText: /^All$/ }).first();                                    
+       36 -        await allOption.click();                                     
+       37 -        await page.waitForTimeout(1000);                             
+       38 -      } else {                                                       
+       39 -        // For specific categories, click the category checkbo       
+          -x                                                                    
+       40 -        const categoryCheckbox = page.locator(`.company-list-f       
+          -ilters__category-label:has-text("${category}")`);                    
+       41 -        if (await categoryCheckbox.isVisible()) {                    
+       42 -          await categoryCheckbox.click();                            
+       43 -          await page.waitForTimeout(1000);                           
+       44 -        }                                                            
+       45 -      }                                                              
+       46 -    } catch (e) {                                                    
+       47 -      console.log(`Could not select ${category} filter: ${e.me       
+          -ssage.substring(0, 100)}`);                                          
+       48 -    }                                                                
+       50 +  // Visit each company detail page to get full data                 
+       51 +  for (let i = 0; i < companyLinks.length; i++) {                    
+       52 +    const url = companyLinks[i];                                     
+       53 +    const companySlug = url.split("/companies/")[1];                 
+       54                                                                       
+       50 -    // Wait for content to load                                      
+       51 -    await page.waitForLoadState("networkidle");                      
+       52 -                                                                     
+       53 -    // Scroll to load all content                                    
+       54 -    let prevHeight = 0;                                              
+       55 -    for (let i = 0; i < 10; i++) {                                   
+       56 -      const currentHeight = await page.evaluate(() => document       
+          -.body.scrollHeight);                                                 
+       57 -      if (currentHeight === prevHeight) break;                       
+       58 -      prevHeight = currentHeight;                                    
+       59 -      await page.evaluate(() => window.scrollTo(0, document.bo       
+          -dy.scrollHeight));                                                   
+       60 -      await page.waitForTimeout(300);                                
+       55 +    // Skip if we already have this company with complete data       
+       56 +    const existingCompany = Array.from(allCompanies.values()).       
+          +find(                                                                
+       57 +      (c) => c.name.toLowerCase().replace(/\s+/g, "-") === com       
+          +panySlug                                                             
+       58 +    );                                                               
+       59 +    if (existingCompany && existingCompany.founders) {               
+       60 +      continue;                                                      
+       61      }                                                                
+       62                                                                       
+       63 -    // Extract companies from current view                           
+       64 -    const companies = await page.evaluate(() => {                    
+       65 -      const results = [];                                            
+       66 -      const cards = document.querySelectorAll(".company-list-c       
+          -ard-medium-large");                                                  
+       63 +    console.log(`Scraping company detail page (${i + 1}/${comp       
+          +anyLinks.length}): ${companySlug}`);                                 
+       64                                                                       
+       68 -      cards.forEach((card) => {                                      
+       69 -        const nameEl = card.querySelector(".company-list-card-       
+          -medium-large__name");                                                
+       70 -        const statementEl = card.querySelector(".company-list-       
+          -card-medium-large__statement");                                      
+       65 +    try {                                                            
+       66 +      await page.goto(url, { waitUntil: "networkidle", timeout       
+          +: 30000 });                                                          
+       67                                                                       
+       72 -        if (!nameEl) return;                                         
+       68 +      const companyData = await page.evaluate(() => {                
+       69 +        // Try to extract data from company detail page              
+       70 +        const name =                                                 
+       71 +          document.querySelector("h1")?.textContent?.trim() ||       
+       72 +          document.querySelector(".company-hero__name")?.textC       
+          +ontent?.trim() ||                                                    
+       73 +          "";                                                        
+       74                                                                       
+       74 -        const name = nameEl.textContent?.trim() || "";               
+       75 -        if (!name) return;                                           
+       75 +        const description =                                          
+       76 +          document.querySelector(".company-hero__statement")?.       
+          +textContent?.trim() ||                                               
+       77 +          document.querySelector('[class*="statement"]')?.text       
+          +Content?.trim() ||                                                   
+       78 +          "";                                                        
+       79                                                                       
+       77 -        const infoItems = card.querySelectorAll(".company-list       
+          --company-info__item");                                               
+       80 +        // Get info from the detail page                             
+       81          const infoData = {};                                         
+       82 +        const infoItems = document.querySelectorAll(                 
+       83 +          ".company-info__item, .company-list-company-info__it       
+          +em, [class*='info__item']"                                           
+       84 +        );                                                           
+       85          infoItems.forEach((item) => {                                
+       80 -          const label = item.querySelector(".company-list-comp       
+          -any-info__label")?.textContent?.trim();                              
+       81 -          const value = item.querySelector(".company-list-comp       
+          -any-info__value")?.textContent?.trim();                              
+       86 +          const label = item.querySelector("[class*='label']")       
+          +?.textContent?.trim();                                               
+       87 +          const value = item.querySelector("[class*='value']")       
+          +?.textContent?.trim();                                               
+       88            if (label && value) {                                      
+       89              infoData[label.replace(":", "")] = value;                
+       90            }                                                          
+       91          });                                                          
+       92                                                                       
+       87 -        results.push({                                               
+       88 -          name: name,                                                
+       89 -          description: statementEl?.textContent?.trim() || "",       
+       93 +        return {                                                     
+       94 +          name,                                                      
+       95 +          description,                                               
+       96            categories: infoData["Categories"] || infoData["Cate       
+           gory"] || "",                                                        
+       97            founders: infoData["Founders"] || infoData["Founder"       
+           ] || "",                                                             
+       98            initialPartnership: infoData["Initial Partnership"]        
+           || "",                                                               
+       99            partner: infoData["Partner"] || infoData["Partners"]       
+            || "",                                                              
+      100            location: infoData["Location"] || "",                      
+       95 -        });                                                          
+      101 +        };                                                           
+      102        });                                                            
+      103                                                                       
+       98 -      return results;                                                
+       99 -    });                                                              
+      100 -                                                                     
+      101 -    // Add to our collection (deduplicating by name)                 
+      102 -    companies.forEach((company) => {                                 
+      103 -      if (!allCompanies.has(company.name)) {                         
+      104 -        allCompanies.set(company.name, company);                     
+      104 +      if (companyData.name && !allCompanies.has(companyData.na       
+          +me)) {                                                               
+      105 +        allCompanies.set(companyData.name, companyData);             
+      106        }                                                              
+      106 -    });                                                              
+      107 -                                                                     
+      108 -    console.log(`Found ${companies.length} companies in ${cate       
+          -gory} (Total unique: ${allCompanies.size})`);                        
+      109 -                                                                     
+      110 -    // Reset filters by clicking All or reloading                    
+      111 -    if (category !== "All" && category !== categories[categori       
+          -es.length - 1]) {                                                    
+      112 -      // Uncheck current category by clicking it again               
+      113 -      try {                                                          
+      114 -        const categoryCheckbox = page.locator(`.company-list-f       
+          -ilters__category-label:has-text("${category}")`);                    
+      115 -        if (await categoryCheckbox.isVisible()) {                    
+      116 -          await categoryCheckbox.click();                            
+      117 -          await page.waitForTimeout(500);                            
+      118 -        }                                                            
+      119 -      } catch (e) {                                                  
+      120 -        // Continue to next category                                 
+      121 -      }                                                              
+      107 +    } catch (e) {                                                    
+      108 +      console.log(`  Error scraping ${companySlug}: ${e.messag       
+          +e.substring(0, 50)}`);                                               
+      109      }                                                                
+      110    }                                                                  
+      111                                                                       
+     ...                                                                        
+      145    }                                                                  
+      146  }                                                                    
+      147                                                                       
+      148 +async function extractCompanies(page) {                              
+      149 +  return await page.evaluate(() => {                                 
+      150 +    const results = [];                                              
+      151 +    const seenNames = new Set();                                     
+      152 +    const cards = document.querySelectorAll(".company-list-car       
+          +d-medium-large");                                                    
+      153 +                                                                     
+      154 +    cards.forEach((card) => {                                        
+      155 +      const nameEl = card.querySelector(".company-list-card-me       
+          +dium-large__name");                                                  
+      156 +      const statementEl = card.querySelector(".company-list-ca       
+          +rd-medium-large__statement");                                        
+      157 +                                                                     
+      158 +      if (!nameEl) return;                                           
+      159 +                                                                     
+      160 +      const name = nameEl.textContent?.trim() || "";                 
+      161 +      if (!name || seenNames.has(name)) return;                      
+      162 +      seenNames.add(name);                                           
+      163 +                                                                     
+      164 +      const infoItems = card.querySelectorAll(".company-list-c       
+          +ompany-info__item");                                                 
+      165 +      const infoData = {};                                           
+      166 +      infoItems.forEach((item) => {                                  
+      167 +        const label = item.querySelector(".company-list-compan       
+          +y-info__label")?.textContent?.trim();                                
+      168 +        const value = item.querySelector(".company-list-compan       
+          +y-info__value")?.textContent?.trim();                                
+      169 +        if (label && value) {                                        
+      170 +          infoData[label.replace(":", "")] = value;                  
+      171 +        }                                                            
+      172 +      });                                                            
+      173 +                                                                     
+      174 +      results.push({                                                 
+      175 +        name,                                                        
+      176 +        description: statementEl?.textContent?.trim() || "",         
+      177 +        categories: infoData["Categories"] || infoData["Catego       
+          +ry"] || "",                                                          
+      178 +        founders: infoData["Founders"] || infoData["Founder"]        
+          +|| "",                                                               
+      179 +        initialPartnership: infoData["Initial Partnership"] ||       
+          + "",                                                                 
+      180 +        partner: infoData["Partner"] || infoData["Partners"] |       
+          +| "",                                                                
+      181 +        location: infoData["Location"] || "",                        
+      182 +      });                                                            
+      183 +    });                                                              
+      184 +                                                                     
+      185 +    return results;                                                  
+      186 +  });                                                                
+      187 +}                                                                    
+      188 +                                                                     
+      189  // Run the scraper                                                   
+      190  scrapeFirstRoundCompanies()                                          
+      191    .then((companies) => {                                             
+                                                                                
+⏺ Bash(node scrape-firstround.js) timeout: 5m 0s                                
+  ⎿  Navigating to FirstRound companies page...                                 
+     Scrolling to load all content...                                           
+     Extracting company data from main page...                                  
+     … +29 lines (ctrl+o to expand)                                             
+                                                                                
+⏺ The script is working. Let me verify the output data.                         
+                                                                                
+⏺ Bash(cat firstround-companies.json | head -100)                               
+  ⎿  [                                                                          
+       {                                                                        
+         "name": "Notion",                                                      
+     … +103 lines (ctrl+o to expand)                                            
+                                                                                
+⏺ Bash(wc -l firstround-companies.json && du -h firstround-companies.json)      
+  ⎿       418 firstround-companies.json                                         
+      12K       firstround-companies.json                                       
+                                                                                
+⏺ Bash(rm investigate.js)                                                       
+  ⎿  (No content)                                                               
+                                                                                
+⏺ The script is complete. Here's a summary:                                     
+                                                                                
+  Created files:                                                                
+  - scrape-firstround.js - Playwright script that scrapes FirstRound's company  
+  page                                                                          
+  - firstround-companies.json - Output containing 25 companies with all         
+  requested fields                                                              
+                                                                                
+  Each company includes:                                                        
+  - name - Company name                                                         
+  - description - Company description/statement                                 
+  - categories - Array of categories (Enterprise, AI, Consumer, etc.)           
+  - founders - Array of founder names                                           
+  - initialPartnership - Partnership stage (Seed, Pre-Seed, Series A)           
+  - partner - Array of FirstRound partners                                      
+  - location - Company location                                                 
+                                                                                
+  To run the scraper:                                                           
+  node scrape-firstround.js                                                     
+                                                                                
+  Note: FirstRound's public website only showcases 25 featured portfolio        
+  companies with detailed information. Their full portfolio isn't publicly      
+  displayed with the same level of detail on this page. The script captures all 
+  companies that are publicly available with the requested metadata.            
+                                                                                
+✻ Cogitated for 8m 17s                                                          
+

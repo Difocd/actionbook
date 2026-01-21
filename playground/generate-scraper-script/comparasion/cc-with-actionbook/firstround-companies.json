@@ -1,0 +1,1748 @@
+[
+  {
+    "name": "&AI",
+    "description": "AI transformed how attorneys worked.",
+    "categories": "AI / Enterprise",
+    "founders": "Caleb Harris, Herbie Turner",
+    "initialPartnership": "Seed",
+    "partner": "Liz Wessel",
+    "location": "SF Bay Area, New York"
+  },
+  {
+    "name": "&Open",
+    "description": "companies could build loyalty with thoughtful gifting done at scale.",
+    "categories": "Enterprise",
+    "founders": "Jonathan Legge, Mark Legge, Ciara Flood",
+    "initialPartnership": "Seed",
+    "partner": "Hayley Barna",
+    "location": "Other"
+  },
+  {
+    "name": "64x",
+    "description": "previously unattainable cell lines could help more gene therapies get to market faster.",
+    "categories": "Healthcare",
+    "founders": "Alexis Rovner",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "9GAG",
+    "description": "a global cross-platform media community could make the world happier.",
+    "categories": "Consumer / AI",
+    "founders": "Ray Chan",
+    "initialPartnership": "Seed",
+    "partner": "",
+    "location": "Distributed"
+  },
+  {
+    "name": "Abra",
+    "description": "prime and wealth management services applied to digital assets.",
+    "categories": "Fintech",
+    "founders": "Bill Barhydt",
+    "initialPartnership": "Seed",
+    "partner": "",
+    "location": ""
+  },
+  {
+    "name": "Actively",
+    "description": "companies could scale the deep reasoning of their best sales reps.",
+    "categories": "AI / Enterprise",
+    "founders": "Anshul Gupta, Mihir Garimella",
+    "initialPartnership": "Seed",
+    "partner": "Todd Jackson",
+    "location": "New York"
+  },
+  {
+    "name": "Adaptly",
+    "description": "brands could easily scale campaigns across ad platforms.",
+    "categories": "Enterprise",
+    "founders": "Nikhil Sethi",
+    "initialPartnership": "Seed",
+    "partner": "",
+    "location": "New York"
+  },
+  {
+    "name": "Airbase",
+    "description": "companies could be smarter about how they spent money.",
+    "categories": "Enterprise",
+    "founders": "Thejo Kote",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Aisera",
+    "description": "your IT and customer service needs were instantly solved, anytime.",
+    "categories": "Enterprise / AI",
+    "founders": "Muddu Sudhakar",
+    "initialPartnership": "Series A",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Alma",
+    "description": "anyone could access high-quality, affordable mental health care.",
+    "categories": "Healthcare",
+    "founders": "Harry Ritter",
+    "initialPartnership": "Seed",
+    "partner": "Hayley Barna",
+    "location": "New York"
+  },
+  {
+    "name": "Alt",
+    "description": "people could manage trading cards and other alternative assets the way they manage traditional assets like stocks and bonds.",
+    "categories": "Consumer / Fintech",
+    "founders": "Leore Avidar",
+    "initialPartnership": "Seed",
+    "partner": "Brett Berson",
+    "location": "Distributed"
+  },
+  {
+    "name": "Andrenam",
+    "description": "we could secure the ocean with an AI-powered, distributed maritime sensing network.",
+    "categories": "Hardware / AI",
+    "founders": "Matej Cernosek, Alex Chu",
+    "initialPartnership": "Seed",
+    "partner": "Meka Asonye",
+    "location": "Los Angeles"
+  },
+  {
+    "name": "Anomalo",
+    "description": "you could trust your data was always accurate, reliable and error-free.",
+    "categories": "Enterprise",
+    "founders": "Elliot Shmukler, Jeremy Stanley",
+    "initialPartnership": "Seed",
+    "partner": "Brett Berson",
+    "location": "Distributed"
+  },
+  {
+    "name": "Ansible Health",
+    "description": "patients with COPD got the care they needed from the comfort of home.",
+    "categories": "Healthcare",
+    "founders": "Ming Jack Po MD, PhD",
+    "initialPartnership": "Series A",
+    "partner": "Josh Kopelman",
+    "location": "Distributed"
+  },
+  {
+    "name": "AppNexus",
+    "description": "real-time media buying could all happen in one place.",
+    "categories": "Enterprise",
+    "founders": "Brian O'Kelley",
+    "initialPartnership": "Seed",
+    "partner": "",
+    "location": "New York"
+  },
+  {
+    "name": "Arbor",
+    "description": "we could lower the cost of home energy for people and the planet.",
+    "categories": "Consumer",
+    "founders": "Andrew Meyer",
+    "initialPartnership": "Seed",
+    "partner": "Hayley Barna",
+    "location": "Distributed"
+  },
+  {
+    "name": "Arketa",
+    "description": "we could increase access to wellness by helping studios grow beyond classes.",
+    "categories": "Enterprise",
+    "founders": "Rachel Lea Fishman",
+    "initialPartnership": "Seed",
+    "partner": "Hayley Barna",
+    "location": "New York"
+  },
+  {
+    "name": "Ascend",
+    "description": "insurance accounting operations caught up with the rest of fintech.",
+    "categories": "Fintech",
+    "founders": "Andrew Wynn, Praveen Chekuri",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Assort Health",
+    "description": "you could answer every patient's call, without putting anyone on hold.",
+    "categories": "Healthcare / AI",
+    "founders": "Jeffery Liu, Jon Wang",
+    "initialPartnership": "Series A",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Assured",
+    "description": "healthcare organizations could easily onboard providers and seamlessly scale across states and payors.",
+    "categories": "AI / Healthcare",
+    "founders": "Varun Krishnamurthy, Rahul Shivkumar",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "New York"
+  },
+  {
+    "name": "Atma",
+    "description": "anyone could build an app right from their phone, without knowing how to code.",
+    "categories": "Consumer / AI",
+    "founders": "Josh Siegel, Daniel Amitay, Brandon Francis,  Rudd Fawcett",
+    "initialPartnership": "Pre-Seed",
+    "partner": "Todd Jackson",
+    "location": "New York"
+  },
+  {
+    "name": "Augury",
+    "description": "manufacturers could always rely on the machines that matter.",
+    "categories": "Enterprise",
+    "founders": "Saar Yoskovitz",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "New York"
+  },
+  {
+    "name": "Axial",
+    "description": "we simplified the deal-making process for great small and medium-sized businesses and buyers.",
+    "categories": "Enterprise",
+    "founders": "Peter Lehrman",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "New York"
+  },
+  {
+    "name": "Beakon",
+    "description": "everyone, everywhere could be made aware of and kept safe from all physical threats.",
+    "categories": "Enterprise / AI",
+    "founders": "Eric Liu, Scott Benoit, David Choi",
+    "initialPartnership": "Seed",
+    "partner": "Liz Wessel",
+    "location": ""
+  },
+  {
+    "name": "Beautiful AI",
+    "description": "anyone could turn their ideas into visual presentations that win.",
+    "categories": "Enterprise / AI / Consumer",
+    "founders": "Mitch Grasso",
+    "initialPartnership": "Seed",
+    "partner": "Rob Hayes",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Binti",
+    "description": "every child had the care and support of a loving family.",
+    "categories": "Enterprise",
+    "founders": "Felicia Curcuru",
+    "initialPartnership": "Seed",
+    "partner": "Hayley Barna",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Blaxel",
+    "description": "the cloud was built for AI-native startups and agents.",
+    "categories": "AI / DevTools & Infra",
+    "founders": "Paul Sinaï,  Charles Drappier, Christophe Ploujoux, Nicolas Lecomte, Thomas Crochet, Mathis Joffre",
+    "initialPartnership": "Seed",
+    "partner": "Liz Wessel",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Board",
+    "description": "you could combine the best of board games and video games into a new experience.",
+    "categories": "Hardware / Consumer",
+    "founders": "Brynn Putnam",
+    "initialPartnership": "Seed",
+    "partner": "Hayley Barna",
+    "location": "New York"
+  },
+  {
+    "name": "Boulder",
+    "description": "people struggling with addiction could succeed on their own terms, wherever they are.",
+    "categories": "Healthcare",
+    "founders": "Stephanie Papes",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "Distributed"
+  },
+  {
+    "name": "Brellium",
+    "description": "we could improve the standard of care in the US healthcare system by automatically reviewing every chart.",
+    "categories": "Healthcare / AI",
+    "founders": "Zach Rosen",
+    "initialPartnership": "Seed",
+    "partner": "Hayley Barna",
+    "location": "New York"
+  },
+  {
+    "name": "Bright",
+    "description": "we could expand solar power to homes and businesses across Mexico.",
+    "categories": "Enterprise",
+    "founders": "Jonah Greenberger",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "Other"
+  },
+  {
+    "name": "Cache",
+    "description": "advanced financial products used by the ultraweathy were available to everyone with large stock positions.",
+    "categories": "Fintech",
+    "founders": "Srikanth Narayan",
+    "initialPartnership": "Pre-Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Candid",
+    "description": "modern tools managed the complexity of medical billing.",
+    "categories": "Healthcare",
+    "founders": "Nick Perry",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Castle",
+    "description": "businesses could protect their user communities with ease.",
+    "categories": "Enterprise",
+    "founders": "Johan Brissmyr, Sebastian Wallin",
+    "initialPartnership": "Seed",
+    "partner": "Brett Berson",
+    "location": "New York"
+  },
+  {
+    "name": "Central",
+    "description": "founders didn't need to spend any time on back-office bullshit.",
+    "categories": "AI / Enterprise",
+    "founders": "Josh Wymer, Pranav Kashyap , Nilay Modi",
+    "initialPartnership": "Seed",
+    "partner": "Meka Asonye",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Clay",
+    "description": "go-to-market tools were as malleable as clay.",
+    "categories": "Enterprise / AI",
+    "founders": "Kareem Amin, Nicolae Rusan, Varun Anand",
+    "initialPartnership": "Seed",
+    "partner": "Brett Berson",
+    "location": "New York"
+  },
+  {
+    "name": "Clearbit",
+    "description": "businesses had total intelligence on every contact and company.",
+    "categories": "Enterprise",
+    "founders": "Alex MacCaw",
+    "initialPartnership": "Pre-Seed",
+    "partner": "Brett Berson",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Clover Health",
+    "description": "affordable, easy-to-understand healthcare plans improved quality of life for seniors.",
+    "categories": "Healthcare",
+    "founders": "Vivek Garipalli, Kris Gale",
+    "initialPartnership": "Series A",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Cocoon",
+    "description": "every working person could take the time away they need to care for what matters most.",
+    "categories": "Enterprise",
+    "founders": "Mahima Chawla",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Collate",
+    "description": "life sciences companies could reduce the time it takes to complete regulatory paperwork.",
+    "categories": "AI / Healthcare",
+    "founders": "Surbhi Sarna, Nate Smith, Jigish Patel",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Composer",
+    "description": "the quant investment strategies used by top hedge funds could be executed automatically by anyone.",
+    "categories": "Fintech",
+    "founders": "Ben Rollert, Ananda Aisola, Ronny Li",
+    "initialPartnership": "Seed",
+    "partner": "Meka Asonye",
+    "location": "Distributed"
+  },
+  {
+    "name": "Conduit Commerce",
+    "description": "any retailer could start selling your products in minutes.",
+    "categories": "Enterprise",
+    "founders": "Rohan Shah, Rahul Sinha",
+    "initialPartnership": "Seed",
+    "partner": "Hayley Barna",
+    "location": "New York"
+  },
+  {
+    "name": "Crossbeam",
+    "description": "every business could use the power of their partner ecosystem to grow.",
+    "categories": "Enterprise",
+    "founders": "Bob Moore",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "Philadelphia"
+  },
+  {
+    "name": "Crossmint",
+    "description": "anyone could mint and distribute digital assets at scale.",
+    "categories": "Fintech",
+    "founders": "Rodri Fernandez, Alfonso Gomez",
+    "initialPartnership": "Series A",
+    "partner": "Todd Jackson",
+    "location": "Distributed"
+  },
+  {
+    "name": "David AI",
+    "description": "audio were as central to human-to-AI interaction as it is to human-to-human interaction.",
+    "categories": "AI / Enterprise / DevTools & Infra",
+    "founders": "Tomer Cohen, Ben Wiley",
+    "initialPartnership": "Seed",
+    "partner": "Liz Wessel",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Daydream",
+    "description": "companies could programmatically create exceptional content that helped them grow.",
+    "categories": "AI / Enterprise",
+    "founders": "Thenuka Karunaratne, Shravan Rajinikanth",
+    "initialPartnership": "Seed",
+    "partner": "Todd Jackson",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Didero",
+    "description": "trading with companies across the world was as easy as trading across the street.",
+    "categories": "AI / Enterprise",
+    "founders": "Tom Petit, Lorenz Pallhuber, Tim Spencer",
+    "initialPartnership": "Seed",
+    "partner": "Meka Asonye",
+    "location": "New York"
+  },
+  {
+    "name": "Discourse",
+    "description": "open source community software raised the standard for civilized discourse on the Internet.",
+    "categories": "Enterprise",
+    "founders": "Jeff Atwood",
+    "initialPartnership": "Pre-Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Diversio",
+    "description": "every workplace was more inclusive.",
+    "categories": "Enterprise",
+    "founders": "Laura McGee",
+    "initialPartnership": "Seed",
+    "partner": "Meka Asonye",
+    "location": "Toronto"
+  },
+  {
+    "name": "DoubleVerify",
+    "description": "advertisers could trust that every dollar they spent on digital ads was well used.",
+    "categories": "Enterprise",
+    "founders": "Wayne Gattinella",
+    "initialPartnership": "Seed",
+    "partner": "Chris Fralic",
+    "location": "New York"
+  },
+  {
+    "name": "Dyna",
+    "description": "robots could perform any task you wanted them to.",
+    "categories": "Hardware / AI",
+    "founders": "Lindon Gao, York Yang, Jason Ma",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "eero",
+    "description": "people had enterprise-grade wifi at home.",
+    "categories": "Consumer / Hardware",
+    "founders": "Nick Weaver",
+    "initialPartnership": "Seed",
+    "partner": "Rob Hayes",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Eigen Therapeutics",
+    "description": "cancer cells were more vulnerable to treatment and healthy cells were more resilient.",
+    "categories": "Healthcare",
+    "founders": "Transon Nguyen",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Eisen",
+    "description": "companies reunited everyday consumers with their money by proactively managing dormant accounts.",
+    "categories": "Fintech",
+    "founders": "Allen Osgood",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "New York"
+  },
+  {
+    "name": "Etleap",
+    "description": "powerful data pipelines could be built with minimal engineering effort.",
+    "categories": "Enterprise / DevTools & Infra",
+    "founders": "Christian Romming",
+    "initialPartnership": "Seed",
+    "partner": "Brett Berson",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "EvolutionIQ",
+    "description": "improving disability insurance claims processing with AI helped more people return to work.",
+    "categories": "AI / Enterprise / Healthcare",
+    "founders": "Tomas Vykruta, Michael Saltzman, Jonathan Lewin",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "New York"
+  },
+  {
+    "name": "Fal",
+    "description": "generative media had an infrastructure partner capable of supporting exponential growth.",
+    "categories": "AI / Enterprise / DevTools & Infra",
+    "founders": "Burkay Gur, Gorkem Yurtseven",
+    "initialPartnership": "Seed",
+    "partner": "Todd Jackson",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Farcaster",
+    "description": "our online social interactions weren't confined to one company's platform.",
+    "categories": "Consumer / Enterprise",
+    "founders": "Dan Romero, Varun Srinivasan",
+    "initialPartnership": "Seed",
+    "partner": "Todd Jackson",
+    "location": "Los Angeles"
+  },
+  {
+    "name": "Flai",
+    "description": "car dealerships operated seamlessly around the clock.",
+    "categories": "AI",
+    "founders": "Ari Polakof, Alen Polakof, Juan Alzugaray",
+    "initialPartnership": "Seed",
+    "partner": "Liz Wessel",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Flatiron Health",
+    "description": "data could power smarter care for every person with cancer.",
+    "categories": "Healthcare",
+    "founders": "Nat Turner, Zach Weinberg",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "New York"
+  },
+  {
+    "name": "FleetWorks",
+    "description": "AI could keep freight moving for truckers and the communities they serve.",
+    "categories": "AI / Enterprise",
+    "founders": "Paul Singer, Quang Tran",
+    "initialPartnership": "Series A",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Flex",
+    "description": "it was incredibly easy for health and wellness brands to accept HSA and FSA payments online.",
+    "categories": "Healthcare",
+    "founders": "Sam OKeefe, Miguel Toledo",
+    "initialPartnership": "Series A",
+    "partner": "Liz Wessel",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Flexport",
+    "description": "we could simplify global trade by connecting everyone in the supply chain.",
+    "categories": "Enterprise",
+    "founders": "Ryan Petersen",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Gauntlet",
+    "description": "DeFi’s most complex and novel economic problems were better understood.",
+    "categories": "Fintech",
+    "founders": "Tarun Chitra",
+    "initialPartnership": "Seed",
+    "partner": "Meka Asonye",
+    "location": "New York"
+  },
+  {
+    "name": "Glide",
+    "description": "anyone could turn their spreadsheet into a beautiful app in minutes.",
+    "categories": "Enterprise",
+    "founders": "David Siegel",
+    "initialPartnership": "Seed",
+    "partner": "Meka Asonye",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "GOAT",
+    "description": "sneakerheads never got duped.",
+    "categories": "Consumer",
+    "founders": "Eddy Lu",
+    "initialPartnership": "Seed",
+    "partner": "Rob Hayes",
+    "location": "Los Angeles"
+  },
+  {
+    "name": "Goose",
+    "description": "booking pet care was more like booking a hotel.",
+    "categories": "Enterprise",
+    "founders": "Drew Brinkoetter",
+    "initialPartnership": "Seed",
+    "partner": "Meka Asonye",
+    "location": "Other"
+  },
+  {
+    "name": "Gregor Diagnostics",
+    "description": "prostate cancer could be detected and differentiated at the earliest stages.",
+    "categories": "Healthcare",
+    "founders": "Tobias Zutz",
+    "initialPartnership": "Pre-Seed",
+    "partner": "Josh Kopelman",
+    "location": "Other"
+  },
+  {
+    "name": "Gritt Robotics",
+    "description": "AI robots could automate solar farm construction.",
+    "categories": "Enterprise / AI",
+    "founders": "Puneet Puri, Vishal Dugar",
+    "initialPartnership": "Pre-Seed",
+    "partner": "Hayley Barna",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Grokker",
+    "description": "companies could provide award-winning video content to improve employee health and wellness.",
+    "categories": "Enterprise",
+    "founders": "Lorna Borenstein",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "GroupMe",
+    "description": "group messaging worked on every phone.",
+    "categories": "Consumer",
+    "founders": "Jared Hecht",
+    "initialPartnership": "Pre-Seed",
+    "partner": "Chris Fralic",
+    "location": "New York"
+  },
+  {
+    "name": "Guide",
+    "description": "more people could find work they love.",
+    "categories": "Enterprise",
+    "founders": "Troy Sultan",
+    "initialPartnership": "Seed",
+    "partner": "Meka Asonye",
+    "location": "Distributed"
+  },
+  {
+    "name": "GumGum",
+    "description": "advertisers could deliver relevant, contextual ads without using personal data.",
+    "categories": "Enterprise",
+    "founders": "Ophir Tanz",
+    "initialPartnership": "Seed",
+    "partner": "Chris Fralic",
+    "location": "Los Angeles"
+  },
+  {
+    "name": "Gumloop",
+    "description": "anyone could automate their work without needing to be an AI expert or an engineer.",
+    "categories": "AI / Enterprise / DevTools & Infra",
+    "founders": "Max Brodeur-Urbas, Rahul Behal",
+    "initialPartnership": "Seed",
+    "partner": "Liz Wessel",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Gumroad",
+    "description": "anyone could sell their digital work directly to others.",
+    "categories": "Consumer",
+    "founders": "Sahil Lavingia",
+    "initialPartnership": "Pre-Seed",
+    "partner": "Josh Kopelman",
+    "location": "Distributed"
+  },
+  {
+    "name": "Healia Health",
+    "description": "couples could strategically choose between — or even combine — their employers' health plans to maximize coverage.",
+    "categories": "Healthcare",
+    "founders": "Priyang Shah",
+    "initialPartnership": "Seed",
+    "partner": "Liz Wessel",
+    "location": "Other"
+  },
+  {
+    "name": "Highlight",
+    "description": "we could build better physical products by collecting exceptional product data on impossible timelines,",
+    "categories": "Enterprise",
+    "founders": "Dana Kim",
+    "initialPartnership": "Seed",
+    "partner": "Meka Asonye",
+    "location": "New York"
+  },
+  {
+    "name": "HotelTonight",
+    "description": "anyone could book incredible last-minute deals on hotels.",
+    "categories": "Consumer",
+    "founders": "Sam Shank",
+    "initialPartnership": "Seed",
+    "partner": "Chris Fralic",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "HouseRx",
+    "description": "specialty medication was more accessible and affordable.",
+    "categories": "Healthcare",
+    "founders": "Ogi Kavazovic",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Instrumental",
+    "description": "we cut electronics manufacturing waste in half.",
+    "categories": "Enterprise",
+    "founders": "Anna-Katrina Shedletsky, Samuel Weiss",
+    "initialPartnership": "Seed",
+    "partner": "Brett Berson",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Iru",
+    "description": "companies could easily secure their users, apps and devices.",
+    "categories": "Enterprise",
+    "founders": "Adam Pettit",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "Other"
+  },
+  {
+    "name": "JetInsight",
+    "description": "aircraft charter operators could run safer and more efficient businesses.",
+    "categories": "Enterprise",
+    "founders": "Dave Benjamin",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "K2 Space",
+    "description": "large spacecraft made previously impossible missions possible.",
+    "categories": "Enterprise / Hardware",
+    "founders": "Karan Kunjur, Neel Kunjur",
+    "initialPartnership": "Pre-Seed",
+    "partner": "Meka Asonye",
+    "location": "Los Angeles"
+  },
+  {
+    "name": "Kentik",
+    "description": "you could answer any question about your network.",
+    "categories": "Enterprise",
+    "founders": "Avi Freedman",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Kiavi",
+    "description": "every real estate investor could access the capital needed to scale.",
+    "categories": "Fintech",
+    "founders": "Matt Humphrey",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Kindred",
+    "description": "machines had human-like intelligence.",
+    "categories": "AI / Hardware",
+    "founders": "Jim Liefer",
+    "initialPartnership": "Seed",
+    "partner": "Rob Hayes",
+    "location": "SF Bay Area, Distributed"
+  },
+  {
+    "name": "KiwiCo",
+    "description": "the next generation of innovators were inspired by creative, hands-on projects.",
+    "categories": "Consumer",
+    "founders": "Sandra Oh Lin",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Koala",
+    "description": "pets could get vet-verified prescriptions, delivered right on schedule.",
+    "categories": "Healthcare / Consumer",
+    "founders": "Gavin Cotter",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "Boston"
+  },
+  {
+    "name": "Koodos",
+    "description": "the internet put individuals in control of their digital identities.",
+    "categories": "Consumer",
+    "founders": "Jad Esber",
+    "initialPartnership": "Seed",
+    "partner": "Hayley Barna",
+    "location": "New York"
+  },
+  {
+    "name": "Labelbox",
+    "description": "AI companies could easily create and manage training data.",
+    "categories": "Enterprise / AI / DevTools & Infra",
+    "founders": "Manu Sharma",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Last Energy",
+    "description": "modular nuclear power plants could decouple energy access from climate change.",
+    "categories": "Enterprise",
+    "founders": "Bret Kugelmass",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "Other"
+  },
+  {
+    "name": "Laurel",
+    "description": "automated timekeeping could return time to lawyers, accountants, and other professionals.",
+    "categories": "Enterprise / AI",
+    "founders": "Ryan Alshak",
+    "initialPartnership": "Seed",
+    "partner": "Brett Berson",
+    "location": "Los Angeles"
+  },
+  {
+    "name": "Legion",
+    "description": "it were easier to manage your hourly workforce and keep them engaged.",
+    "categories": "Enterprise",
+    "founders": "Sanish Mondkar",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Legl",
+    "description": "law firms could automate their non-core workflows — from payments to compliance.",
+    "categories": "Enterprise",
+    "founders": "Julia Salasky",
+    "initialPartnership": "Seed",
+    "partner": "Hayley Barna",
+    "location": "Other"
+  },
+  {
+    "name": "Lob",
+    "description": "there were a digital-first approach to the analog industry of direct mail.",
+    "categories": "Enterprise",
+    "founders": "Leore Avidar",
+    "initialPartnership": "Series A",
+    "partner": "Rob Hayes",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Looker",
+    "description": "everyone within a company could easily understand the data that drives the business.",
+    "categories": "Enterprise",
+    "founders": "Lloyd Tabb, Ben Porterfield",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Loyal",
+    "description": "we had more time with the dogs we love.",
+    "categories": "Healthcare",
+    "founders": "Celine Halioua",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "M7 Health",
+    "description": "health systems could attract and retain nurses by fostering flexible and predictable work environments.",
+    "categories": "Healthcare",
+    "founders": "Ilana Borkenstein, Eric Gruskin",
+    "initialPartnership": "Seed",
+    "partner": "Liz Wessel",
+    "location": "New York"
+  },
+  {
+    "name": "Manifest",
+    "description": "the software supply chain could automatically be secured.",
+    "categories": "Enterprise",
+    "founders": "Marc Frankel, Daniel Bardenstein",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "Distributed"
+  },
+  {
+    "name": "Maven",
+    "description": "the university of the future was made up of cohort-based courses from industry experts.",
+    "categories": "Consumer",
+    "founders": "Gagan Biyani",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "Distributed"
+  },
+  {
+    "name": "Merlin",
+    "description": "software had all the skills of a human pilot.",
+    "categories": "Enterprise / Hardware",
+    "founders": "Matthew George",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "Boston"
+  },
+  {
+    "name": "Mighty Networks",
+    "description": "brands and creators could start and grow their own online communities.",
+    "categories": "Enterprise",
+    "founders": "Gina Bianchini",
+    "initialPartnership": "Seed",
+    "partner": "Rob Hayes",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Mint",
+    "description": "anyone could see a complete picture of their personal finances.",
+    "categories": "Fintech",
+    "founders": "Aaron Patzer",
+    "initialPartnership": "Pre-Seed",
+    "partner": "Rob Hayes",
+    "location": "Los Angeles"
+  },
+  {
+    "name": "Mirror",
+    "description": "a mirror could give you a smarter, harder workout from the comfort of your home.",
+    "categories": "Hardware / Consumer",
+    "founders": "Brynn Putnam",
+    "initialPartnership": "Seed",
+    "partner": "Hayley Barna",
+    "location": "New York"
+  },
+  {
+    "name": "Moat",
+    "description": "there were a standard metric that served as the currency for buying and selling digital ads.",
+    "categories": "Enterprise",
+    "founders": "Jonah Goodhart",
+    "initialPartnership": "Seed",
+    "partner": "",
+    "location": "New York"
+  },
+  {
+    "name": "Montra",
+    "description": "anyone could make professional quality videos in minutes.",
+    "categories": "Enterprise",
+    "founders": "Campbell Baron",
+    "initialPartnership": "Pre-Seed",
+    "partner": "Todd Jackson",
+    "location": "Distributed"
+  },
+  {
+    "name": "nGram",
+    "description": "life sciences data was connected and conversable.",
+    "categories": "Enterprise / AI",
+    "founders": "Anish Muppalaneni , Devadutta Ghat",
+    "initialPartnership": "Seed",
+    "partner": "Todd Jackson",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "NimbleRx",
+    "description": "prescriptions had a smoother path from a doctor’s pad to a patient’s hands.",
+    "categories": "Healthcare",
+    "founders": "Talha Sattar",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Nomad Health",
+    "description": "we closed the gap between travel clinicians and the hospitals that need them.",
+    "categories": "Healthcare",
+    "founders": "Alexi Nazem",
+    "initialPartnership": "Seed",
+    "partner": "Chris Fralic",
+    "location": "New York"
+  },
+  {
+    "name": "Notion",
+    "description": "documents worked more like software.",
+    "categories": "Enterprise / AI / Consumer",
+    "founders": "Ivan Zhao, Simon Last, Akshay Kothari",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Nova Credit",
+    "description": "millions of people with limited credit history could access the financial system.",
+    "categories": "Fintech",
+    "founders": "Loek Janssen, Nicky Goulimis, Misha Esipov",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Numerai",
+    "description": "a network of data scientists built a hedge fund.",
+    "categories": "Fintech",
+    "founders": "Richard Craib",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Odeko",
+    "description": "every local cafe’s shelves were always stocked.",
+    "categories": "Enterprise",
+    "founders": "Dane Atkinson",
+    "initialPartnership": "Series A",
+    "partner": "Rob Hayes",
+    "location": "New York"
+  },
+  {
+    "name": "ODIN",
+    "description": "data generated on the job site could make construction safer.",
+    "categories": "Enterprise",
+    "founders": "Douglas Carney",
+    "initialPartnership": "Seed",
+    "partner": "Hayley Barna",
+    "location": "New York"
+  },
+  {
+    "name": "Omnea",
+    "description": "every company could automate procurement.",
+    "categories": "Enterprise / AI",
+    "founders": "Ben Freeman, Ben Allen",
+    "initialPartnership": "Seed",
+    "partner": "Todd Jackson",
+    "location": "Other"
+  },
+  {
+    "name": "Omni",
+    "description": "business intelligence combined the consistency of a shared data model with the speed and freedom of SQL.",
+    "categories": "Enterprise",
+    "founders": "Colin Zima",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "OnDeck Capital",
+    "description": "every small business got the credit they deserved.",
+    "categories": "Fintech",
+    "founders": "Noah Breslow",
+    "initialPartnership": "Seed",
+    "partner": "",
+    "location": "New York"
+  },
+  {
+    "name": "One Safe",
+    "description": "startups could bank in both fiat and cryptocurrencies.",
+    "categories": "Fintech",
+    "founders": "Chris Shei, Brian Ko",
+    "initialPartnership": "Seed",
+    "partner": "",
+    "location": "Other"
+  },
+  {
+    "name": "Onyx",
+    "description": "employees could find company information faster.",
+    "categories": "Enterprise / AI",
+    "founders": "Yuhong Sun, Chris Weaver",
+    "initialPartnership": "Seed",
+    "partner": "Liz Wessel",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Ossium Health",
+    "description": "every patient who needed a bone marrow transplant could get one.",
+    "categories": "Healthcare",
+    "founders": "Kevin Caldwell, Erik Woods",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Ourself",
+    "description": "we could maximize skincare delivery for results that run deep.",
+    "categories": "Consumer / Healthcare",
+    "founders": "Scott Glenn",
+    "initialPartnership": "Series A",
+    "partner": "Todd Jackson",
+    "location": "Other"
+  },
+  {
+    "name": "Ownwell",
+    "description": "millions of people didn't overspend on property expenses every year.",
+    "categories": "Fintech",
+    "founders": "Colton Pace",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "Other"
+  },
+  {
+    "name": "Pantheon",
+    "description": "organizations could manage all of their websites from a single dashboard.",
+    "categories": "Enterprise",
+    "founders": "Zack Rosen",
+    "initialPartnership": "Seed",
+    "partner": "Rob Hayes",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Parallel",
+    "description": "the web was built with, by, and for AIs.",
+    "categories": "AI / DevTools & Infra",
+    "founders": "Parag Agrawal",
+    "initialPartnership": "Seed",
+    "partner": "Todd Jackson, Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "PatientPing",
+    "description": "real-time intelligence could improve care coordination and patient outcomes.",
+    "categories": "Healthcare",
+    "founders": "Jay Desai",
+    "initialPartnership": "Seed",
+    "partner": "",
+    "location": "Boston"
+  },
+  {
+    "name": "Perpay",
+    "description": "paychecks could work harder for the people who earn them.",
+    "categories": "Fintech",
+    "founders": "Chris DiMarco",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "Philadelphia"
+  },
+  {
+    "name": "Persona",
+    "description": "every company could verify that its users are who they say they are.",
+    "categories": "Enterprise",
+    "founders": "Rick Song",
+    "initialPartnership": "Seed",
+    "partner": "Brett Berson",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Pine Park Health",
+    "description": "seniors could access high-quality medical care from the comfort of home.",
+    "categories": "Healthcare",
+    "founders": "George Khasin",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Pinwheel",
+    "description": "unlocking payroll data could help create a fairer financial system.",
+    "categories": "Fintech",
+    "founders": "Kurtis Lin",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "New York"
+  },
+  {
+    "name": "Planet",
+    "description": "we could use space to help life on Earth by imaging the entire globe every day.",
+    "categories": "Hardware / Enterprise",
+    "founders": "Will Marshall, Robbie Schingler, Chris Boshuizen",
+    "initialPartnership": "Series A",
+    "partner": "Rob Hayes",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Play",
+    "description": "you could design and prototype mobile apps right from your phone.",
+    "categories": "Enterprise / Consumer / DevTools & Infra",
+    "founders": "Dan LaCivita",
+    "initialPartnership": "Seed",
+    "partner": "Todd Jackson",
+    "location": "New York"
+  },
+  {
+    "name": "Pocus",
+    "description": "go-to-market teams could unlock the power of their data with AI.",
+    "categories": "Enterprise",
+    "founders": "Alexa Grabell",
+    "initialPartnership": "Seed",
+    "partner": "Meka Asonye",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Pomelo Care",
+    "description": "proactive, evidence-based healthcare could dramatically improve outcomes for women and children throughout their lives.",
+    "categories": "Healthcare",
+    "founders": "Marta Bralic Kerns",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "New York"
+  },
+  {
+    "name": "Prepared",
+    "description": "new technology could ensure every emergency gets the perfect response.",
+    "categories": "AI / Enterprise",
+    "founders": "Michael Chime, Dylan Gleicher, Neal Soni",
+    "initialPartnership": "Seed",
+    "partner": "Meka Asonye",
+    "location": "New York"
+  },
+  {
+    "name": "Proception",
+    "description": "robotic hands were dexterous enough to thread a needle with human-like precision and control.",
+    "categories": "AI",
+    "founders": "Jay Li, Jack Xu",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Promise",
+    "description": "government and utilities could easily provide payment assistance and relief to eligible households.",
+    "categories": "Enterprise / Fintech",
+    "founders": "Phaedra Ellis-Lamkins",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Quantile Health",
+    "description": "every patient had unfettered access to lifesaving gene therapy treatments.",
+    "categories": "Healthcare",
+    "founders": "Yutong Sun",
+    "initialPartnership": "Seed",
+    "partner": "Hayley Barna",
+    "location": "New York"
+  },
+  {
+    "name": "Rarebird",
+    "description": "coffee could provide all of the alertness without any of the jitters.",
+    "categories": "Consumer",
+    "founders": "Jeffrey Dietrich",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "RebelMouse",
+    "description": "companies could optimize distribution across social media platforms.",
+    "categories": "Enterprise",
+    "founders": "Andrea Breanna",
+    "initialPartnership": "Seed",
+    "partner": "Chris Fralic",
+    "location": "New York"
+  },
+  {
+    "name": "Rec Room",
+    "description": "virtual reality fans had a social hub and gaming platform..",
+    "categories": "Consumer",
+    "founders": "Nick Fajt",
+    "initialPartnership": "Seed",
+    "partner": "Chris Fralic",
+    "location": "Other"
+  },
+  {
+    "name": "Reducto",
+    "description": "LLMs could read documents the way humans do.",
+    "categories": "AI / Enterprise / DevTools & Infra",
+    "founders": "Adit Abraham, Raunak Chowdhuri",
+    "initialPartnership": "Seed",
+    "partner": "Liz Wessel",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Remora",
+    "description": "we could capture the carbon released by every train and truck.",
+    "categories": "Hardware / Enterprise",
+    "founders": "Paul Gross, Eric Harding",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "Other"
+  },
+  {
+    "name": "RenoFi",
+    "description": "homeowners had the borrowing power they needed to transform a house into a dream home.",
+    "categories": "Fintech",
+    "founders": "Justin Goldman",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "Philadelphia, Distributed"
+  },
+  {
+    "name": "Rillet",
+    "description": "high-growth companies could automate accounting and make zero day close a reality.",
+    "categories": "Enterprise",
+    "founders": "Nicolas Kopp",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "New York"
+  },
+  {
+    "name": "Ring",
+    "description": "you could see and speak with anyone at your front door from your phone.",
+    "categories": "Hardware / Consumer",
+    "founders": "James Siminoff",
+    "initialPartnership": "Seed",
+    "partner": "",
+    "location": "Los Angeles"
+  },
+  {
+    "name": "Roblox",
+    "description": "kids learned to code while playing video games.",
+    "categories": "Consumer",
+    "founders": "David Baszucki",
+    "initialPartnership": "Seed",
+    "partner": "Chris Fralic",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Rupa Health",
+    "description": "every doctor could practice root cause medicine.",
+    "categories": "Healthcare",
+    "founders": "Tara Viswanathan",
+    "initialPartnership": "Seed",
+    "partner": "Todd Jackson",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "SafetyKit",
+    "description": "AI agents could do big tech’s dirty work.",
+    "categories": "Enterprise / AI",
+    "founders": "David Graunke",
+    "initialPartnership": "Seed",
+    "partner": "Meka Asonye",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Scotch",
+    "description": "liquor stores retailers could run their businesses on modern software tailored to their needs.",
+    "categories": "Enterprise / Fintech",
+    "founders": "Jake Bolling",
+    "initialPartnership": "Seed",
+    "partner": "Liz Wessel",
+    "location": "Other, Distributed"
+  },
+  {
+    "name": "Seneca",
+    "description": "we could stop wildfires before they spread.",
+    "categories": "Hardware / AI",
+    "founders": "Stuart Landesberg",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Serval",
+    "description": "companies could automate their IT help desks.",
+    "categories": "Enterprise",
+    "founders": "Jake Stauch, Alex McLeod",
+    "initialPartnership": "Pre-Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Sift",
+    "description": "AI could prevent and detect online fraud.",
+    "categories": "Enterprise",
+    "founders": "Jason Tan",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "SingleStore",
+    "description": "a database could store and process large amounts of data entirely in RAM.",
+    "categories": "Enterprise",
+    "founders": "Eric Frenkiel, Nikita Shamgunov, Adam Prout",
+    "initialPartnership": "Seed",
+    "partner": "",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Siteline",
+    "description": "subcontractors got paid faster and had a better financial foundation to build on.",
+    "categories": "Enterprise / Fintech",
+    "founders": "Gloria Lin",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "SiteRx",
+    "description": "clinical trials were accessible to every doctor and patient.",
+    "categories": "Healthcare / AI",
+    "founders": "Seth Goodman",
+    "initialPartnership": "Seed",
+    "partner": "Hayley Barna",
+    "location": "New York"
+  },
+  {
+    "name": "Smartling",
+    "description": "every global brand could speak to every customer in their native language.",
+    "categories": "Enterprise",
+    "founders": "Jack Welde",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "New York"
+  },
+  {
+    "name": "Snackpass",
+    "description": "college students could order ahead and skip lines when getting takeout with friends.",
+    "categories": "Consumer / Enterprise",
+    "founders": "Kevin Tan",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Solidroad",
+    "description": "every customer interaction was flawlessly executed.",
+    "categories": "AI / Enterprise",
+    "founders": "Mark Hughes, Patrick Finlay",
+    "initialPartnership": "Seed",
+    "partner": "Liz Wessel",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Spark Thermionics",
+    "description": "there was a 10x better way to convert heat into electricity.",
+    "categories": "Hardware",
+    "founders": "Jared Schwede",
+    "initialPartnership": "Pre-Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Spline",
+    "description": "anyone could design and collaborate in 3D.",
+    "categories": "Consumer",
+    "founders": "Alejandro León",
+    "initialPartnership": "Seed",
+    "partner": "Todd Jackson",
+    "location": "Distributed"
+  },
+  {
+    "name": "Sprig",
+    "description": "every company captured the insights they needed to create products people love.",
+    "categories": "Enterprise",
+    "founders": "Ryan Glasgow",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Spur",
+    "description": "companies could QA any website using natural language.",
+    "categories": "AI / Enterprise",
+    "founders": "Sneha Sivakumar, Anushka Nijhawan",
+    "initialPartnership": "Seed",
+    "partner": "Liz Wessel",
+    "location": "New York"
+  },
+  {
+    "name": "Square",
+    "description": "any phone could accept credit cards anywhere.",
+    "categories": "Fintech / Enterprise / Consumer",
+    "founders": "Jack Dorsey, Jim McKelvey",
+    "initialPartnership": "Series A",
+    "partner": "Rob Hayes",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Stedi",
+    "description": "eligibility checks and claims processing could all be done via API.",
+    "categories": "Enterprise",
+    "founders": "Zack Kanter",
+    "initialPartnership": "Seed",
+    "partner": "Brett Berson",
+    "location": "Distributed"
+  },
+  {
+    "name": "Steno",
+    "description": "court reporting just worked so lawyers could focus on the case.",
+    "categories": "Enterprise",
+    "founders": "Dan Anderson, Dylan Ruga, Greg Hong",
+    "initialPartnership": "Seed",
+    "partner": "Todd Jackson",
+    "location": "Los Angeles"
+  },
+  {
+    "name": "Stensul",
+    "description": "enterprise marketing teams could create emails and landing pages without all the back-and-forth.",
+    "categories": "Enterprise",
+    "founders": "Noah Dinkin",
+    "initialPartnership": "Seed",
+    "partner": "Chris Fralic",
+    "location": "New York"
+  },
+  {
+    "name": "Studs",
+    "description": "getting your ears pierced was a shopping experience to remember.",
+    "categories": "Consumer",
+    "founders": "Anna Harman",
+    "initialPartnership": "Seed",
+    "partner": "Hayley Barna",
+    "location": "New York"
+  },
+  {
+    "name": "Subscript",
+    "description": "finance teams didn't have to reinvent the wheel in spreadsheet hell.",
+    "categories": "Enterprise",
+    "founders": "Sidharth Kakkar, Michelle Lee",
+    "initialPartnership": "Seed",
+    "partner": "Todd Jackson",
+    "location": "Distributed"
+  },
+  {
+    "name": "Suki",
+    "description": "doctors could focus on patients instead of paperwork.",
+    "categories": "Healthcare / AI",
+    "founders": "Punit Soni",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Superhuman",
+    "description": "we could speed through our inboxes twice as fast.",
+    "categories": "Enterprise / AI / Consumer",
+    "founders": "Rahul Vohra",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Swift Navigation",
+    "description": "positioning solutions had centimeter-level accuracy.",
+    "categories": "Enterprise",
+    "founders": "Tim Harris",
+    "initialPartnership": "Seed",
+    "partner": "Rob Hayes",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Tesorio",
+    "description": "companies could turn more revenue into cash by automating accounts receivable.",
+    "categories": "Fintech / Enterprise",
+    "founders": "Carlos Vega, Fabio Fleitas",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "TetraScience",
+    "description": "life scientists had their own R&D data cloud.",
+    "categories": "Healthcare / Enterprise",
+    "founders": "Patrick Grady, Alok Tayi, Salvatore Savo",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "Boston"
+  },
+  {
+    "name": "The Black Tux",
+    "description": "you could rent designer-quality tuxedos online.",
+    "categories": "Consumer",
+    "founders": "Andrew Blackmon",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "Los Angeles"
+  },
+  {
+    "name": "The Climate Corporation",
+    "description": "every farmer could use data to sustainably increase their productivity and profitability.",
+    "categories": "Enterprise",
+    "founders": "David Friedberg",
+    "initialPartnership": "Seed",
+    "partner": "",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "The Expert",
+    "description": "anyone could work with a leading interior designer.",
+    "categories": "Consumer",
+    "founders": "Leo Seigal",
+    "initialPartnership": "Series A",
+    "partner": "Hayley Barna",
+    "location": "Los Angeles"
+  },
+  {
+    "name": "Thena",
+    "description": "businesses could acquire, service, and grow their customers in Slack.",
+    "categories": "Enterprise",
+    "founders": "Ankit Saxena",
+    "initialPartnership": "Seed",
+    "partner": "Meka Asonye",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Theseus",
+    "description": "drones could complete missions without relying on GPS.",
+    "categories": "Enterprise",
+    "founders": "Carl Schoeller, Ian Laffey, Sacha Levy",
+    "initialPartnership": "Seed",
+    "partner": "Meka Asonye",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Together AI",
+    "description": "anyone could build or fine-tune their own generative AI models.",
+    "categories": "AI / DevTools & Infra",
+    "founders": "Vipul Ved Prakash",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Town",
+    "description": "small businesses had the same tax advantages as the big guys.",
+    "categories": "AI",
+    "founders": "Jean-Denis Greze, Tony Vincent",
+    "initialPartnership": "Seed",
+    "partner": "Todd Jackson",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Uber",
+    "description": "you could get a ride from your phone in minutes.",
+    "categories": "Consumer",
+    "founders": "Travis Kalanick, Garrett Camp",
+    "initialPartnership": "Seed",
+    "partner": "Rob Hayes",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Unblocked",
+    "description": "any developer could instantly answer any question about their codebase.",
+    "categories": "Enterprise / DevTools & Infra",
+    "founders": "Dennis Pilarinos",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "Vancouver"
+  },
+  {
+    "name": "Upstart",
+    "description": "twice as many borrowers could qualify for loans with fewer defaults.",
+    "categories": "Fintech / AI",
+    "founders": "Dave Girouard, Paul Gu, Anna Counselman",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "UrbanSitter",
+    "description": "parents could book a trusted babysitter with a simple app.",
+    "categories": "Consumer",
+    "founders": "Lynn Perkins",
+    "initialPartnership": "Seed",
+    "partner": "Rob Hayes",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Verkada",
+    "description": "buildings protected the people inside using consumer technology.",
+    "categories": "Hardware / Enterprise",
+    "founders": "Filip Kaliszan, Benjamin Bercovitz, James Ren, Hans Robertson",
+    "initialPartnership": "Seed",
+    "partner": "Bill Trenchard",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Verto Education",
+    "description": "a first year abroad was the path of least resistance to a great college education.",
+    "categories": "Consumer / Enterprise",
+    "founders": "Mitch Gordon, Ben Welbourn",
+    "initialPartnership": "Seed",
+    "partner": "Brett Berson",
+    "location": "Other"
+  },
+  {
+    "name": "Vitable Health",
+    "description": "healthcare worked better for 80 million uninsured and under-insured Americans.",
+    "categories": "Healthcare",
+    "founders": "Joseph Kitonga",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "Philadelphia"
+  },
+  {
+    "name": "Vital",
+    "description": "busy hospitals could turn clinical documentation into patient-friendly communication.",
+    "categories": "Healthcare",
+    "founders": "Aaron Patzer, Justin Schrager",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "Distributed"
+  },
+  {
+    "name": "Warby Parker",
+    "description": "anyone could buy high-quality, stylish prescription glasses at a fraction of the price.",
+    "categories": "Consumer",
+    "founders": "Dave Gilboa, Neil Blumenthal",
+    "initialPartnership": "Seed",
+    "partner": "Chris Fralic",
+    "location": "New York"
+  },
+  {
+    "name": "Wonder",
+    "description": "we combined the best of humans and AI to provide answers to strategic business questions overnight.",
+    "categories": "Enterprise",
+    "founders": "Justin Wohlstadter",
+    "initialPartnership": "Seed",
+    "partner": "Brett Berson",
+    "location": "New York"
+  },
+  {
+    "name": "Wonderschool",
+    "description": "every child had access to quality early childcare close to home, no matter where they lived.",
+    "categories": "Enterprise / Consumer",
+    "founders": "Chris Bennett",
+    "initialPartnership": "Seed",
+    "partner": "Josh Kopelman",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Woolf",
+    "description": "world-class, globally recognized higher education was accessible to everyone.",
+    "categories": "Enterprise / Consumer",
+    "founders": "Joshua Broggi",
+    "initialPartnership": "",
+    "partner": "Todd Jackson",
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Xclaim",
+    "description": "there was a transparent marketplace for buying and selling bankruptcy claims.",
+    "categories": "Fintech",
+    "founders": "Matt Sedigh",
+    "initialPartnership": "Seed",
+    "partner": "Bill",
+    "location": "Los Angeles"
+  },
+  {
+    "name": "ZEFR",
+    "description": "advertisers could ensure brand suitability across walled garden platforms.",
+    "categories": "Enterprise",
+    "founders": "Zach James, Rich Raddon",
+    "initialPartnership": "Seed",
+    "partner": "Rob Hayes",
+    "location": "Los Angeles"
+  }
+]

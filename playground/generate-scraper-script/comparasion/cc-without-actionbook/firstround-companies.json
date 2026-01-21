@@ -1,0 +1,419 @@
+[
+  {
+    "name": "Notion",
+    "description": "Imagine if documents worked more like software.",
+    "categories": [
+      "Enterprise",
+      "AI",
+      "Consumer"
+    ],
+    "founders": [
+      "Ivan Zhao",
+      "Simon Last",
+      "Akshay Kothari"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Josh Kopelman"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Clay",
+    "description": "Imagine if go-to-market tools were as malleable as clay.",
+    "categories": [
+      "Enterprise",
+      "AI"
+    ],
+    "founders": [
+      "Kareem Amin",
+      "Nicolae Rusan",
+      "Varun Anand"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Brett Berson"
+    ],
+    "location": "New York"
+  },
+  {
+    "name": "Pomelo Care",
+    "description": "Imagine if proactive, evidence-based healthcare could dramatically improve outcomes for women and children throughout their lives.",
+    "categories": [
+      "Healthcare"
+    ],
+    "founders": [
+      "Marta Bralic Kerns"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Josh Kopelman"
+    ],
+    "location": "New York"
+  },
+  {
+    "name": "Roblox",
+    "description": "Imagine if kids learned to code while playing video games.",
+    "categories": [
+      "Consumer"
+    ],
+    "founders": [
+      "David Baszucki"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Chris Fralic"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "K2 Space",
+    "description": "Imagine if  large spacecraft made previously impossible missions possible.",
+    "categories": [
+      "Enterprise",
+      "Hardware"
+    ],
+    "founders": [
+      "Karan Kunjur",
+      "Neel Kunjur"
+    ],
+    "initialPartnership": "Pre-Seed",
+    "partner": [
+      "Meka Asonye"
+    ],
+    "location": "Los Angeles"
+  },
+  {
+    "name": "Square",
+    "description": "Imagine if any phone could accept credit cards anywhere.",
+    "categories": [
+      "Fintech",
+      "Enterprise",
+      "Consumer"
+    ],
+    "founders": [
+      "Jack Dorsey",
+      "Jim McKelvey"
+    ],
+    "initialPartnership": "Series A",
+    "partner": [
+      "Rob Hayes"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Looker",
+    "description": "Imagine if everyone within a company could easily understand the data that drives the business.",
+    "categories": [
+      "Enterprise"
+    ],
+    "founders": [
+      "Lloyd Tabb",
+      "Ben Porterfield"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Bill Trenchard"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Fal",
+    "description": "Imagine if generative media had an infrastructure partner capable of supporting exponential growth.",
+    "categories": [
+      "AI",
+      "Enterprise",
+      "DevTools & Infra"
+    ],
+    "founders": [
+      "Burkay Gur",
+      "Gorkem Yurtseven"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Todd Jackson"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Loyal",
+    "description": "Imagine if we had more time with the dogs we love.",
+    "categories": [
+      "Healthcare"
+    ],
+    "founders": [
+      "Celine Halioua"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Josh Kopelman"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Upstart",
+    "description": "Imagine if twice as many borrowers could qualify for loans with fewer defaults.",
+    "categories": [
+      "Fintech",
+      "AI"
+    ],
+    "founders": [
+      "Dave Girouard",
+      "Paul Gu",
+      "Anna Counselman"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Josh Kopelman"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Prepared",
+    "description": "Imagine if new technology could ensure every emergency gets the perfect response.",
+    "categories": [
+      "AI",
+      "Enterprise"
+    ],
+    "founders": [
+      "Michael Chime",
+      "Dylan Gleicher",
+      "Neal Soni"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Meka Asonye"
+    ],
+    "location": "New York"
+  },
+  {
+    "name": "Uber",
+    "description": "Imagine if you could get a ride from your phone in minutes.",
+    "categories": [
+      "Consumer"
+    ],
+    "founders": [
+      "Travis Kalanick",
+      "Garrett Camp"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Rob Hayes"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Verkada",
+    "description": "Imagine if buildings protected the people inside using consumer technology.",
+    "categories": [
+      "Hardware",
+      "Enterprise"
+    ],
+    "founders": [
+      "Filip Kaliszan",
+      "Benjamin Bercovitz",
+      "James Ren",
+      "Hans Robertson"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Bill Trenchard"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Flatiron Health",
+    "description": "Imagine if data could power smarter care for every person with cancer.",
+    "categories": [
+      "Healthcare"
+    ],
+    "founders": [
+      "Nat Turner",
+      "Zach Weinberg"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Josh Kopelman"
+    ],
+    "location": "New York"
+  },
+  {
+    "name": "Promise",
+    "description": "Imagine if government and utilities could easily provide payment assistance and relief to eligible households.",
+    "categories": [
+      "Enterprise",
+      "Fintech"
+    ],
+    "founders": [
+      "Phaedra Ellis-Lamkins"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Bill Trenchard"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Alma",
+    "description": "Imagine if anyone could access high-quality, affordable mental health care.",
+    "categories": [
+      "Healthcare"
+    ],
+    "founders": [
+      "Harry Ritter"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Hayley Barna"
+    ],
+    "location": "New York"
+  },
+  {
+    "name": "Persona",
+    "description": "Imagine if every company could verify that its users are who they say they are.",
+    "categories": [
+      "Enterprise"
+    ],
+    "founders": [
+      "Rick Song"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Brett Berson"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Ossium Health",
+    "description": "Imagine if every patient who needed a bone marrow transplant could get one.",
+    "categories": [
+      "Healthcare"
+    ],
+    "founders": [
+      "Kevin Caldwell",
+      "Erik Woods"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Bill Trenchard"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "EvolutionIQ",
+    "description": "Imagine if improving disability insurance claims processing with AI helped more people return to work.",
+    "categories": [
+      "AI",
+      "Enterprise",
+      "Healthcare"
+    ],
+    "founders": [
+      "Tomas Vykruta",
+      "Michael Saltzman",
+      "Jonathan Lewin"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Bill Trenchard"
+    ],
+    "location": "New York"
+  },
+  {
+    "name": "Gumloop",
+    "description": "Imagine if anyone could automate their work without needing to be an AI expert or an engineer.",
+    "categories": [
+      "AI",
+      "Enterprise",
+      "DevTools & Infra"
+    ],
+    "founders": [
+      "Max Brodeur-Urbas",
+      "Rahul Behal"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Liz Wessel"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Flexport",
+    "description": "Imagine if we could simplify global trade by connecting everyone in the supply chain.",
+    "categories": [
+      "Enterprise"
+    ],
+    "founders": [
+      "Ryan Petersen"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Bill Trenchard"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Parallel",
+    "description": "Imagine if the web was built with, by, and for AIs.",
+    "categories": [
+      "AI",
+      "DevTools & Infra"
+    ],
+    "founders": [
+      "Parag Agrawal"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Todd Jackson",
+      "Josh Kopelman"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Clover Health",
+    "description": "Imagine if affordable, easy-to-understand healthcare plans improved quality of life for seniors.",
+    "categories": [
+      "Healthcare"
+    ],
+    "founders": [
+      "Vivek Garipalli",
+      "Kris Gale"
+    ],
+    "initialPartnership": "Series A",
+    "partner": [
+      "Josh Kopelman"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Omni",
+    "description": "Imagine if business intelligence combined the consistency of a shared data model with the speed and freedom of SQL.",
+    "categories": [
+      "Enterprise"
+    ],
+    "founders": [
+      "Colin Zima"
+    ],
+    "initialPartnership": "Seed",
+    "partner": [
+      "Bill Trenchard"
+    ],
+    "location": "SF Bay Area"
+  },
+  {
+    "name": "Assort Health",
+    "description": "Imagine if you could answer every patient's call, without putting anyone on hold.",
+    "categories": [
+      "Healthcare",
+      "AI"
+    ],
+    "founders": [
+      "Jeffery Liu",
+      "Jon Wang"
+    ],
+    "initialPartnership": "Series A",
+    "partner": [
+      "Bill Trenchard"
+    ],
+    "location": "SF Bay Area"
+  }
+]
