@@ -36,7 +36,24 @@ Call `get_action_by_id` with the action ID from search results.
 
 ### Step 3: Execute the Steps
 
-Follow the manual steps in order, using the provided selectors:
+Follow the manual steps in order, using the provided selectors.
+
+**Option A: Using agent-browser (via actionbook browser)**
+
+```bash
+# Start browser session and navigate
+actionbook browser open linkedin.com/in/username
+
+# Click profile elements
+actionbook browser click '[data-testid="profile-avatar"]'
+actionbook browser click 'button[aria-label="Message"]'
+
+# Fill message and submit
+actionbook browser fill 'div[role="textbox"]' 'Hello!'
+actionbook browser click 'button[type="submit"]'
+```
+
+**Option B: Using Playwright/Puppeteer**
 
 ```javascript
 // LinkedIn send message example
