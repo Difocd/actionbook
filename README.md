@@ -68,7 +68,7 @@ actionbook browser install
 When working with any AI coding assistant (Claude Code, Cursor, etc.), add this to your prompt:
 
 ```
-"Book an Airbnb in Tokyo. Use Actionbook to understand and operate the web page."
+Use Actionbook to understand and operate the web page.
 ```
 
 The agent will automatically use the CLI to fetch action manuals and execute browser operations.
