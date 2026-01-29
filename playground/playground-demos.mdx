@@ -1,0 +1,846 @@
+---
+title: "Playground Demos"
+description: "Three official demos showing how Actionbook empowers AI Agents: web scraping, Rust learning, arXiv paper reading and rendering"
+---
+
+# Playground Demos
+
+Actionbook provides three Playground Demos and a general-purpose rendering Skill, showing how AI Agents can use Actionbook to complete a full "collect -> process -> display" workflow.
+
+| Component | Type | Function | Core Technology |
+|-----------|------|----------|----------------|
+| **actionbook-scraper** | Demo | Generate reliable web scrapers | Actionbook + Playwright/agent-browser |
+| **rust-learner** | Demo | Query Rust version features and crate info | Actionbook + agent-browser |
+| **arxiv-viewer** | Demo | Search/read/analyze arXiv papers | arXiv API + Actionbook |
+| **json-ui** | Skill | Render AI-generated JSON into HTML reports | Zod + React + CLI |
+| **json-ui skill** | Skill | Teach Claude to generate json-ui compliant JSON | SKILL.md (pure knowledge doc) |
+
+---
+
+## Prerequisites
+
+All demos share these dependencies:
+
+```bash
+# 1. Install Claude Code
+npm install -g @anthropic-ai/claude-code
+
+# 2. Install agent-browser (for web interaction)
+npm install -g agent-browser
+
+# 3. Add Actionbook Marketplace
+claude plugin marketplace add actionbook/actionbook
+```
+
+---
+
+## Demo 1: Actionbook Scraper
+
+**Goal**: Automatically generate accurate web scraper scripts based on Actionbook's pre-verified CSS selectors.
+
+### Why Do You Need It?
+
+Traditional AI-generated scrapers have a core problem: **selector guessing**. AI doesn't know the actual DOM structure of target websites, so it can only guess selectors, leading to extremely high failure rates.
+
+Actionbook Scraper's approach:
+
+```
+Traditional:  AI guesses selectors -> scraper runs -> likely fails -> repeated debugging
+
+Actionbook:   Community-verified selectors -> AI gets accurate selectors -> generates scraper -> success on first try
+```
+
+### Installation
+
+```bash
+# Install plugin
+claude plugin install actionbook-scraper@actionbook-marketplace
+
+# Run setup script
+cd playground/actionbook-scraper
+./setup.sh
+```
+
+Or manually add permissions to `.claude/settings.local.json`:
+
+```json
+{
+  "permissions": {
+    "allow": ["Bash(agent-browser *)"]
+  }
+}
+```
+
+### Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `/actionbook-scraper:list-sources` | List indexed websites |
+| `/actionbook-scraper:analyze <url>` | Analyze page structure and available selectors |
+| `/actionbook-scraper:generate <url>` | Generate agent-browser interaction commands |
+| `/actionbook-scraper:generate <url> --standalone` | Generate standalone Playwright/Puppeteer script |
+
+### Usage Examples
+
+**Example 1: Analyze a target website**
+
+```bash
+/actionbook-scraper:analyze https://firstround.com/companies
+```
+
+The Agent calls Actionbook MCP to query indexed selectors for the website and outputs a page structure analysis.
+
+**Example 2: Generate an interactive scraper**
+
+```bash
+/actionbook-scraper:generate https://firstround.com/companies
+```
+
+Outputs an agent-browser command sequence:
+
+```bash
+agent-browser open "https://firstround.com/companies"
+agent-browser scroll down 2000
+agent-browser get text ".company-list-card-small"
+agent-browser close
+```
+
+**Example 3: Generate a standalone Playwright script**
+
+```bash
+/actionbook-scraper:generate https://lib.rs --standalone --template playwright-js
+```
+
+Generates a complete `scraper.js` with verified selectors, ready to run.
+
+### Script Templates
+
+| Template | Language | Use Case |
+|----------|----------|----------|
+| `playwright-js` | JavaScript | Node.js projects |
+| `playwright-python` | Python | Python projects |
+| `puppeteer` | JavaScript | Lightweight scraping |
+| `agent-browser` | CLI | One-off quick scraping |
+
+### Real-World Results
+
+Using the First Round Capital company list as an example:
+
+| Metric | Traditional AI Scraper | Actionbook Scraper |
+|--------|----------------------|-------------------|
+| Companies scraped on first run | 25 | 194 |
+| Improvement factor | -- | **7.76x** |
+
+---
+
+## Demo 2: Rust Learner
+
+**Goal**: Query Rust version features and crate ecosystem information via Actionbook + agent-browser.
+
+### Installation
+
+```bash
+claude plugin install rust-learner@actionbook-marketplace
+```
+
+Add permissions:
+
+```json
+{
+  "permissions": {
+    "allow": ["Bash(agent-browser *)"]
+  }
+}
+```
+
+### Available Commands
+
+| Command | Description | Example |
+|---------|-------------|---------|
+| `/rust-learner:rust-features [version]` | Query new features of a Rust version | `/rust-learner:rust-features 1.83` |
+| `/rust-learner:crate-info <crate>` | Query detailed crate information | `/rust-learner:crate-info tokio` |
+
+### Usage Examples
+
+**Query Rust version features**
+
+```bash
+/rust-learner:rust-features 1.83
+```
+
+The Agent uses Actionbook to get selectors for the Rust website, uses agent-browser to visit the release notes page, then extracts and summarizes new features.
+
+**Query crate information**
+
+```bash
+/rust-learner:crate-info serde
+```
+
+Returns the crate's latest version, download count, dependencies, features, and more.
+
+### Natural Language Usage
+
+You can also ask questions in natural language:
+
+```
+"What's new in Rust 1.83?"
+"What's the latest version of tokio?"
+"Analyze the dependencies in my Cargo.toml"
+```
+
+---
+
+## Demo 3: arXiv Viewer + json-ui
+
+**Goal**: Search, read arXiv papers, and render paper content into polished HTML reports.
+
+This is the most complete of the three demos, consisting of two parts:
+
+| Component | Location | Function |
+|-----------|----------|----------|
+| **arxiv-viewer** (plugin) | `playground/arxiv-viewer/` | Search, read, analyze papers |
+| **json-ui** (npm package) | `packages/json-ui/` | Render JSON reports to HTML and open in browser |
+
+### Architecture: Tri-Source Hybrid
+
+arxiv-viewer uses a hybrid architecture with three data sources, automatically selecting the optimal source per scenario:
+
+```
++---------------+   Fast metadata   +------------+
+|  arXiv API    |<------------------|            |
+|  (WebFetch)   |                   |            |
++---------------+                   |  arxiv-    |
+                                    |  viewer    |
++---------------+   Latest/trending |  plugin    |
+| arxiv.org     |<------------------|            |
+| (Actionbook)  |                   |            |
++---------------+                   |            |
+                                    |            |
++---------------+   Section reading |            |
+|  ar5iv.org    |<------------------|            |
+| (Actionbook)  |                   +------------+
++---------------+
+```
+
+| Data Source | Method | Best For | Token Cost |
+|-------------|--------|----------|-----------|
+| arXiv API | WebFetch | Metadata, search | ~500 |
+| arxiv.org | Actionbook | Latest/trending papers | ~1000 |
+| ar5iv.org | Actionbook | Section-by-section reading, figures | ~1000-2000 |
+
+### Installation
+
+```bash
+# Install plugin
+claude plugin install arxiv-viewer@actionbook-marketplace
+
+# Run setup
+cd playground/arxiv-viewer
+./setup.sh
+```
+
+Permission configuration:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl *)",
+      "Bash(mkdir -p *)",
+      "Bash(agent-browser *)"
+    ]
+  }
+}
+```
+
+### Available Commands
+
+**Quick Queries (API)**
+
+| Command | Description |
+|---------|-------------|
+| `/arxiv-viewer:paper <id>` | View paper metadata |
+| `/arxiv-viewer:search <query>` | Search papers |
+| `/arxiv-viewer:download <id>` | Download PDF |
+
+**Web Browsing (Actionbook)**
+
+| Command | Description |
+|---------|-------------|
+| `/arxiv-viewer:latest <category>` | Latest submissions |
+| `/arxiv-viewer:trending` | Trending papers |
+
+**Section-by-Section Reading (ar5iv, saves tokens)**
+
+| Command | Description |
+|---------|-------------|
+| `/arxiv-viewer:read <id> [section]` | Read a specific section |
+| `/arxiv-viewer:outline <id>` | Get paper table of contents |
+| `/arxiv-viewer:figures <id>` | Extract all figures |
+| `/arxiv-viewer:citations <id>` | Extract references |
+
+**Report Generation**
+
+| Command | Description |
+|---------|-------------|
+| `/arxiv-viewer:report <id>` | Generate AI paper report |
+
+### Search Syntax
+
+```bash
+# Search by field
+ti:transformer           # title
+au:hinton                # author
+abs:attention            # abstract
+cat:cs.AI                # category
+
+# Boolean operations
+ti:transformer AND cat:cs.CL
+au:hinton OR au:lecun
+
+# With parameters
+/arxiv-viewer:search ti:GRPO --category cs.LG --max 10
+```
+
+Common categories:
+
+| Category | Field |
+|----------|-------|
+| `cs.AI` | Artificial Intelligence |
+| `cs.CL` | Natural Language Processing |
+| `cs.CV` | Computer Vision |
+| `cs.LG` | Machine Learning |
+| `stat.ML` | Statistical Machine Learning |
+
+### Usage Examples
+
+**Complete Workflow: From Search to Report**
+
+```bash
+# Step 1: Search for papers of interest
+/arxiv-viewer:search ti:GRPO reinforcement learning --max 5
+
+# Step 2: View the paper outline
+/arxiv-viewer:outline 2601.08521
+
+# Step 3: Read specific sections (saves tokens)
+/arxiv-viewer:read 2601.08521 introduction
+/arxiv-viewer:read 2601.08521 methods
+
+# Step 4: View paper figures
+/arxiv-viewer:figures 2601.08521
+
+# Step 5: Generate an AI report
+/arxiv-viewer:report 2601.08521
+```
+
+---
+
+## General Rendering Skill: json-ui
+
+`@actionbookdev/json-ui` is a **standalone general-purpose rendering Skill**. It doesn't belong to any single demo but serves as the shared **output layer** for all AI Agents -- any structured JSON produced by an Agent can be rendered into polished HTML reports.
+
+### Why a Rendering Skill?
+
+Traditional AI Agent output is plain text or Markdown, unable to display charts, metrics, formulas, and other structured content. json-ui solves this:
+
+```
+Traditional:  AI Agent -> outputs Markdown text -> poor reading experience
+
+json-ui:      AI Agent -> outputs structured JSON -> json-ui renders -> browser displays polished report
+```
+
+### Design Philosophy
+
+Core idea: **AI generates JSON, the rendering layer handles UI**.
+
+| Advantage | Description |
+|-----------|-------------|
+| **Stream-friendly** | JSON can be streamed node by node, rendered as generated |
+| **Type-safe** | Every component has Zod schema validation; invalid AI output is rejected |
+| **AI-friendly** | AI only needs to output structured data, no need to worry about CSS/HTML |
+| **Reusable** | Same JSON can be rendered as HTML, React, PDF, and more |
+| **Cross-Agent** | All Agents share the same component set, ensuring consistent output style |
+
+### Cross-Demo Integration
+
+json-ui serves as the universal rendering layer, providing report output capabilities for all Playground Demos:
+
+```
++----------------------------------------------------------+
+|                                                          |
+|  +-----------+ +-------------+ +--------------+          |
+|  |  Scraper  | | Rust Learner| | arXiv Viewer |  ...     |
+|  |  scraper  | |  Rust       | |  paper       |          |
+|  |  results  | |  reports    | |  reports     |          |
+|  +-----+-----+ +------+-----+ +------+-------+          |
+|        |               |              |                  |
+|        +---------------+--------------+                  |
+|                        |                                 |
+|                        v                                 |
+|            +-----------------------+                     |
+|            |   json-ui (Skill)     |                     |
+|            |   JSON -> HTML render |                     |
+|            |   General components  |                     |
+|            |   + CLI               |                     |
+|            +-----------+-----------+                     |
+|                        |                                 |
+|                        v                                 |
+|                 Browser opens report                     |
+|                                                          |
++----------------------------------------------------------+
+```
+
+| Demo | Output JSON | Components Used |
+|------|-------------|----------------|
+| **actionbook-scraper** | Scraper result reports | MetricsGrid, Table, Callout, KeyPoint |
+| **rust-learner** | Rust features/crate reports | Section, ContributionList, CodeBlock, TagList |
+| **arxiv-viewer** | Paper analysis reports | PaperHeader, Abstract, Formula, Theorem, ResultsTable |
+| **Your custom Agent** | Any structured data | Freely combine 30+ components |
+
+### Use Cases
+
+| Scenario | Components Used |
+|----------|----------------|
+| Academic paper reports | PaperHeader, Abstract, Figure, Formula, Theorem, ResultsTable |
+| Scraper data reports | MetricsGrid, Table, Callout, Image, LinkGroup |
+| Rust version features | Section, ContributionList, CodeBlock, TagList, Highlight |
+| Data analysis reports | MetricsGrid, Table, Grid, Card, Callout |
+| Technical documentation | Section, Prose, CodeBlock, DefinitionList, Algorithm |
+| Product weekly reports | BrandHeader, ContributionList, MetricsGrid, Highlight |
+| Competitive analysis | Grid, Card, Table, KeyPoint, LinkGroup |
+| Study notes | Section, Callout, Formula, Theorem, Prose |
+
+### Installation
+
+```bash
+# As an npm package
+pnpm add @actionbookdev/json-ui
+
+# Or build from source
+cd packages/json-ui
+pnpm install && pnpm build
+```
+
+### CLI Usage
+
+```bash
+# Render JSON and open in browser
+json-ui render report.json
+
+# Render to a specific file
+json-ui render report.json -o out.html
+
+# Don't open browser
+json-ui render report.json --no-open
+
+# Read from stdin (pipe-friendly)
+cat report.json | json-ui render -
+```
+
+### JSON Format
+
+Reports are component trees, where each node contains `type`, `props`, and optional `children`:
+
+```json
+{
+  "type": "Report",
+  "props": { "theme": "auto" },
+  "children": [
+    {
+      "type": "Section",
+      "props": { "title": "Overview", "icon": "chart" },
+      "children": [
+        {
+          "type": "MetricsGrid",
+          "props": {
+            "metrics": [
+              { "label": "Total Users", "value": "12.5K", "trend": "up" },
+              { "label": "Active Rate", "value": "68%", "trend": "up" },
+              { "label": "Error Rate", "value": "0.3%", "trend": "down" }
+            ],
+            "cols": 3
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": { "title": "Key Findings", "icon": "bulb" },
+      "children": [
+        {
+          "type": "Callout",
+          "props": {
+            "type": "tip",
+            "title": "Performance Boost",
+            "content": "After cache optimization, API response time dropped from 200ms to 45ms"
+          }
+        },
+        {
+          "type": "Table",
+          "props": {
+            "columns": [
+              { "key": "api", "label": "API" },
+              { "key": "before", "label": "Before (ms)" },
+              { "key": "after", "label": "After (ms)" }
+            ],
+            "rows": [
+              { "api": "/users", "before": "210", "after": "42" },
+              { "api": "/search", "before": "380", "after": "65" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### Full Component Reference
+
+**Layout**
+
+| Component | Purpose | Key Props |
+|-----------|---------|-----------|
+| `Report` | Root container | `theme: light/dark/auto` |
+| `Section` | Section with title | `title`, `icon`, `collapsible` |
+| `Grid` | Grid layout | `cols` |
+| `Card` | Card container | `padding`, `shadow`, `variant` |
+
+**Header/Footer**
+
+| Component | Purpose | Key Props |
+|-----------|---------|-----------|
+| `PaperHeader` | Title area | `title`, `arxivId`, `date`, `categories` |
+| `AuthorList` | People list | `authors[]`, `maxVisible`, `layout` |
+| `BrandHeader` | Top branding | `badge`, `poweredBy` |
+| `BrandFooter` | Bottom info | `timestamp`, `attribution`, `disclaimer` |
+
+**Text Content**
+
+| Component | Purpose | Key Props |
+|-----------|---------|-----------|
+| `Prose` | Markdown paragraph | `content` (supports **bold**, *italic*, `code`, lists) |
+| `Abstract` | Abstract | `text`, `highlights[]` (keyword highlighting) |
+| `Highlight` | Quote/emphasis | `text`, `type: quote/important/warning/code` |
+| `Callout` | Alert box | `type: info/tip/warning/important/note`, `content` |
+| `KeyPoint` | Key finding | `icon`, `title`, `description`, `variant` |
+
+**Academic/Technical**
+
+| Component | Purpose | Key Props |
+|-----------|---------|-----------|
+| `Formula` | LaTeX formula | `latex`, `block`, `label` |
+| `Theorem` | Theorem/lemma | `type: theorem/lemma/proposition/...`, `content` |
+| `Algorithm` | Pseudocode | `title`, `steps[{line, code, indent}]` |
+| `CodeBlock` | Code block | `code`, `language`, `showLineNumbers` |
+| `DefinitionList` | Definition list | `items[{term, definition}]` |
+
+**Data Display**
+
+| Component | Purpose | Key Props |
+|-----------|---------|-----------|
+| `MetricsGrid` | Metric cards | `metrics[{label, value, trend}]`, `cols` |
+| `Table` | General table | `columns[]`, `rows[]`, `striped`, `compact` |
+| `ResultsTable` | Results table | `columns[]`, `rows[]`, `highlights[]` (highlight best values) |
+| `ContributionList` | Contribution/step list | `items[{badge, title, description}]`, `numbered` |
+| `MethodOverview` | Process steps | `steps[{step, title, description}]` |
+| `TagList` | Tag group | `tags[{label, color, href}]`, `variant` |
+
+**Media**
+
+| Component | Purpose | Key Props |
+|-----------|---------|-----------|
+| `Image` | Single image | `src`, `alt`, `caption`, `width` |
+| `Figure` | Multi-image figure | `images[]`, `label`, `caption` |
+
+**Interactive**
+
+| Component | Purpose | Key Props |
+|-----------|---------|-----------|
+| `LinkButton` | Link button | `href`, `label`, `icon`, `external` |
+| `LinkGroup` | Link group | `links[]`, `layout: horizontal/vertical` |
+
+### Available Icons
+
+The `icon` property supports these values:
+
+```
+paper  user  calendar  tag  link  code  chart  bulb
+check  star  warning   info github arxiv pdf   copy
+expand collapse
+```
+
+### Example Files
+
+```bash
+cd packages/json-ui
+
+# Simple report (paper abstract + contributions + metrics)
+node dist/cli.js render example-report.json
+
+# Rich report (formulas + theorems + algorithms + results table + figures)
+node dist/cli.js render example-report-rich.json
+```
+
+### AI Agent Integration
+
+Recommended integration: have the AI Agent output JSON, then render with the CLI.
+
+```bash
+# AI generates JSON -> pipe to json-ui for rendering
+echo '{"type":"Report","children":[...]}' | json-ui render -
+```
+
+Validate AI output using Zod schemas in code:
+
+```typescript
+import { catalog } from '@actionbookdev/json-ui/catalog';
+
+// Validate AI-generated component data
+const result = catalog.MetricsGrid.safeParse(aiOutput);
+if (result.success) {
+  // Data is valid, ready to render
+}
+```
+
+Import components directly into your React app:
+
+```tsx
+import {
+  Report, Section, MetricsGrid,
+  Table, Callout, ResultsTable
+} from '@actionbookdev/json-ui';
+```
+
+### Features
+
+- Light/dark theme auto-switching
+- Responsive layout (mobile-friendly)
+- Print-optimized styles
+- LaTeX formula rendering (Greek letters, superscripts/subscripts, common symbols)
+- Zod schema type safety for all components
+
+---
+
+## Real-World Case Study: Building an AI News Site with Skills
+
+The Demos and Skills described above are not isolated tutorials -- we used them to build a **real, running daily news site** [ai-rust-news](https://github.com/ZhangHanDong/ai-rust-news), which automatically generates AI, Rust, and Paper reports daily and deploys to Vercel.
+
+### Architecture: Skills Collaboration Pipeline
+
+The entire site's content production is driven by Claude Code + Skills, with no manually written report content:
+
+```
++--------------------------------------------------------------+
+|  Step 1: Data Collection (Skills)                            |
+|                                                              |
+|  +----------------+  +----------------+  +---------------+   |
+|  | /ai-daily      |  | /rust-daily    |  | /arxiv-viewer |   |
+|  | r/ClaudeAI     |  | r/rust         |  | :report <id>  |   |
+|  | r/ChatGPT      |  | TWIR           |  |               |   |
+|  | r/AI_Agents    |  | releases.rs    |  | arXiv API     |   |
+|  +-------+--------+  +-------+--------+  +------+--------+   |
+|          |                   |                   |            |
+|          +-------------------+-------------------+            |
+|                              |                                |
+|  Step 2: Report Generation (json-ui Skill)                   |
+|  +---------------------------v------------------------------+ |
+|  |  json-ui skill (SKILL.md)                                | |
+|  |  Teaches Claude to output structured JSON                 | |
+|  |  using json-ui component format                           | |
+|  |  30+ components: MetricsGrid, Table, Section, Callout... | |
+|  +---------------------------+------------------------------+ |
+|                              |                                |
+|  Step 3: Site Rendering (Next.js + json-ui React components) |
+|  +---------------------------v------------------------------+ |
+|  |  ai-rust-news (Next.js)                                  | |
+|  |  public/reports/*.json -> React recursive render -> HTML  | |
+|  |  Auto-categorized: AI / Rust / Papers                    | |
+|  |  Bilingual switching (I18n)                               | |
+|  +---------------------------+------------------------------+ |
+|                              |                                |
+|  Step 4: Deployment          |                                |
+|  git push -> Vercel auto-build -> https://ai-rust-news.vercel.app |
++--------------------------------------------------------------+
+```
+
+### Role of Each Skill
+
+| Step | Skill | What It Does |
+|------|-------|-------------|
+| Collect AI daily | `/ai-daily` | agent-browser visits three Reddit communities, extracts hot posts, comment counts, trends |
+| Collect Rust daily | `/rust-daily` | agent-browser visits r/rust, TWIR, releases.rs, extracts version features |
+| Collect papers | `/arxiv-viewer:report` | arXiv API for metadata, ar5iv.org for section reading, generates analysis |
+| Render to JSON | **json-ui skill** | Teaches Claude to use the json-ui component catalog, outputs compliant JSON report trees |
+| Render to HTML | **json-ui package** | Next.js site uses json-ui React components to recursively render JSON into pages |
+
+### json-ui Skill vs json-ui Package
+
+These two are easily confused. Here's how they differ:
+
+| | json-ui Skill | json-ui Package |
+|---|---|---|
+| **What** | SKILL.md pure text knowledge doc | TypeScript npm package |
+| **Location** | `playground/json-ui-skill/SKILL.md` | `packages/json-ui/` |
+| **Purpose** | Teaches Claude how to write correct json-ui JSON | Actually renders JSON into HTML/React |
+| **Dependencies** | None (pure Markdown) | zod, katex, React |
+| **Used by** | Claude Code (AI auto-triggers) | Next.js site / CLI tool |
+
+Relationship diagram:
+
+```
+When Claude Code writes a report:
+
+  User: "Generate today's AI daily report"
+         |
+         v
+  json-ui skill (SKILL.md) is auto-triggered
+  -> Claude knows available components, props, format
+  -> Outputs structured JSON:
+    { type: "Report", children: [
+        { type: "Section", ... },
+        { type: "MetricsGrid", ... }
+    ]}
+         |
+         v
+  JSON saved to ai-rust-news/public/reports/xxx.json
+         |
+         v
+  Next.js site renders using json-ui React components
+  -> Recursively traverses JSON tree
+  -> Each type maps to corresponding React component
+  -> Outputs HTML page
+```
+
+### Report Generation Flow (One Command)
+
+```bash
+# In Claude Code, just say:
+Generate today's AI daily report using json-ui
+
+# Claude automatically:
+# 1. Triggers /ai-daily skill -> agent-browser scrapes Reddit
+# 2. Triggers json-ui skill -> outputs JSON in component format
+# 3. Saves to ai-rust-news/public/reports/ai-daily-20260130.json
+# 4. Updates index.json
+# 5. git commit + push -> Vercel auto-deploys
+```
+
+### Existing Reports
+
+| Report | Category | Data Source | Components Used |
+|--------|----------|------------|----------------|
+| AI Daily (2026-01-30) | AI | Reddit r/ClaudeAI, r/ChatGPT, r/AI_Agents | MetricsGrid, Table, Section, Callout, KeyPoint, TagList |
+| Rust 1.93.0 Release | Rust | releases.rs | Section, ContributionList, CodeBlock, Table, TagList |
+| GRPO Paper Analysis | Paper | arXiv 2601.08521 | PaperHeader, Abstract, Formula, Theorem, ResultsTable, Figure |
+
+### How to Reproduce
+
+1. **Install Skills**
+
+```bash
+# Install Actionbook playground skills
+claude plugin install rust-learner@actionbook-marketplace
+claude plugin install arxiv-viewer@actionbook-marketplace
+
+# json-ui skill is already in playground/json-ui-skill/
+# Copy to global skills directory to enable:
+cp -r playground/json-ui-skill ~/.claude/skills/json-ui
+```
+
+2. **Create the Site**
+
+```bash
+# Fork or clone the site template
+git clone https://github.com/ZhangHanDong/ai-rust-news.git
+cd ai-rust-news
+pnpm install
+```
+
+3. **Generate Reports**
+
+Just give natural language instructions in Claude Code:
+
+```
+"Generate today's AI daily report using json-ui"
+"Generate a Rust 1.93 release report using json-ui"
+"Generate a report for this paper using json-ui: 2601.08521"
+```
+
+Claude will automatically trigger the corresponding collection skill + json-ui skill to output JSON reports.
+
+4. **Deploy**
+
+```bash
+# After report generation
+git add public/reports/
+git commit -m "add: new daily report"
+git push  # Vercel auto-builds and deploys
+```
+
+### Extending: Adding Your Own Report Types
+
+Thanks to json-ui's general-purpose component design, you can easily add new report types. Just:
+
+1. Write a new collection Skill (or use existing Skills) to gather data
+2. Have Claude output JSON using json-ui component format
+3. Save to `public/reports/` and update `index.json`
+
+For example, adding a "GitHub Trending Weekly Report":
+
+```bash
+# Just one sentence
+"Generate a weekly report of GitHub Trending Rust projects using json-ui"
+```
+
+Claude will use agent-browser to scrape the GitHub Trending page, then use the json-ui skill to guide itself in outputting correctly formatted JSON reports.
+
+---
+
+## Summary
+
+Three Demos + json-ui Skill + the news site form Actionbook's complete Agent workflow from collection to display:
+
+```
++------------------------------------------------------------+
+|                    Actionbook Platform                      |
+|                                                            |
+|  Data Collection Layer (Input)                             |
+|  +-------------+ +-------------+ +--------------+          |
+|  |  Scraper    | | Rust Learner| | arXiv Viewer |  ...     |
+|  |  Generate   | |  Learn Rust | |  Read papers |          |
+|  |  scrapers   | |             | |              |          |
+|  +------+------+ +------+-----+ +------+-------+          |
+|         |               |              |                   |
+|         +----------+----+--------------+                   |
+|                    |                                       |
+|  Infrastructure Layer (Infra)                              |
+|  +-----------------v-------------------+                   |
+|  |  Actionbook MCP  |  agent-browser   |                   |
+|  |  Verified         |  Web execution  |                   |
+|  |  selectors        |                 |                   |
+|  +-----------------+-+---+-------------+                   |
+|                    |                                       |
+|  Output Rendering Layer (Output)                           |
+|  +-----------------v-------------------+                   |
+|  |  json-ui (General Rendering Skill)  |                   |
+|  |  AI JSON -> Structured HTML Reports |                   |
+|  |  30+ components . Zod . Themes      |                   |
+|  +-----------------+-------------------+                   |
+|                    |                                       |
+|                    v                                       |
+|             Browser opens report                           |
++------------------------------------------------------------+
+```
+
+| Layer | Responsibility | Components |
+|-------|---------------|-----------|
+| **Data Collection** | Agent gathers information | Scraper / Rust Learner / arXiv Viewer / Custom Agent |
+| **Infrastructure** | Reliable web operations | Actionbook MCP (verified selectors) + agent-browser (execution) |
+| **Output Rendering** | Structured presentation | json-ui (JSON -> HTML, 30+ components, CLI + React) |
+
+**Core Value**:
+- **Input side**: AI Agents use Actionbook to get community-verified selectors, no more guessing at web page structures
+- **Output side**: AI Agents use json-ui to output structured JSON, automatically rendered into polished reports
+- **Battle-tested**: The [ai-rust-news](https://github.com/ZhangHanDong/ai-rust-news) daily news site proves this workflow runs end-to-end -- from Reddit/arXiv data collection to Vercel deployment, entirely driven by Claude Code + Skills
