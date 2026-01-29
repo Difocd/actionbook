@@ -1,0 +1,26 @@
+[
+  {
+    "slug": "ai-daily-20260130",
+    "title": { "en": "AI Daily Report — January 30, 2026", "zh": "AI 日报 — 2026 年 1 月 30 日" },
+    "description": { "en": "45 posts from r/ClaudeAI, r/ChatGPT, r/AI_Agents — Palantir debate, hallucination concerns, agent frameworks", "zh": "来自 r/ClaudeAI、r/ChatGPT、r/AI_Agents 的 45 篇帖子——Palantir 争议、幻觉问题、Agent 框架" },
+    "date": "2026-01-30",
+    "tags": ["AI", "Daily", "Reddit"],
+    "category": "ai"
+  },
+  {
+    "slug": "rust-1.93",
+    "title": { "en": "Rust 1.93.0 Release Notes", "zh": "Rust 1.93.0 版本发布说明" },
+    "description": { "en": "13 language features, 18 stabilized APIs, and important compiler changes", "zh": "13 项语言特性、18 个稳定化 API 及重要编译器变更" },
+    "date": "2026-01-29",
+    "tags": ["Rust", "Release"],
+    "category": "rust"
+  },
+  {
+    "slug": "example-rich",
+    "title": { "en": "Your Group-Relative Advantage Is Biased", "zh": "组相对优势估计存在偏差" },
+    "description": { "en": "AI-generated paper summary: bias analysis of GRPO and HA-DW method", "zh": "AI 生成论文解读：GRPO 偏差分析与 HA-DW 方法" },
+    "date": "2026-01-27",
+    "tags": ["Paper", "ML", "RLHF"],
+    "category": "paper"
+  }
+]

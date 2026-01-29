@@ -1,5 +1,6 @@
 packages:
   - packages/*
+  - packages/json-ui/site
   - playground/*
   - eval
   - services/*

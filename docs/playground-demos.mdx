@@ -1,0 +1,843 @@
+---
+title: "Playground Demos"
+description: "三个官方 Demo 展示 Actionbook 如何赋能 AI Agent：网页爬取、Rust 学习、arXiv 论文阅读与渲染"
+---
+
+# Playground Demos
+
+Actionbook 提供了三个 Playground Demo 和一个通用渲染 Skill，展示 AI Agent 如何利用 Actionbook 完成"采集 → 处理 → 展示"的完整工作流。
+
+| 组件 | 类型 | 功能 | 核心技术 |
+|------|------|------|----------|
+| **actionbook-scraper** | Demo | 生成可靠的网页爬虫 | Actionbook + Playwright/agent-browser |
+| **rust-learner** | Demo | 查询 Rust 版本特性和 crate 信息 | Actionbook + agent-browser |
+| **arxiv-viewer** | Demo | 搜索/阅读/分析 arXiv 论文 | arXiv API + Actionbook |
+| **json-ui** | Skill | 将 AI 生成的 JSON 渲染为 HTML 报告 | Zod + React + CLI |
+| **json-ui skill** | Skill | 教 Claude 生成符合 json-ui 格式的 JSON | SKILL.md (纯知识文档) |
+
+---
+
+## 前置要求
+
+所有 Demo 共享以下前置依赖：
+
+```bash
+# 1. 安装 Claude Code
+npm install -g @anthropic-ai/claude-code
+
+# 2. 安装 agent-browser（用于网页交互）
+npm install -g agent-browser
+
+# 3. 添加 Actionbook Marketplace
+claude plugin marketplace add actionbook/actionbook
+```
+
+---
+
+## Demo 1: Actionbook Scraper
+
+**目标**：基于 Actionbook 预验证的 CSS 选择器，自动生成准确的网页爬虫脚本。
+
+### 为什么需要它？
+
+传统 AI 生成爬虫有一个核心问题：**选择器猜测**。AI 并不知道目标网站的真实 DOM 结构，只能靠猜测生成选择器，导致爬取失败率极高。
+
+Actionbook Scraper 的方案：
+
+```
+传统方式:  AI 猜测选择器 → 爬虫运行 → 大概率失败 → 反复调试
+
+Actionbook: 社区验证选择器 → AI 获取准确选择器 → 生成爬虫 → 一次成功
+```
+
+### 安装
+
+```bash
+# 安装插件
+claude plugin install actionbook-scraper@actionbook-marketplace
+
+# 运行 setup 脚本
+cd playground/actionbook-scraper
+./setup.sh
+```
+
+或手动添加权限到 `.claude/settings.local.json`：
+
+```json
+{
+  "permissions": {
+    "allow": ["Bash(agent-browser *)"]
+  }
+}
+```
+
+### 可用命令
+
+| 命令 | 说明 |
+|------|------|
+| `/actionbook-scraper:list-sources` | 列出已收录的网站 |
+| `/actionbook-scraper:analyze <url>` | 分析页面结构和可用选择器 |
+| `/actionbook-scraper:generate <url>` | 生成 agent-browser 交互命令 |
+| `/actionbook-scraper:generate <url> --standalone` | 生成独立 Playwright/Puppeteer 脚本 |
+
+### 使用示例
+
+**示例 1：分析目标网站**
+
+```bash
+/actionbook-scraper:analyze https://firstround.com/companies
+```
+
+Agent 会调用 Actionbook MCP 查询该网站已收录的选择器，并输出页面结构分析。
+
+**示例 2：生成交互式爬虫**
+
+```bash
+/actionbook-scraper:generate https://firstround.com/companies
+```
+
+输出 agent-browser 命令序列：
+
+```bash
+agent-browser open "https://firstround.com/companies"
+agent-browser scroll down 2000
+agent-browser get text ".company-list-card-small"
+agent-browser close
+```
+
+**示例 3：生成独立 Playwright 脚本**
+
+```bash
+/actionbook-scraper:generate https://lib.rs --standalone --template playwright-js
+```
+
+生成完整的 `scraper.js`，包含经过验证的选择器，直接运行即可。
+
+### 生成脚本模板
+
+| 模板 | 语言 | 适用场景 |
+|------|------|----------|
+| `playwright-js` | JavaScript | Node.js 项目 |
+| `playwright-python` | Python | Python 项目 |
+| `puppeteer` | JavaScript | 轻量级爬虫 |
+| `agent-browser` | CLI | 一次性快速爬取 |
+
+### 实际效果
+
+以 First Round Capital 公司列表为例：
+
+| 指标 | 传统 AI 爬虫 | Actionbook Scraper |
+|------|-------------|-------------------|
+| 首轮成功抓取公司数 | 25 | 194 |
+| 提升倍数 | — | **7.76x** |
+
+---
+
+## Demo 2: Rust Learner
+
+**目标**：通过 Actionbook + agent-browser 查询 Rust 版本特性和 crate 生态信息。
+
+### 安装
+
+```bash
+claude plugin install rust-learner@actionbook-marketplace
+```
+
+添加权限：
+
+```json
+{
+  "permissions": {
+    "allow": ["Bash(agent-browser *)"]
+  }
+}
+```
+
+### 可用命令
+
+| 命令 | 说明 | 示例 |
+|------|------|------|
+| `/rust-learner:rust-features [version]` | 查询 Rust 版本新特性 | `/rust-learner:rust-features 1.83` |
+| `/rust-learner:crate-info <crate>` | 查询 crate 详细信息 | `/rust-learner:crate-info tokio` |
+
+### 使用示例
+
+**查询 Rust 版本特性**
+
+```bash
+/rust-learner:rust-features 1.83
+```
+
+Agent 通过 Actionbook 获取 Rust 官网的选择器，使用 agent-browser 访问 release note 页面，然后提取并总结新特性。
+
+**查询 crate 信息**
+
+```bash
+/rust-learner:crate-info serde
+```
+
+返回 crate 的最新版本、下载量、依赖关系、功能特性等信息。
+
+### 自然语言用法
+
+你也可以直接用自然语言提问：
+
+```
+"Rust 1.83 有什么新功能？"
+"tokio 最新版本是多少？"
+"帮我分析 Cargo.toml 的依赖"
+```
+
+---
+
+## Demo 3: arXiv Viewer + json-ui
+
+**目标**：搜索、阅读 arXiv 论文，并将论文内容渲染成精美的 HTML 报告。
+
+这是三个 Demo 中最完整的一个，由两部分组成：
+
+| 组件 | 位置 | 功能 |
+|------|------|------|
+| **arxiv-viewer** (插件) | `playground/arxiv-viewer/` | 搜索、阅读、分析论文 |
+| **json-ui** (npm 包) | `packages/json-ui/` | 将 JSON 报告渲染为 HTML 并在浏览器中打开 |
+
+### 架构：三源混合
+
+arxiv-viewer 采用三个数据源的混合架构，按场景自动选择最优来源：
+
+```
+┌─────────────┐   快速元数据   ┌──────────┐
+│  arXiv API  │◄──────────────│          │
+│  (WebFetch) │               │          │
+└─────────────┘               │  arxiv-  │
+                              │  viewer  │
+┌─────────────┐   最新/趋势   │  插件    │
+│ arxiv.org   │◄──────────────│          │
+│(Actionbook) │               │          │
+└─────────────┘               │          │
+                              │          │
+┌─────────────┐   逐节阅读    │          │
+│  ar5iv.org  │◄──────────────│          │
+│(Actionbook) │               └──────────┘
+└─────────────┘
+```
+
+| 数据源 | 方法 | 最适合 | Token 消耗 |
+|--------|------|--------|-----------|
+| arXiv API | WebFetch | 元数据、搜索 | ~500 |
+| arxiv.org | Actionbook | 最新/热门论文 | ~1000 |
+| ar5iv.org | Actionbook | 逐节阅读、图表 | ~1000-2000 |
+
+### 安装
+
+```bash
+# 安装插件
+claude plugin install arxiv-viewer@actionbook-marketplace
+
+# 运行 setup
+cd playground/arxiv-viewer
+./setup.sh
+```
+
+权限配置：
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl *)",
+      "Bash(mkdir -p *)",
+      "Bash(agent-browser *)"
+    ]
+  }
+}
+```
+
+### 可用命令
+
+**快速查询（API）**
+
+| 命令 | 说明 |
+|------|------|
+| `/arxiv-viewer:paper <id>` | 查看论文元数据 |
+| `/arxiv-viewer:search <query>` | 搜索论文 |
+| `/arxiv-viewer:download <id>` | 下载 PDF |
+
+**网页浏览（Actionbook）**
+
+| 命令 | 说明 |
+|------|------|
+| `/arxiv-viewer:latest <category>` | 最新投稿 |
+| `/arxiv-viewer:trending` | 热门论文 |
+
+**逐节阅读（ar5iv，省 Token）**
+
+| 命令 | 说明 |
+|------|------|
+| `/arxiv-viewer:read <id> [section]` | 阅读特定章节 |
+| `/arxiv-viewer:outline <id>` | 获取论文目录 |
+| `/arxiv-viewer:figures <id>` | 提取所有图表 |
+| `/arxiv-viewer:citations <id>` | 提取参考文献 |
+
+**报告生成**
+
+| 命令 | 说明 |
+|------|------|
+| `/arxiv-viewer:report <id>` | 生成 AI 论文报告 |
+
+### 搜索语法
+
+```bash
+# 按字段搜索
+ti:transformer           # 标题
+au:hinton                # 作者
+abs:attention            # 摘要
+cat:cs.AI                # 分类
+
+# 布尔运算
+ti:transformer AND cat:cs.CL
+au:hinton OR au:lecun
+
+# 带参数
+/arxiv-viewer:search ti:GRPO --category cs.LG --max 10
+```
+
+常用分类：
+
+| 分类 | 领域 |
+|------|------|
+| `cs.AI` | 人工智能 |
+| `cs.CL` | 自然语言处理 |
+| `cs.CV` | 计算机视觉 |
+| `cs.LG` | 机器学习 |
+| `stat.ML` | 统计机器学习 |
+
+### 使用示例
+
+**完整工作流：从搜索到报告**
+
+```bash
+# Step 1: 搜索感兴趣的论文
+/arxiv-viewer:search ti:GRPO reinforcement learning --max 5
+
+# Step 2: 查看论文目录
+/arxiv-viewer:outline 2601.08521
+
+# Step 3: 阅读特定章节（省 Token）
+/arxiv-viewer:read 2601.08521 introduction
+/arxiv-viewer:read 2601.08521 methods
+
+# Step 4: 查看论文图表
+/arxiv-viewer:figures 2601.08521
+
+# Step 5: 生成 AI 报告
+/arxiv-viewer:report 2601.08521
+```
+
+---
+
+## 通用渲染 Skill：json-ui
+
+`@actionbookdev/json-ui` 是一个**独立的通用渲染 Skill**。它不属于任何单一 Demo，而是所有 AI Agent 共享的**输出层**——任何 Agent 生成的结构化 JSON 都可以用它渲染成精美的 HTML 报告。
+
+### 为什么需要渲染 Skill？
+
+传统 AI Agent 的输出是纯文本或 Markdown，无法展示图表、指标、公式等结构化内容。json-ui 解决了这个问题：
+
+```
+传统方式:  AI Agent → 输出 Markdown 文本 → 阅读体验差
+
+json-ui:  AI Agent → 输出结构化 JSON → json-ui 渲染 → 浏览器展示精美报告
+```
+
+### 设计理念
+
+核心思路：**AI 生成 JSON，渲染层负责 UI**。
+
+| 优势 | 说明 |
+|------|------|
+| **流式友好** | JSON 可以逐节点流式传输，边生成边渲染 |
+| **类型安全** | 每个组件都有 Zod schema 校验，AI 输出不合法会被拒绝 |
+| **AI 友好** | AI 只需输出结构化数据，不用关心 CSS/HTML |
+| **可复用** | 同一套 JSON 可以渲染为 HTML、React、PDF 等多种格式 |
+| **跨 Agent** | 所有 Agent 共享同一套组件，输出风格统一 |
+
+### 跨 Demo 集成
+
+json-ui 作为通用渲染层，为所有 Playground Demo 提供报告输出能力：
+
+```
+┌──────────────────────────────────────────────────────────┐
+│                                                          │
+│  ┌─────────────┐ ┌─────────────┐ ┌──────────────┐       │
+│  │  Scraper     │ │ Rust Learner│ │ arXiv Viewer │  ...  │
+│  │  爬虫结果    │ │  Rust 报告  │ │  论文报告    │       │
+│  └──────┬──────┘ └──────┬──────┘ └──────┬───────┘       │
+│         │               │               │                │
+│         └───────────────┼───────────────┘                │
+│                         │                                │
+│                         ▼                                │
+│             ┌───────────────────────┐                    │
+│             │   json-ui (Skill)    │                    │
+│             │   JSON → HTML 渲染    │                    │
+│             │   通用组件 + CLI      │                    │
+│             └───────────┬───────────┘                    │
+│                         │                                │
+│                         ▼                                │
+│                  浏览器打开报告                            │
+│                                                          │
+└──────────────────────────────────────────────────────────┘
+```
+
+| Demo | 输出的 JSON | 使用的组件 |
+|------|------------|----------|
+| **actionbook-scraper** | 爬虫结果报告 | MetricsGrid, Table, Callout, KeyPoint |
+| **rust-learner** | Rust 特性/crate 报告 | Section, ContributionList, CodeBlock, TagList |
+| **arxiv-viewer** | 论文分析报告 | PaperHeader, Abstract, Formula, Theorem, ResultsTable |
+| **你的自定义 Agent** | 任意结构化数据 | 自由组合 30+ 组件 |
+
+### 全部适用场景
+
+| 场景 | 使用的组件 |
+|------|----------|
+| 学术论文报告 | PaperHeader, Abstract, Figure, Formula, Theorem, ResultsTable |
+| 爬虫数据报告 | MetricsGrid, Table, Callout, Image, LinkGroup |
+| Rust 版本特性 | Section, ContributionList, CodeBlock, TagList, Highlight |
+| 数据分析报告 | MetricsGrid, Table, Grid, Card, Callout |
+| 技术文档 | Section, Prose, CodeBlock, DefinitionList, Algorithm |
+| 产品周报 | BrandHeader, ContributionList, MetricsGrid, Highlight |
+| 竞品分析 | Grid, Card, Table, KeyPoint, LinkGroup |
+| 学习笔记 | Section, Callout, Formula, Theorem, Prose |
+
+### 安装
+
+```bash
+# 作为 npm 包使用
+pnpm add @actionbookdev/json-ui
+
+# 或从源码构建
+cd packages/json-ui
+pnpm install && pnpm build
+```
+
+### CLI 使用
+
+```bash
+# 渲染 JSON 并在浏览器中打开
+json-ui render report.json
+
+# 渲染到指定文件
+json-ui render report.json -o out.html
+
+# 不打开浏览器
+json-ui render report.json --no-open
+
+# 从 stdin 读取（适合管道）
+cat report.json | json-ui render -
+```
+
+### JSON 格式
+
+报告是一棵组件树，每个节点包含 `type`、`props` 和可选的 `children`：
+
+```json
+{
+  "type": "Report",
+  "props": { "theme": "auto" },
+  "children": [
+    {
+      "type": "Section",
+      "props": { "title": "概览", "icon": "chart" },
+      "children": [
+        {
+          "type": "MetricsGrid",
+          "props": {
+            "metrics": [
+              { "label": "总用户", "value": "12.5K", "trend": "up" },
+              { "label": "活跃率", "value": "68%", "trend": "up" },
+              { "label": "错误率", "value": "0.3%", "trend": "down" }
+            ],
+            "cols": 3
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": { "title": "关键发现", "icon": "bulb" },
+      "children": [
+        {
+          "type": "Callout",
+          "props": {
+            "type": "tip",
+            "title": "性能提升",
+            "content": "经过缓存优化后，API 响应时间从 200ms 降到 45ms"
+          }
+        },
+        {
+          "type": "Table",
+          "props": {
+            "columns": [
+              { "key": "api", "label": "API" },
+              { "key": "before", "label": "优化前(ms)" },
+              { "key": "after", "label": "优化后(ms)" }
+            ],
+            "rows": [
+              { "api": "/users", "before": "210", "after": "42" },
+              { "api": "/search", "before": "380", "after": "65" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+
+### 全部组件一览
+
+**布局**
+
+| 组件 | 用途 | 关键属性 |
+|------|------|----------|
+| `Report` | 顶层容器 | `theme: light/dark/auto` |
+| `Section` | 带标题的章节 | `title`, `icon`, `collapsible` |
+| `Grid` | 网格布局 | `cols` |
+| `Card` | 卡片容器 | `padding`, `shadow`, `variant` |
+
+**信息头尾**
+
+| 组件 | 用途 | 关键属性 |
+|------|------|----------|
+| `PaperHeader` | 标题区域 | `title`, `arxivId`, `date`, `categories` |
+| `AuthorList` | 人员列表 | `authors[]`, `maxVisible`, `layout` |
+| `BrandHeader` | 顶部品牌 | `badge`, `poweredBy` |
+| `BrandFooter` | 底部信息 | `timestamp`, `attribution`, `disclaimer` |
+
+**文本内容**
+
+| 组件 | 用途 | 关键属性 |
+|------|------|----------|
+| `Prose` | Markdown 段落 | `content`（支持 **bold**、*italic*、`code`、列表） |
+| `Abstract` | 摘要 | `text`, `highlights[]`（关键词高亮） |
+| `Highlight` | 引用/重点 | `text`, `type: quote/important/warning/code` |
+| `Callout` | 提示框 | `type: info/tip/warning/important/note`, `content` |
+| `KeyPoint` | 关键发现 | `icon`, `title`, `description`, `variant` |
+
+**学术/技术**
+
+| 组件 | 用途 | 关键属性 |
+|------|------|----------|
+| `Formula` | LaTeX 公式 | `latex`, `block`, `label` |
+| `Theorem` | 定理/引理 | `type: theorem/lemma/proposition/...`, `content` |
+| `Algorithm` | 伪代码 | `title`, `steps[{line, code, indent}]` |
+| `CodeBlock` | 代码块 | `code`, `language`, `showLineNumbers` |
+| `DefinitionList` | 定义列表 | `items[{term, definition}]` |
+
+**数据展示**
+
+| 组件 | 用途 | 关键属性 |
+|------|------|----------|
+| `MetricsGrid` | 指标卡片 | `metrics[{label, value, trend}]`, `cols` |
+| `Table` | 通用表格 | `columns[]`, `rows[]`, `striped`, `compact` |
+| `ResultsTable` | 结果表格 | `columns[]`, `rows[]`, `highlights[]`（高亮最优值） |
+| `ContributionList` | 贡献/步骤列表 | `items[{badge, title, description}]`, `numbered` |
+| `MethodOverview` | 流程步骤 | `steps[{step, title, description}]` |
+| `TagList` | 标签组 | `tags[{label, color, href}]`, `variant` |
+
+**媒体**
+
+| 组件 | 用途 | 关键属性 |
+|------|------|----------|
+| `Image` | 单张图片 | `src`, `alt`, `caption`, `width` |
+| `Figure` | 多图组合 | `images[]`, `label`, `caption` |
+
+**交互**
+
+| 组件 | 用途 | 关键属性 |
+|------|------|----------|
+| `LinkButton` | 链接按钮 | `href`, `label`, `icon`, `external` |
+| `LinkGroup` | 链接组 | `links[]`, `layout: horizontal/vertical` |
+
+### 可用图标
+
+`icon` 属性支持以下值：
+
+```
+paper  user  calendar  tag  link  code  chart  bulb
+check  star  warning   info github arxiv pdf   copy
+expand collapse
+```
+
+### 示例文件
+
+```bash
+cd packages/json-ui
+
+# 简单报告（论文摘要 + 贡献 + 指标）
+node dist/cli.js render example-report.json
+
+# 丰富报告（公式 + 定理 + 算法 + 结果表格 + 图表）
+node dist/cli.js render example-report-rich.json
+```
+
+### 与 AI Agent 集成
+
+推荐的集成方式：让 AI Agent 输出 JSON，然后用 CLI 渲染。
+
+```bash
+# AI 生成 JSON → 管道传给 json-ui 渲染
+echo '{"type":"Report","children":[...]}' | json-ui render -
+```
+
+在代码中使用 Zod schema 校验 AI 输出：
+
+```typescript
+import { catalog } from '@actionbookdev/json-ui/catalog';
+
+// 校验 AI 生成的组件数据
+const result = catalog.MetricsGrid.safeParse(aiOutput);
+if (result.success) {
+  // 数据合法，可以渲染
+}
+```
+
+作为 React 组件集成到 Web 应用：
+
+直接导入组件：
+
+```tsx
+import {
+  Report, Section, MetricsGrid,
+  Table, Callout, ResultsTable
+} from '@actionbookdev/json-ui';
+```
+
+### 特性
+
+- 明/暗主题自动切换
+- 响应式布局（移动端适配）
+- 打印优化样式
+- LaTeX 公式基础渲染（Greek 字母、上下标、常用符号）
+- 所有组件 Zod schema 类型安全
+
+---
+
+## 实战案例：用 Skills 构建 AI 日报网站
+
+上面介绍的 Demo 和 Skill 不是孤立的教学示例——我们用它们构建了一个**真实运行的日报网站** [ai-rust-news](https://github.com/ZhangHanDong/ai-rust-news)，每天自动生成 AI、Rust、论文三类日报并部署到 Vercel。
+
+### 架构：Skills 协作流水线
+
+整个网站的内容生产完全由 Claude Code + Skills 驱动，不需要手写任何报告内容：
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  Step 1: 数据采集 (Skills)                                    │
+│                                                              │
+│  ┌────────────────┐  ┌────────────────┐  ┌───────────────┐   │
+│  │ /ai-daily      │  │ /rust-daily    │  │ /arxiv-viewer │   │
+│  │ r/ClaudeAI     │  │ r/rust         │  │ :report <id>  │   │
+│  │ r/ChatGPT      │  │ TWIR           │  │               │   │
+│  │ r/AI_Agents    │  │ releases.rs    │  │ arXiv API     │   │
+│  └───────┬────────┘  └───────┬────────┘  └──────┬────────┘   │
+│          │                   │                   │            │
+│          └───────────────────┼───────────────────┘            │
+│                              │                                │
+│  Step 2: 报告生成 (json-ui Skill)                             │
+│  ┌───────────────────────────▼──────────────────────────────┐ │
+│  │  json-ui skill (SKILL.md)                                │ │
+│  │  教 Claude 按 json-ui 组件格式输出结构化 JSON             │ │
+│  │  30+ 组件: MetricsGrid, Table, Section, Callout...       │ │
+│  └───────────────────────────┬──────────────────────────────┘ │
+│                              │                                │
+│  Step 3: 网站渲染 (Next.js + json-ui React 组件)             │
+│  ┌───────────────────────────▼──────────────────────────────┐ │
+│  │  ai-rust-news (Next.js)                                  │ │
+│  │  public/reports/*.json → React 组件递归渲染 → HTML 页面   │ │
+│  │  自动分类: AI / Rust / 论文                               │ │
+│  │  中英文切换 (I18n)                                        │ │
+│  └───────────────────────────┬──────────────────────────────┘ │
+│                              │                                │
+│  Step 4: 部署                │                                │
+│  git push → Vercel 自动构建 → https://ai-rust-news.vercel.app │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### 每个 Skill 的角色
+
+| Step | Skill | 具体做了什么 |
+|------|-------|-------------|
+| 采集 AI 日报 | `/ai-daily` | agent-browser 访问 Reddit 三个社区，提取热帖、评论数、趋势 |
+| 采集 Rust 日报 | `/rust-daily` | agent-browser 访问 r/rust、TWIR、releases.rs，提取版本特性 |
+| 采集论文 | `/arxiv-viewer:report` | arXiv API 获取元数据，ar5iv.org 逐节阅读，生成解读 |
+| 渲染为 JSON | **json-ui skill** | 教 Claude 使用 json-ui 组件目录，输出合规的 JSON 报告树 |
+| 渲染为 HTML | **json-ui package** | Next.js 站点用 json-ui React 组件递归渲染 JSON → 页面 |
+
+### json-ui Skill vs json-ui Package
+
+这两者容易混淆，区别如下：
+
+| | json-ui Skill | json-ui Package |
+|---|---|---|
+| **是什么** | SKILL.md 纯文本知识文档 | TypeScript npm 包 |
+| **位置** | `playground/json-ui-skill/SKILL.md` | `packages/json-ui/` |
+| **作用** | 教 Claude 如何写出正确的 json-ui JSON | 实际渲染 JSON → HTML/React |
+| **依赖** | 无（纯 Markdown） | zod, katex, React |
+| **谁用** | Claude Code（AI 自动触发） | Next.js 站点 / CLI 工具 |
+
+关系图：
+
+```
+Claude Code 写报告时：
+
+  用户: "帮我生成一份今天的 AI 日报"
+         │
+         ▼
+  json-ui skill (SKILL.md) 被自动触发
+  → Claude 知道有哪些组件、属性、格式
+  → 输出结构化 JSON:
+    { type: "Report", children: [
+        { type: "Section", ... },
+        { type: "MetricsGrid", ... }
+    ]}
+         │
+         ▼
+  JSON 保存到 ai-rust-news/public/reports/xxx.json
+         │
+         ▼
+  Next.js 站点用 json-ui React 组件渲染
+  → 递归遍历 JSON 树
+  → 每个 type 映射到对应 React 组件
+  → 输出 HTML 页面
+```
+
+### 日报生成流程（一条命令）
+
+```bash
+# 在 Claude Code 中执行
+帮我用 json-ui 生成一份今天的 AI 日报
+
+# Claude 自动完成:
+# 1. 触发 /ai-daily skill → agent-browser 爬取 Reddit
+# 2. 触发 json-ui skill → 按组件格式输出 JSON
+# 3. 保存到 ai-rust-news/public/reports/ai-daily-20260130.json
+# 4. 更新 index.json 索引
+# 5. git commit + push → Vercel 自动部署
+```
+
+### 目前已有的报告
+
+| 报告 | 分类 | 数据来源 | 使用的组件 |
+|------|------|---------|-----------|
+| AI Daily (2026-01-30) | AI | Reddit r/ClaudeAI, r/ChatGPT, r/AI_Agents | MetricsGrid, Table, Section, Callout, KeyPoint, TagList |
+| Rust 1.93.0 Release | Rust | releases.rs | Section, ContributionList, CodeBlock, Table, TagList |
+| GRPO 论文解读 | Paper | arXiv 2601.08521 | PaperHeader, Abstract, Formula, Theorem, ResultsTable, Figure |
+
+### 如何复现
+
+1. **安装 Skills**
+
+```bash
+# 安装 Actionbook playground skills
+claude plugin install rust-learner@actionbook-marketplace
+claude plugin install arxiv-viewer@actionbook-marketplace
+
+# json-ui skill 已在 playground/json-ui-skill/ 中
+# 复制到全局 skills 目录即可启用:
+cp -r playground/json-ui-skill ~/.claude/skills/json-ui
+```
+
+2. **创建站点**
+
+```bash
+# Fork 或 clone 站点模板
+git clone https://github.com/ZhangHanDong/ai-rust-news.git
+cd ai-rust-news
+pnpm install
+```
+
+3. **生成报告**
+
+在 Claude Code 中用自然语言下达指令即可：
+
+```
+"帮我用 json-ui 生成一份今天的 AI 日报"
+"帮我用 json-ui 生成 Rust 1.93 的发布报告"
+"帮我用 json-ui 生成这篇论文的报告: 2601.08521"
+```
+
+Claude 会自动触发对应的采集 skill + json-ui skill，输出 JSON 报告。
+
+4. **部署**
+
+```bash
+# 报告生成后
+git add public/reports/
+git commit -m "add: new daily report"
+git push  # Vercel 自动构建部署
+```
+
+### 扩展：添加自己的报告类型
+
+得益于 json-ui 的通用组件设计，你可以轻松添加新的报告类型。只需：
+
+1. 写一个新的采集 Skill（或用现有 Skill）获取数据
+2. 让 Claude 用 json-ui 组件格式输出 JSON
+3. 保存到 `public/reports/` 并更新 `index.json`
+
+例如，添加「GitHub Trending 周报」：
+
+```bash
+# 只需一句话
+"帮我用 json-ui 生成一份本周 GitHub Trending 的 Rust 项目报告"
+```
+
+Claude 会用 agent-browser 爬取 GitHub Trending 页面，然后用 json-ui skill 指导自己输出正确格式的 JSON 报告。
+
+---
+
+## 总结
+
+三个 Demo + json-ui Skill + 日报网站，构成了 Actionbook 从采集到展示的完整 Agent 工作流：
+
+```
+┌────────────────────────────────────────────────────────────┐
+│                    Actionbook 平台                          │
+│                                                            │
+│  数据采集层 (Input)                                         │
+│  ┌─────────────┐ ┌─────────────┐ ┌──────────────┐         │
+│  │  Scraper     │ │ Rust Learner│ │ arXiv Viewer │  ...    │
+│  │  生成爬虫    │ │  学习 Rust  │ │  阅读论文    │         │
+│  └──────┬──────┘ └──────┬──────┘ └──────┬───────┘         │
+│         │               │               │                  │
+│         └───────────┬───┘───────────────┘                  │
+│                     │                                      │
+│  基础设施层 (Infra)  │                                      │
+│  ┌──────────────────▼──────────────────┐                   │
+│  │  Actionbook MCP  |  agent-browser   │                   │
+│  │  验证选择器       |  网页执行        │                   │
+│  └──────────────────┬──────────────────┘                   │
+│                     │                                      │
+│  输出渲染层 (Output) │                                      │
+│  ┌──────────────────▼──────────────────┐                   │
+│  │  json-ui (通用渲染 Skill)           │                   │
+│  │  AI JSON → 结构化 HTML 报告         │                   │
+│  │  30+ 组件 · Zod 校验 · 明暗主题     │                   │
+│  └──────────────────┬──────────────────┘                   │
+│                     │                                      │
+│                     ▼                                      │
+│              浏览器打开报告                                  │
+└────────────────────────────────────────────────────────────┘
+```
+
+| 层级 | 职责 | 组成 |
+|------|------|------|
+| **数据采集** | Agent 获取信息 | Scraper / Rust Learner / arXiv Viewer / 自定义 Agent |
+| **基础设施** | 可靠的网页操作 | Actionbook MCP (验证选择器) + agent-browser (执行) |
+| **输出渲染** | 结构化展示 | json-ui (JSON → HTML, 30+ 通用组件, CLI + React) |
+
+**核心价值**：
+- **输入端**：AI Agent 通过 Actionbook 获取社区验证的选择器，不再猜测网页结构
+- **输出端**：AI Agent 通过 json-ui 输出结构化 JSON，自动渲染为精美报告
+- **实战验证**：[ai-rust-news](https://github.com/ZhangHanDong/ai-rust-news) 日报网站证明了这套工作流可以端到端运行——从 Reddit/arXiv 数据采集到 Vercel 部署，全程由 Claude Code + Skills 驱动

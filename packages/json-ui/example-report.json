@@ -1,0 +1,145 @@
+{
+  "type": "Report",
+  "props": { "theme": "auto" },
+  "children": [
+    {
+      "type": "BrandHeader",
+      "props": {
+        "badge": "🤖 AI Generated Content",
+        "poweredBy": "ActionBook"
+      }
+    },
+    {
+      "type": "PaperHeader",
+      "props": {
+        "title": "Your Group-Relative Advantage Is Biased",
+        "arxivId": "2601.08521",
+        "date": "2026-01-13",
+        "categories": ["cs.LG", "cs.AI"],
+        "version": "v1"
+      }
+    },
+    {
+      "type": "AuthorList",
+      "props": {
+        "authors": [
+          { "name": "Fengkai Yang", "affiliation": "Beihang University" },
+          { "name": "Zherui Chen", "affiliation": "UC Berkeley" },
+          { "name": "Xiaohan Wang", "affiliation": "Peking University" },
+          { "name": "Xiaodong Lu", "affiliation": "Meituan" },
+          { "name": "Jiajun Chai" },
+          { "name": "Guojun Yin" },
+          { "name": "Wei Lin" }
+        ],
+        "maxVisible": 4
+      }
+    },
+    {
+      "type": "Section",
+      "props": { "title": "Abstract", "icon": "paper" },
+      "children": [
+        {
+          "type": "Abstract",
+          "props": {
+            "text": "Reinforcement Learning from Verifier Rewards (RLVR) has emerged as a widely used approach for post-training large language models on reasoning tasks, with group-based methods such as GRPO and its variants gaining broad adoption. These methods rely on group-relative advantage estimation to avoid learned critics, yet its theoretical properties remain poorly understood. In this work, we uncover a fundamental issue of group-based RL: the group-relative advantage estimator is inherently biased relative to the true (expected) advantage.",
+            "highlights": ["RLVR", "GRPO", "biased"]
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": { "title": "Key Contributions", "icon": "star" },
+      "children": [
+        {
+          "type": "ContributionList",
+          "props": {
+            "items": [
+              {
+                "badge": "Discovery",
+                "title": "Bias in Group-Relative Advantage",
+                "description": "First theoretical analysis revealing systematic bias in group-based advantage estimation"
+              },
+              {
+                "badge": "Algorithm",
+                "title": "HA-DW (History-Aware Adaptive Difficulty Weighting)",
+                "description": "Dynamically adjusts advantage weights using evolving difficulty anchor"
+              },
+              {
+                "badge": "Performance",
+                "title": "Consistent Improvements",
+                "description": "Validated on 5 mathematical reasoning benchmarks across model scales"
+              }
+            ],
+            "numbered": true
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": { "title": "Method Overview", "icon": "code" },
+      "children": [
+        {
+          "type": "MethodOverview",
+          "props": {
+            "steps": [
+              { "step": 1, "title": "Evolving Difficulty Anchor", "description": "Track C_t across batches using historical training information" },
+              { "step": 2, "title": "Adaptive Reweighting", "description": "Adjust advantages based on deviation from difficulty anchor" },
+              { "step": 3, "title": "Integration", "description": "Plug into GRPO training loop with minimal overhead" }
+            ]
+          }
+        },
+        {
+          "type": "Highlight",
+          "props": {
+            "text": "The group-relative advantage estimator is inherently biased relative to the true (expected) advantage.",
+            "type": "important",
+            "source": "Section 2, Theorem 1"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": { "title": "Key Metrics", "icon": "chart" },
+      "children": [
+        {
+          "type": "MetricsGrid",
+          "props": {
+            "metrics": [
+              { "label": "Benchmarks", "value": 5, "icon": "check" },
+              { "label": "Model Scales", "value": "1.5B-7B" },
+              { "label": "Avg. Improvement", "value": "+2.3%", "trend": "up" }
+            ],
+            "cols": 3
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": { "title": "Links", "icon": "link" },
+      "children": [
+        {
+          "type": "LinkGroup",
+          "props": {
+            "links": [
+              { "href": "https://arxiv.org/abs/2601.08521", "label": "arXiv", "icon": "arxiv" },
+              { "href": "https://arxiv.org/pdf/2601.08521", "label": "PDF", "icon": "pdf" },
+              { "href": "https://arxiv.org/html/2601.08521v1", "label": "HTML", "icon": "link" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "BrandFooter",
+      "props": {
+        "timestamp": "2026-01-27T15:30:00Z",
+        "attribution": "Powered by ActionBook",
+        "disclaimer": "This report was automatically generated by AI based on the original paper content."
+      }
+    }
+  ]
+}

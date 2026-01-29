@@ -1,0 +1,378 @@
+{
+  "type": "Report",
+  "props": {
+    "title": { "en": "Rust 1.93.0 Release Notes", "zh": "Rust 1.93.0 版本发布说明" }
+  },
+  "children": [
+    {
+      "type": "BrandHeader",
+      "props": {
+        "badge": { "en": "Rust Release Report", "zh": "Rust 版本报告" },
+        "poweredBy": "Actionbook + json-ui"
+      }
+    },
+    {
+      "type": "MetricsGrid",
+      "props": {
+        "cols": 4,
+        "metrics": [
+          {
+            "label": { "en": "Language Features", "zh": "语言特性" },
+            "value": 13,
+            "icon": "code",
+            "trend": "up"
+          },
+          {
+            "label": { "en": "Stabilized APIs", "zh": "稳定化 API" },
+            "value": 18,
+            "icon": "check",
+            "trend": "up"
+          },
+          {
+            "label": { "en": "Cargo Changes", "zh": "Cargo 变更" },
+            "value": 3,
+            "icon": "tag"
+          },
+          {
+            "label": { "en": "Breaking Changes", "zh": "破坏性变更" },
+            "value": 6,
+            "icon": "warning"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Section",
+      "props": {
+        "title": { "en": "Overview", "zh": "概览" },
+        "icon": "info"
+      },
+      "children": [
+        {
+          "type": "Highlight",
+          "props": {
+            "text": { "en": "Rust 1.93.0 was released on January 22, 2026 (branched from master on December 5, 2025). This release brings 13 language features, 18 newly stabilized APIs, and important changes to the compiler, standard library, and Cargo.", "zh": "Rust 1.93.0 于 2026 年 1 月 22 日发布（2025 年 12 月 5 日从 master 分支）。本次发布包含 13 项语言特性、18 个新稳定化 API，以及编译器、标准库和 Cargo 的重要变更。" },
+            "type": "important"
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": {
+        "title": { "en": "Language Features", "zh": "语言特性" },
+        "icon": "bulb",
+        "collapsible": true,
+        "defaultExpanded": true
+      },
+      "children": [
+        {
+          "type": "ContributionList",
+          "props": {
+            "numbered": true,
+            "items": [
+              {
+                "title": { "en": "asm_cfg stabilization", "zh": "asm_cfg 稳定化" },
+                "description": { "en": "Conditional assembly compilation (cfg within asm! blocks) is now stable", "zh": "条件汇编编译（asm! 块内的 cfg）正式稳定" },
+                "badge": { "en": "Stable", "zh": "稳定" }
+              },
+              {
+                "title": { "en": "deref_nullptr lint upgrade", "zh": "deref_nullptr lint 升级" },
+                "description": { "en": "Promoted from warn to deny-by-default, catching null pointer dereferences more aggressively at compile time", "zh": "从 warn 提升为 deny-by-default，编译期更严格地捕获空指针解引用" },
+                "badge": { "en": "Safety", "zh": "安全" }
+              },
+              {
+                "title": { "en": "function_casts_as_integer lint", "zh": "function_casts_as_integer lint" },
+                "description": { "en": "New warn-by-default lint for casting function pointers as integers", "zh": "新增 warn-by-default lint，警告将函数指针转换为整数的行为" }
+              },
+              {
+                "title": { "en": "C-style variadic functions", "zh": "C 风格可变参数函数" },
+                "description": { "en": "Stabilized declaration of variadic functions for the system ABI", "zh": "为 system ABI 稳定化可变参数函数声明" }
+              },
+              {
+                "title": { "en": "cfg predicate validation", "zh": "cfg 谓词校验" },
+                "description": { "en": "Now errors when keywords are used as config predicates", "zh": "当关键字被用作 cfg 谓词时现在会报错" }
+              },
+              {
+                "title": { "en": "const_item_interior_mutations lint", "zh": "const_item_interior_mutations lint" },
+                "description": { "en": "Warns against mutating interior-mutable const items (e.g., const X: Cell<i32>)", "zh": "警告对内部可变 const 项的修改（如 const X: Cell<i32>）" }
+              },
+              {
+                "title": { "en": "Const pointer copying", "zh": "常量求值指针复制" },
+                "description": { "en": "During const-evaluation, support copying pointers byte-by-byte", "zh": "在常量求值期间，支持逐字节复制指针" }
+              },
+              {
+                "title": { "en": "Mutable references in const", "zh": "const 中的可变引用" },
+                "description": { "en": "Allows const items that contain mutable references to static items", "zh": "允许 const 项包含指向 static 项的可变引用" }
+              },
+              {
+                "title": { "en": "LUB coercions", "zh": "最小上界（LUB）强制转换" },
+                "description": { "en": "Function item types and differing function safeties now handled correctly", "zh": "正确处理函数项类型和不同安全级别的函数的最小上界强制转换" }
+              },
+              {
+                "title": { "en": "repr(C) enum discriminants", "zh": "repr(C) 枚举判别值" },
+                "description": { "en": "Future-compatibility warning for values exceeding c_int/c_uint ranges", "zh": "对超出 c_int/c_uint 范围的判别值发出未来兼容性警告" }
+              },
+              {
+                "title": { "en": "repr(transparent) with repr(C)", "zh": "repr(transparent) 与 repr(C)" },
+                "description": { "en": "Future-compatibility warning against ignoring repr(C) on repr(transparent) types", "zh": "对 repr(transparent) 类型忽略 repr(C) 发出未来兼容性警告" }
+              },
+              {
+                "title": { "en": "s390x vector features", "zh": "s390x 向量特性" },
+                "description": { "en": "Stabilized vector-related target features and is_s390x_feature_detected! macro", "zh": "稳定化向量相关的目标特性和 is_s390x_feature_detected! 宏" }
+              },
+              {
+                "title": { "en": "Variadic function parameters warning", "zh": "可变参数函数参数警告" },
+                "description": { "en": "Future-incompatibility notice for ... patterns outside extern blocks", "zh": "对 extern 块外使用 ... 模式发出未来不兼容警告" }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": {
+        "title": { "en": "Stabilized APIs", "zh": "稳定化 API" },
+        "icon": "check",
+        "collapsible": true,
+        "defaultExpanded": true
+      },
+      "children": [
+        {
+          "type": "Callout",
+          "props": {
+            "type": "tip",
+            "title": { "en": "18 APIs stabilized", "zh": "18 个 API 稳定化" },
+            "content": { "en": "A major batch of API stabilizations covering MaybeUninit, slices, String/Vec raw parts, unchecked integer ops, VecDeque, Duration, char constants, and formatting utilities.", "zh": "大批量 API 稳定化，涵盖 MaybeUninit、切片、String/Vec 原始部分、整数无检查操作、VecDeque、Duration、char 常量和格式化工具。" }
+          }
+        },
+        {
+          "type": "ResultsTable",
+          "props": {
+            "caption": { "en": "Newly Stabilized APIs in Rust 1.93.0", "zh": "Rust 1.93.0 新稳定化 API 列表" },
+            "columns": [
+              { "key": "category", "label": { "en": "Category", "zh": "分类" } },
+              { "key": "api", "label": { "en": "API", "zh": "API" } },
+              { "key": "desc", "label": { "en": "Description", "zh": "描述" } }
+            ],
+            "rows": [
+              { "category": "MaybeUninit", "api": "assume_init_drop", "desc": { "en": "Drop contained value in place", "zh": "就地丢弃包含的值" } },
+              { "category": "MaybeUninit", "api": "assume_init_ref", "desc": { "en": "Get shared ref to initialized value", "zh": "获取已初始化值的共享引用" } },
+              { "category": "MaybeUninit", "api": "assume_init_mut", "desc": { "en": "Get mutable ref to initialized value", "zh": "获取已初始化值的可变引用" } },
+              { "category": "Slice", "api": "write_copy_of_slice", "desc": { "en": "Copy into uninitialized slice", "zh": "复制到未初始化切片" } },
+              { "category": "Slice", "api": "write_clone_of_slice", "desc": { "en": "Clone into uninitialized slice", "zh": "克隆到未初始化切片" } },
+              { "category": "Slice", "api": "as_array::<N>", "desc": { "en": "View slice as fixed-size array", "zh": "将切片视为固定大小数组" } },
+              { "category": "Slice", "api": "as_array_mut::<N>", "desc": { "en": "View mutable slice as array", "zh": "将可变切片视为数组" } },
+              { "category": "String/Vec", "api": "String::into_raw_parts", "desc": { "en": "Decompose into (ptr, len, cap)", "zh": "分解为 (ptr, len, cap)" } },
+              { "category": "String/Vec", "api": "Vec::into_raw_parts", "desc": { "en": "Decompose into (ptr, len, cap)", "zh": "分解为 (ptr, len, cap)" } },
+              { "category": "Integer", "api": "unchecked_neg/shl/shr", "desc": { "en": "Unchecked integer operations", "zh": "无检查整数运算" } },
+              { "category": "Pointer", "api": "*const [T]::as_array", "desc": { "en": "Raw slice ptr as array ptr", "zh": "原始切片指针转数组指针" } },
+              { "category": "VecDeque", "api": "pop_front_if", "desc": { "en": "Conditional pop from front", "zh": "有条件地弹出首元素" } },
+              { "category": "VecDeque", "api": "pop_back_if", "desc": { "en": "Conditional pop from back", "zh": "有条件地弹出尾元素" } },
+              { "category": "Duration", "api": "from_nanos_u128", "desc": { "en": "Construct from u128 nanoseconds", "zh": "从 u128 纳秒构造" } },
+              { "category": "char", "api": "MAX_LEN_UTF8", "desc": { "en": "Max bytes per char in UTF-8 (4)", "zh": "UTF-8 每字符最大字节数 (4)" } },
+              { "category": "char", "api": "MAX_LEN_UTF16", "desc": { "en": "Max u16 units per char in UTF-16 (2)", "zh": "UTF-16 每字符最大 u16 数 (2)" } },
+              { "category": "fmt", "api": "std::fmt::from_fn", "desc": { "en": "Display impl from closure", "zh": "从闭包创建 Display 实现" } },
+              { "category": "fmt", "api": "std::fmt::FromFn", "desc": { "en": "Type returned by from_fn", "zh": "from_fn 返回的类型" } }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": {
+        "title": { "en": "Standard Library Changes", "zh": "标准库变更" },
+        "icon": "star",
+        "collapsible": true
+      },
+      "children": [
+        {
+          "type": "ContributionList",
+          "props": {
+            "numbered": false,
+            "items": [
+              {
+                "title": { "en": "Copy trait specialization removed", "zh": "移除 Copy trait 特化" },
+                "description": { "en": "No longer uses specialization internally for Copy. May cause minor performance regressions but improves soundness.", "zh": "不再对 Copy 内部使用特化。可能导致轻微性能退化，但提升了健全性。" },
+                "badge": { "en": "Soundness", "zh": "健全性" }
+              },
+              {
+                "title": { "en": "Global allocator enhancement", "zh": "全局分配器增强" },
+                "description": { "en": "Now supports thread-local storage and std::thread::current() calls", "zh": "现在支持线程局部存储和 std::thread::current() 调用" }
+              },
+              {
+                "title": { "en": "BTree::append behavior change", "zh": "BTree::append 行为变更" },
+                "description": { "en": "No longer updates existing keys during append — only values are overwritten", "zh": "append 时不再更新已有的键——仅覆盖值" },
+                "badge": { "en": "Breaking", "zh": "破坏性" }
+              },
+              {
+                "title": { "en": "IntoIter<T> unwind safety", "zh": "IntoIter<T> unwind 安全性" },
+                "description": { "en": "Removed the T: RefUnwindSafe requirement from IntoIter<T>", "zh": "移除了 IntoIter<T> 的 T: RefUnwindSafe 要求" }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": {
+        "title": { "en": "Compiler & Cargo", "zh": "编译器与 Cargo" },
+        "icon": "code",
+        "collapsible": true
+      },
+      "children": [
+        {
+          "type": "MethodOverview",
+          "props": {
+            "steps": [
+              {
+                "step": 1,
+                "title": { "en": "-Cjump-tables=bool", "zh": "-Cjump-tables=bool" },
+                "description": { "en": "Stabilized compiler flag to control jump table emission for switch-like code", "zh": "稳定化编译器标志，控制类 switch 代码的跳转表生成" }
+              },
+              {
+                "step": 2,
+                "title": { "en": "riscv64a23 Tier 2", "zh": "riscv64a23 Tier 2" },
+                "description": { "en": "riscv64a23-unknown-linux-gnu promoted to Tier 2 platform support", "zh": "riscv64a23-unknown-linux-gnu 提升至 Tier 2 平台支持" }
+              },
+              {
+                "step": 3,
+                "title": "CARGO_CFG_DEBUG_ASSERTIONS",
+                "description": { "en": "Now set in build scripts based on the active profile", "zh": "现在根据当前 profile 在构建脚本中设置" }
+              },
+              {
+                "step": 4,
+                "title": "cargo tree --format",
+                "description": { "en": "Long-form template variables now supported in format strings", "zh": "格式字符串中现在支持长格式模板变量" }
+              },
+              {
+                "step": 5,
+                "title": "cargo clean --workspace",
+                "description": { "en": "New flag for workspace-wide cleaning of build artifacts", "zh": "新增标志，支持全工作区清理构建产物" }
+              }
+            ],
+            "showConnectors": false
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": {
+        "title": { "en": "Breaking Changes & Compatibility", "zh": "破坏性变更与兼容性" },
+        "icon": "warning",
+        "collapsible": true
+      },
+      "children": [
+        {
+          "type": "Highlight",
+          "props": {
+            "text": { "en": "6 breaking changes in this release. Review carefully before upgrading.", "zh": "本次发布包含 6 项破坏性变更，升级前请仔细检查。" },
+            "type": "warning"
+          }
+        },
+        {
+          "type": "ContributionList",
+          "props": {
+            "numbered": true,
+            "items": [
+              {
+                "title": "pin_v2 builtin attribute",
+                "description": { "en": "Introduced into the compiler's attribute namespace; may conflict with existing user-defined pin_v2 attributes", "zh": "引入编译器属性命名空间；可能与现有用户定义的 pin_v2 属性冲突" },
+                "badge": { "en": "Namespace", "zh": "命名空间" }
+              },
+              {
+                "title": { "en": "musl upgraded to 1.2.5", "zh": "musl 升级至 1.2.5" },
+                "description": { "en": "Bundled musl updated, may affect binaries targeting musl libc", "zh": "捆绑的 musl 已更新，可能影响以 musl libc 为目标的二进制文件" }
+              },
+              {
+                "title": { "en": "Emscripten unwinding ABI change", "zh": "Emscripten 解绑（unwinding）ABI 变更" },
+                "description": { "en": "Changed from JS-based to wasm exception handling; requires -fwasm-exceptions flag for linked C/C++ code", "zh": "从基于 JS 的异常处理改为 wasm 异常处理；链接的 C/C++ 代码需添加 -fwasm-exceptions 标志" }
+              },
+              {
+                "title": { "en": "#[test] attribute enforcement", "zh": "#[test] 属性强制检查" },
+                "description": { "en": "Previously silently ignored in various positions, now results in a hard error when misplaced", "zh": "之前在多处被静默忽略，现在放置位置不当将直接报错" }
+              },
+              {
+                "title": { "en": "offset_of! validation", "zh": "offset_of! 校验" },
+                "description": { "en": "User types now checked for well-formedness, which may reject previously-accepted code", "zh": "用户类型现在会检查格式良好性，可能拒绝之前可以通过的代码" }
+              },
+              {
+                "title": { "en": "cargo publish .crate files", "zh": "cargo publish .crate 文件" },
+                "description": { "en": "No longer emits .crate files when build.build-dir is unset", "zh": "当 build.build-dir 未设置时，不再生成 .crate 文件" }
+              }
+            ]
+          }
+        },
+        {
+          "type": "Callout",
+          "props": {
+            "type": "warning",
+            "title": { "en": "Notable: static-init crate breakage", "zh": "注意：static-init crate 兼容性问题" },
+            "content": { "en": "The CARGO_CFG_DEBUG_ASSERTIONS environment variable may break static-init versions 1.0.1 through 1.0.3. Update to a newer version if affected.", "zh": "CARGO_CFG_DEBUG_ASSERTIONS 环境变量可能导致 static-init 1.0.1 至 1.0.3 版本不兼容。如受影响请升级到更新版本。" }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": {
+        "title": { "en": "Rustdoc Changes", "zh": "Rustdoc 变更" },
+        "icon": "paper",
+        "collapsible": true
+      },
+      "children": [
+        {
+          "type": "ContributionList",
+          "props": {
+            "numbered": false,
+            "items": [
+              {
+                "title": { "en": "Removed #![doc(document_private_items)]", "zh": "移除 #![doc(document_private_items)]" },
+                "description": { "en": "Use --document-private-items CLI flag instead", "zh": "请改用 --document-private-items 命令行标志" }
+              },
+              {
+                "title": { "en": "Macros in search filter", "zh": "搜索过滤器中的宏" },
+                "description": { "en": "Attribute and derive macros now included in the 'macros' search filter", "zh": "属性宏和 derive 宏现已纳入 'macros' 搜索过滤器" }
+              },
+              {
+                "title": { "en": "Doc attribute validation", "zh": "文档属性校验" },
+                "description": { "en": "New rustdoc::invalid_doc_attributes lint validates crate-level doc attributes", "zh": "新增 rustdoc::invalid_doc_attributes lint，校验 crate 级文档属性" }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "LinkGroup",
+      "props": {
+        "links": [
+          {
+            "href": "https://releases.rs/docs/1.93.0/",
+            "label": { "en": "Full Release Notes", "zh": "完整发布说明" },
+            "icon": "link",
+            "external": true
+          },
+          {
+            "href": "https://blog.rust-lang.org/",
+            "label": { "en": "Rust Blog", "zh": "Rust 博客" },
+            "icon": "link",
+            "external": true
+          }
+        ]
+      }
+    },
+    {
+      "type": "BrandFooter",
+      "props": {
+        "timestamp": "2026-01-29",
+        "attribution": { "en": "Generated by Actionbook json-ui", "zh": "由 Actionbook json-ui 生成" },
+        "disclaimer": { "en": "Data sourced from releases.rs. Verify against official Rust blog for critical decisions.", "zh": "数据来源于 releases.rs，关键决策请以 Rust 官方博客为准。" }
+      }
+    }
+  ]
+}

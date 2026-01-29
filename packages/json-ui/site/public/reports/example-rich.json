@@ -1,0 +1,379 @@
+{
+  "type": "Report",
+  "props": { "theme": "auto" },
+  "children": [
+    {
+      "type": "BrandHeader",
+      "props": {
+        "badge": { "en": "🤖 AI Generated Paper Summary", "zh": "🤖 AI 生成论文解读" },
+        "poweredBy": "Actionbook"
+      }
+    },
+    {
+      "type": "PaperHeader",
+      "props": {
+        "title": { "en": "Your Group-Relative Advantage Is Biased", "zh": "组相对优势估计存在偏差" },
+        "arxivId": "2601.08521",
+        "date": "2026-01-13",
+        "categories": ["cs.LG", "cs.AI", "stat.ML"],
+        "version": "v1"
+      }
+    },
+    {
+      "type": "AuthorList",
+      "props": {
+        "authors": [
+          { "name": "Fengkai Yang", "affiliation": "Beihang University" },
+          { "name": "Zherui Chen", "affiliation": "UC Berkeley" },
+          { "name": "Xiaohan Wang", "affiliation": "Peking University" },
+          { "name": "Xiaodong Lu", "affiliation": "Meituan" },
+          { "name": "Jiajun Chai" },
+          { "name": "Guojun Yin" },
+          { "name": "Wei Lin" }
+        ],
+        "maxVisible": 4
+      }
+    },
+    {
+      "type": "Section",
+      "props": { "title": { "en": "Abstract", "zh": "摘要" }, "icon": "paper" },
+      "children": [
+        {
+          "type": "Abstract",
+          "props": {
+            "text": {
+              "en": "Reinforcement Learning from Verifier Rewards (RLVR) has emerged as a widely used approach for post-training large language models on reasoning tasks, with group-based methods such as GRPO and its variants gaining broad adoption. These methods rely on group-relative advantage estimation to avoid learned critics, yet its theoretical properties remain poorly understood. In this work, we uncover a fundamental issue of group-based RL: the group-relative advantage estimator is inherently biased relative to the true (expected) advantage. We provide theoretical analysis showing this bias systematically disadvantages questions of moderate difficulty while over-rewarding both easy and hard questions. To address this, we propose History-Aware Adaptive Difficulty Weighting (HA-DW), which dynamically adjusts advantage weights using an evolving difficulty anchor. Experiments across five mathematical reasoning benchmarks show consistent improvements over GRPO and other baselines.",
+              "zh": "基于验证器奖励的强化学习（RLVR）已成为大语言模型推理任务后训练的主流方法，其中 GRPO 等基于分组的方法及其变体被广泛采用。这类方法通过组内相对优势估计来避免训练价值函数（critic），但其理论性质尚未得到充分研究。本文揭示了基于分组的强化学习中的一个根本性问题：组相对优势估计器相对于真实（期望）优势存在固有偏差。我们的理论分析表明，该偏差会系统性地削弱中等难度问题的学习信号，同时过度强化简单和困难问题的信号。为此，我们提出了历史感知的自适应难度加权方法（HA-DW），通过动态更新的难度锚点来调整优势权重。在五个数学推理基准上的实验表明，HA-DW 持续优于 GRPO 及其他基线方法。"
+            },
+            "highlights": ["RLVR", "GRPO", "biased", "HA-DW"]
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": { "title": { "en": "Key Contributions", "zh": "核心贡献" }, "icon": "star" },
+      "children": [
+        {
+          "type": "ContributionList",
+          "props": {
+            "items": [
+              {
+                "badge": { "en": "Theory", "zh": "理论" },
+                "title": { "en": "Bias Analysis of Group-Relative Advantage", "zh": "组相对优势的偏差分析" },
+                "description": { "en": "First rigorous theoretical analysis revealing systematic bias in group-based advantage estimation under RLVR settings", "zh": "首个严格的理论分析，揭示 RLVR 场景下基于分组的优势估计中存在系统性偏差" }
+              },
+              {
+                "badge": { "en": "Algorithm", "zh": "算法" },
+                "title": { "en": "HA-DW (History-Aware Adaptive Difficulty Weighting)", "zh": "HA-DW（历史感知的自适应难度加权）" },
+                "description": { "en": "Novel method that dynamically adjusts advantage weights using an evolving difficulty anchor computed from training history", "zh": "利用训练历史动态更新难度锚点，自适应调整优势权重的新方法" }
+              },
+              {
+                "badge": { "en": "Empirical", "zh": "实验" },
+                "title": { "en": "Comprehensive Evaluation", "zh": "全面的实验验证" },
+                "description": { "en": "Validated on 5 mathematical reasoning benchmarks (GSM8K, MATH500, Minerva, GaoKao, OlympiadBench) across model scales (1.5B-7B)", "zh": "在 5 个数学推理基准（GSM8K、MATH500、Minerva、高考、OlympiadBench）上验证，覆盖 1.5B 至 7B 多种模型规模" }
+              }
+            ],
+            "numbered": true
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": { "title": { "en": "Background & Problem", "zh": "背景与问题" }, "icon": "info" },
+      "children": [
+        {
+          "type": "Prose",
+          "props": {
+            "content": {
+              "en": "**Reinforcement Learning from Verifier Rewards (RLVR)** has become a dominant paradigm for improving LLM reasoning capabilities. Unlike RLHF which requires learned reward models, RLVR uses rule-based verifiers that can provide exact correctness signals for problems with verifiable answers.\n\n**Group-based methods** like GRPO avoid learning value functions by estimating advantages relative to other samples in the same batch. For each question, multiple responses are sampled and their rewards are normalized within the group.\n\nHowever, this seemingly elegant approach has a hidden flaw that we expose in this work.",
+              "zh": "**基于验证器奖励的强化学习（RLVR）**已成为提升大语言模型推理能力的主流范式。与需要训练奖励模型的 RLHF 不同，RLVR 使用基于规则的验证器，能够对有确定答案的问题给出精确的正误判定信号。\n\n**基于分组的方法**（如 GRPO）无需学习价值函数，而是通过同批次内样本间的相对比较来估计优势值。对于每个问题，采样多条回答并在组内对奖励进行标准化。\n\n然而，这一看似优雅的做法背后隐藏着一个缺陷，本文将对此进行深入分析。"
+            }
+          }
+        },
+        {
+          "type": "Callout",
+          "props": {
+            "type": "warning",
+            "title": { "en": "The Hidden Problem", "zh": "隐藏的问题" },
+            "content": { "en": "Group-relative advantage estimation introduces systematic bias: questions of moderate difficulty are disadvantaged, while both easy and hard questions receive over-weighted advantages.", "zh": "组相对优势估计引入了系统性偏差：中等难度的问题被低估，而过于简单或过于困难的问题反而获得了过高的优势权重。" }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": { "title": { "en": "Theoretical Analysis", "zh": "理论分析" }, "icon": "bulb" },
+      "children": [
+        {
+          "type": "DefinitionList",
+          "props": {
+            "items": [
+              {
+                "term": { "en": "True Advantage A(q)", "zh": "真实优势 A(q)" },
+                "definition": { "en": "The expected advantage of a correct response to question q under the true distribution", "zh": "在真实分布下，问题 q 的正确回答所对应的期望优势值" }
+              },
+              {
+                "term": { "en": "Group-Relative Advantage Â(q)", "zh": "组相对优势 Â(q)" },
+                "definition": { "en": "The empirical advantage computed by normalizing rewards within a batch of sampled responses", "zh": "通过在采样回答的批次内进行奖励标准化所得到的经验优势值" }
+              },
+              {
+                "term": { "en": "Difficulty C(q)", "zh": "难度 C(q)" },
+                "definition": { "en": "The probability of generating a correct response for question q under the current policy π", "zh": "当前策略 π 下，针对问题 q 生成正确回答的概率" }
+              }
+            ]
+          }
+        },
+        {
+          "type": "Theorem",
+          "props": {
+            "type": "theorem",
+            "number": "1",
+            "title": { "en": "Bias of Group-Relative Advantage", "zh": "组相对优势的偏差" },
+            "content": { "en": "Let C(q) denote the difficulty of question q under policy π. The group-relative advantage estimator Â(q) has expected bias E[Â(q)] - A(q) = f(C(q)) where f is a non-linear function that is negative for moderate difficulties (C ≈ 0.5) and positive for extreme difficulties (C → 0 or C → 1).", "zh": "设 C(q) 为策略 π 下问题 q 的难度。组相对优势估计器 Â(q) 的期望偏差 E[Â(q)] - A(q) = f(C(q))，其中 f 为非线性函数：在中等难度（C ≈ 0.5）时取负值，在极端难度（C → 0 或 C → 1）时取正值。" }
+          }
+        },
+        {
+          "type": "Formula",
+          "props": {
+            "latex": "\\mathbb{E}[\\hat{A}(q)] - A(q) = \\frac{1-2C(q)}{G \\cdot C(q)(1-C(q))} + O(G^{-2})",
+            "block": true,
+            "label": "1"
+          }
+        },
+        {
+          "type": "Prose",
+          "props": {
+            "content": {
+              "en": "This theorem reveals that:\n\n- **Easy questions (C → 1)**: Positive bias amplifies advantages\n- **Hard questions (C → 0)**: Positive bias also amplifies advantages  \n- **Moderate questions (C ≈ 0.5)**: Negative bias suppresses learning\n\nThe U-shaped bias curve means moderate-difficulty questions, which are often the most valuable for learning, receive systematically weaker gradient signals.",
+              "zh": "该定理表明：\n\n- **简单问题（C → 1）**：正偏差放大了优势信号\n- **困难问题（C → 0）**：正偏差同样放大了优势信号\n- **中等难度问题（C ≈ 0.5）**：负偏差压制了学习信号\n\n这条 U 型偏差曲线意味着，最具学习价值的中等难度问题反而获得了更弱的梯度信号。"
+            }
+          }
+        },
+        {
+          "type": "Figure",
+          "props": {
+            "images": [
+              {
+                "src": "https://arxiv.org/html/2601.08521v1/x1.png",
+                "alt": { "en": "Bias curve showing U-shaped relationship between difficulty and bias", "zh": "U 型偏差曲线：难度与偏差的关系" },
+                "width": "600px"
+              }
+            ],
+            "label": { "en": "Figure 1", "zh": "图 1" },
+            "caption": { "en": "The bias of group-relative advantage estimation as a function of question difficulty C(q). Moderate-difficulty questions (C ≈ 0.5) suffer negative bias while extreme difficulties receive positive bias.", "zh": "组相对优势估计的偏差随问题难度 C(q) 变化的曲线。中等难度问题（C ≈ 0.5）受到负偏差影响，极端难度问题则获得正偏差。" }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": { "title": { "en": "Proposed Method: HA-DW", "zh": "所提方法：HA-DW" }, "icon": "code" },
+      "children": [
+        {
+          "type": "MethodOverview",
+          "props": {
+            "steps": [
+              { "step": 1, "title": { "en": "Maintain Difficulty Anchor", "zh": "维护难度锚点" }, "description": { "en": "Track running estimate C_t of average difficulty across training batches", "zh": "通过滑动估计追踪各训练批次的平均难度 C_t" } },
+              { "step": 2, "title": { "en": "Compute Reweighting Factor", "zh": "计算加权系数" }, "description": { "en": "For each question, compute w(q) based on deviation from C_t", "zh": "根据每个问题与锚点 C_t 的偏离程度计算权重 w(q)" } },
+              { "step": 3, "title": { "en": "Apply to Advantages", "zh": "加权调整优势值" }, "description": { "en": "Multiply group-relative advantages by w(q) before policy update", "zh": "在策略更新前，将组相对优势值乘以权重 w(q)" } },
+              { "step": 4, "title": { "en": "Update Anchor", "zh": "更新锚点" }, "description": { "en": "Update C_t using exponential moving average of batch difficulties", "zh": "使用指数滑动平均更新锚点 C_t" } }
+            ]
+          }
+        },
+        {
+          "type": "Algorithm",
+          "props": {
+            "title": { "en": "HA-DW Training Loop", "zh": "HA-DW 训练流程" },
+            "steps": [
+              { "line": 1, "code": "Initialize: policy π, difficulty anchor C₀ = 0.5, momentum α = 0.9" },
+              { "line": 2, "code": "for t = 1 to T do:" },
+              { "line": 3, "code": "Sample batch B = {q₁, ..., qₙ}", "indent": 1 },
+              { "line": 4, "code": "for each qᵢ ∈ B do:", "indent": 1 },
+              { "line": 5, "code": "Sample G responses, compute Ĉ(qᵢ) = #correct/G", "indent": 2 },
+              { "line": 6, "code": "Compute group-relative advantage Â(qᵢ)", "indent": 2 },
+              { "line": 7, "code": "Compute weight wᵢ = exp(-|Ĉ(qᵢ) - Cₜ|/τ)", "indent": 2 },
+              { "line": 8, "code": "Update policy with weighted advantage wᵢ · Â(qᵢ)", "indent": 1 },
+              { "line": 9, "code": "Update anchor: Cₜ₊₁ = α·Cₜ + (1-α)·mean(Ĉ(qᵢ))", "indent": 1 }
+            ],
+            "caption": { "en": "The evolving anchor Cₜ adapts to the policy's improving capabilities during training", "zh": "锚点 Cₜ 随训练过程动态调整，以适应策略能力的持续提升" }
+          }
+        },
+        {
+          "type": "Formula",
+          "props": {
+            "latex": "w(q) = \\exp\\left(-\\frac{|\\hat{C}(q) - C_t|}{\\tau}\\right)",
+            "block": true,
+            "label": "2"
+          }
+        },
+        {
+          "type": "Callout",
+          "props": {
+            "type": "tip",
+            "title": { "en": "Why History-Aware?", "zh": "为什么需要历史感知？" },
+            "content": { "en": "The difficulty anchor Cₜ evolves during training as the policy improves. This prevents the reweighting from becoming stale and ensures moderate-difficulty questions (relative to current policy capability) are always appropriately weighted.", "zh": "难度锚点 Cₜ 随策略能力的提升而动态调整。这避免了权重分配过时的问题，确保相对于当前策略而言的中等难度问题始终获得合适的权重。" }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": { "title": { "en": "Experimental Results", "zh": "实验结果" }, "icon": "chart" },
+      "children": [
+        {
+          "type": "MetricsGrid",
+          "props": {
+            "metrics": [
+              { "label": { "en": "Benchmarks", "zh": "评测基准" }, "value": 5, "icon": "check" },
+              { "label": { "en": "Model Scales", "zh": "模型规模" }, "value": "1.5B-7B" },
+              { "label": { "en": "Avg. Improvement", "zh": "平均提升" }, "value": "+2.3%", "trend": "up" },
+              { "label": { "en": "Best Gain", "zh": "最大增幅" }, "value": "+4.1%", "trend": "up", "suffix": " on MATH500" }
+            ],
+            "cols": 4
+          }
+        },
+        {
+          "type": "ResultsTable",
+          "props": {
+            "caption": { "en": "Table 1: Performance comparison on mathematical reasoning benchmarks (accuracy %)", "zh": "表 1：数学推理基准上的性能对比（准确率 %）" },
+            "columns": [
+              { "key": "method", "label": { "en": "Method", "zh": "方法" } },
+              { "key": "gsm8k", "label": "GSM8K" },
+              { "key": "math500", "label": "MATH500", "highlight": true },
+              { "key": "minerva", "label": "Minerva" },
+              { "key": "gaokao", "label": { "en": "GaoKao", "zh": "高考" } },
+              { "key": "olympiad", "label": "OlympiadBench" }
+            ],
+            "rows": [
+              { "method": "SFT Baseline", "gsm8k": "72.3", "math500": "34.2", "minerva": "28.1", "gaokao": "45.6", "olympiad": "12.4" },
+              { "method": "GRPO", "gsm8k": "78.5", "math500": "41.6", "minerva": "35.2", "gaokao": "51.3", "olympiad": "18.7" },
+              { "method": "Dr. GRPO", "gsm8k": "79.1", "math500": "42.3", "minerva": "36.1", "gaokao": "52.0", "olympiad": "19.2" },
+              { "method": "DAPO", "gsm8k": "79.8", "math500": "43.1", "minerva": "36.8", "gaokao": "52.7", "olympiad": "19.8" },
+              { "method": "HA-DW (Ours)", "gsm8k": "81.2", "math500": "45.7", "minerva": "38.4", "gaokao": "54.1", "olympiad": "21.3" }
+            ],
+            "highlights": [
+              { "row": 4, "col": "gsm8k" },
+              { "row": 4, "col": "math500" },
+              { "row": 4, "col": "minerva" },
+              { "row": 4, "col": "gaokao" },
+              { "row": 4, "col": "olympiad" }
+            ]
+          }
+        },
+        {
+          "type": "Figure",
+          "props": {
+            "images": [
+              {
+                "src": "https://arxiv.org/html/2601.08521v1/x2.png",
+                "alt": { "en": "Training curves comparing GRPO vs HA-DW", "zh": "GRPO 与 HA-DW 训练曲线对比" },
+                "width": "100%"
+              }
+            ],
+            "label": { "en": "Figure 2", "zh": "图 2" },
+            "caption": { "en": "Training curves on MATH500. HA-DW shows faster convergence and higher final accuracy compared to GRPO and other baselines.", "zh": "MATH500 训练曲线。HA-DW 相比 GRPO 及其他基线方法收敛更快，最终准确率更高。" }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": { "title": { "en": "Ablation Studies", "zh": "消融实验" }, "icon": "chart" },
+      "children": [
+        {
+          "type": "ResultsTable",
+          "props": {
+            "caption": { "en": "Table 2: Ablation study on HA-DW components (MATH500 accuracy %)", "zh": "表 2：HA-DW 各组件消融实验（MATH500 准确率 %）" },
+            "columns": [
+              { "key": "variant", "label": { "en": "Variant", "zh": "变体" } },
+              { "key": "accuracy", "label": { "en": "Accuracy", "zh": "准确率" } },
+              { "key": "delta", "label": { "en": "Δ vs Full", "zh": "Δ 相比完整版" } }
+            ],
+            "rows": [
+              { "variant": "Full HA-DW", "accuracy": "45.7", "delta": "—" },
+              { "variant": "w/o History (fixed C=0.5)", "accuracy": "43.8", "delta": "-1.9" },
+              { "variant": "w/o Adaptive Weight", "accuracy": "42.9", "delta": "-2.8" },
+              { "variant": "w/o Both (= GRPO)", "accuracy": "41.6", "delta": "-4.1" }
+            ],
+            "highlights": [
+              { "row": 0, "col": "accuracy" }
+            ]
+          }
+        },
+        {
+          "type": "Callout",
+          "props": {
+            "type": "important",
+            "title": { "en": "Key Finding", "zh": "关键发现" },
+            "content": { "en": "Both components (history-aware anchor and adaptive weighting) contribute significantly. The history-aware anchor alone provides +1.2% while adaptive weighting alone provides +0.9%. Their combination yields the full +4.1% improvement.", "zh": "两个组件（历史感知锚点和自适应加权）均有显著贡献：仅使用历史感知锚点可提升 +1.2%，仅使用自适应加权可提升 +0.9%，二者结合实现了完整的 +4.1% 提升。" }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": { "title": { "en": "Key Takeaways", "zh": "要点总结" }, "icon": "bulb" },
+      "children": [
+        {
+          "type": "Grid",
+          "props": { "cols": 2 },
+          "children": [
+            {
+              "type": "KeyPoint",
+              "props": {
+                "icon": "warning",
+                "title": { "en": "Bias in Group-Relative Methods", "zh": "分组方法的固有偏差" },
+                "description": { "en": "GRPO and similar methods have inherent bias that disadvantages moderate-difficulty questions", "zh": "GRPO 等方法存在固有偏差，导致中等难度问题的学习信号被削弱" },
+                "variant": "warning"
+              }
+            },
+            {
+              "type": "KeyPoint",
+              "props": {
+                "icon": "check",
+                "title": { "en": "Simple Fix, Big Impact", "zh": "改动小，效果大" },
+                "description": { "en": "HA-DW adds minimal overhead (<5% training time) while consistently improving performance", "zh": "HA-DW 仅增加不到 5% 的训练开销，即可带来稳定的性能提升" },
+                "variant": "success"
+              }
+            }
+          ]
+        },
+        {
+          "type": "Highlight",
+          "props": {
+            "text": { "en": "The group-relative advantage estimator is inherently biased relative to the true (expected) advantage. HA-DW corrects this bias through history-aware adaptive difficulty weighting.", "zh": "组相对优势估计器相对于真实（期望）优势存在固有偏差。HA-DW 通过历史感知的自适应难度加权机制纠正了这一偏差。" },
+            "type": "important",
+            "source": { "en": "Main contribution", "zh": "核心贡献" }
+          }
+        }
+      ]
+    },
+    {
+      "type": "Section",
+      "props": { "title": { "en": "Links & Resources", "zh": "链接与资源" }, "icon": "link" },
+      "children": [
+        {
+          "type": "LinkGroup",
+          "props": {
+            "links": [
+              { "href": "https://arxiv.org/abs/2601.08521", "label": { "en": "arXiv Paper", "zh": "arXiv 论文" }, "icon": "arxiv" },
+              { "href": "https://arxiv.org/pdf/2601.08521", "label": "PDF", "icon": "pdf" },
+              { "href": "https://arxiv.org/html/2601.08521v1", "label": { "en": "HTML Version", "zh": "HTML 版本" }, "icon": "link" },
+              { "href": "https://github.com/example/ha-dw", "label": { "en": "Code (Coming)", "zh": "代码（即将发布）" }, "icon": "github" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "BrandFooter",
+      "props": {
+        "timestamp": "2026-01-27T15:30:00Z",
+        "attribution": "Powered by Actionbook",
+        "disclaimer": { "en": "This report was automatically generated by AI based on the original paper content. Please refer to the original paper for complete details and citations.", "zh": "本报告由 AI 根据原始论文内容自动生成，如需完整细节和引用请参阅原始论文。" }
+      }
+    }
+  ]
+}
